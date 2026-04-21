@@ -5,7 +5,12 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
-import ComingSoon from "./pages/ComingSoon.tsx";
+import Services from "./pages/Services.tsx";
+import About from "./pages/About.tsx";
+import Portfolio from "./pages/Portfolio.tsx";
+import Pricing from "./pages/Pricing.tsx";
+import Contact from "./pages/Contact.tsx";
+import Resources from "./pages/Resources.tsx";
 
 const queryClient = new QueryClient();
 
@@ -17,12 +22,12 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/services" element={<ComingSoon title="Services" description="Our full services page is being polished — for now, see the services preview on the homepage or get in touch." />} />
-          <Route path="/about" element={<ComingSoon title="About Web Shrimp" description="Our story, team and values page is on the way." />} />
-          <Route path="/portfolio" element={<ComingSoon title="Our Portfolio" description="The full case-study gallery is coming soon." />} />
-          <Route path="/pricing" element={<ComingSoon title="Pricing" description="Transparent packages and add-ons are being finalised." />} />
-          <Route path="/resources" element={<ComingSoon title="Resources & Blog" description="Articles, guides and free resources — launching shortly." />} />
-          <Route path="/contact" element={<ComingSoon title="Get In Touch" description="A full contact form is on the way. In the meantime, email hello@webshrimp.lk." />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/resources" element={<Resources />} />
+          <Route path="/contact" element={<Contact />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
