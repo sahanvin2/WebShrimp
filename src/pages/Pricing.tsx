@@ -152,7 +152,7 @@ const Pricing = () => {
               <p className="mt-1 text-sm text-muted-foreground min-h-[40px]">{t.desc}</p>
               <div className="mt-5">
                 <span className="font-display text-3xl font-extrabold text-brand-navy">{t.price}</span>
-                {"suffix" in t && t.suffix && <span className="text-muted-foreground text-sm">{t.suffix}</span>}
+                {"suffix" in t && t.suffix ? <span className="text-muted-foreground text-sm">{String(t.suffix)}</span> : null}
               </div>
               <ul className="mt-6 space-y-2.5">
                 {t.features.map((f) => (
