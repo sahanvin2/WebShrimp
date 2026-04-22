@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locale — Discover Exceptional Places</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    bg: '#09090B',
+                    surface: '#131316',
+                    card: '#18181B',
+                    'card-hover': '#1F1F23',
+                    border: '#27272A',
+                    'border-light': '#3F3F46',
+                    text: '#FAFAF9',
+                    'text-sec': '#A1A1AA',
+                    'text-muted': '#63636E',
+                    accent: '#D4A853',
+                    'accent-h': '#E0B96A',
+                    'accent-dim': 'rgba(212,168,83,0.12)',
+                    'accent-border': 'rgba(212,168,83,0.25)',
+                    success: '#34D399',
+                    danger: '#F87171',
+                },
+                fontFamily: {
+                    display: ['"Space Grotesk"', 'sans-serif'],
+                    body: ['"DM Sans"', 'sans-serif'],
+                }
+            }
+        }
+    };
+    </script>
+    <style>
+        * { box-sizing: border-box; }
+        ::selection { background: rgba(212,168,83,0.3); color: #FAFAF9; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #09090B; }
+        ::-webkit-scrollbar-thumb { background: #3F3F46; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #52525B; }
+        html { scroll-behavior: smooth; }
+        body { background: #09090B; color: #FAFAF9; font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+
+        /* Page transition */
+        #page-content { transition: opacity 0.3s ease, transform 0.3s ease; }
+        #page-content.fade-out { opacity: 0; transform: translateY(8px); }
+
+        /* Hero gradient mesh */
+        .hero-mesh {
+            background:
+                radial-gradient(ellipse 80% 60% at 15% 40%, rgba(212,168,83,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 85% 25%, rgba(212,168,83,0.04) 0%, transparent 50%),
+                radial-gradient(ellipse 70% 40% at 50% 90%, rgba(180,140,60,0.03) 0%, transparent 50%),
+                #09090B;
+        }
+
+        /* Search glow */
+        .search-wrap {
+            background: rgba(24,24,27,0.85);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(212,168,83,0.15);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .search-wrap:focus-within {
+            border-color: rgba(212,168,83,0.4);
+            box-shadow: 0 0 40px rgba(212,168,83,0.08), 0 0 80px rgba(212,168,83,0.04);
+        }
+
+        /* Card hover */
+        .listing-card {
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #27272A;
+        }
+        .listing-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(212,168,83,0.3);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(212,168,83,0.1);
+        }
+
+        /* Bookmark pulse */
+        .bookmark-btn.saved { color: #D4A853; }
+        @keyframes bookmarkPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+        .bookmark-pulse { animation: bookmarkPulse 0.3s ease; }
+
+        /* Category pill */
+        .cat-pill {
+            transition: all 0.25s ease;
+            border: 1px solid #27272A;
+        }
+        .cat-pill:hover, .cat-pill.active {
+            background: rgba(212,168,83,0.12);
+            border-color: rgba(212,168,83,0.35);
+            color: #D4A853;
+        }
+
+        /* Star rating interactive */
+        .star-input i { cursor: pointer; transition: color 0.15s, transform 0.15s; }
+        .star-input i:hover { transform: scale(1.15); }
+        .star-input i.active { color: #D4A853; }
+
+        /* Filter checkbox */
+        .filter-check {
+            appearance: none; width: 18px; height: 18px; border: 1.5px solid #3F3F46;
+            border-radius: 4px; background: #131316; cursor: pointer; transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .filter-check:checked {
+            background: #D4A853; border-color: #D4A853;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='%2309090B' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3E%3C/svg%3E");
+            background-size: 14px; background-position: center; background-repeat: no-repeat;
+        }
+
+        /* Stat card glow */
+        .stat-card {
+            position: relative; overflow: hidden;
+        }
+        .stat-card::before {
+            content: ''; position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(212,168,83,0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        /* Stagger animation */
+        .stagger-item { opacity: 0; transform: translateY(16px); transition: opacity 0.4s ease, transform 0.4s ease; }
+        .stagger-item.visible { opacity: 1; transform: translateY(0); }
+
+        /* Floating dots background */
+        .float-dot {
+            position: absolute; border-radius: 50%; background: rgba(212,168,83,0.15);
+            animation: floatDot 8s ease-in-out infinite;
+        }
+        @keyframes floatDot {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+            50% { transform: translateY(-20px) scale(1.1); opacity: 0.6; }
+        }
+
+        /* Leaflet overrides */
+        .leaflet-container { background: #09090B; border-radius: 12px; }
+        .leaflet-tile-pane { filter: brightness(0.7) contrast(1.1) saturate(0.3); }
+        .leaflet-control-zoom a { background: #18181B !important; color: #FAFAF9 !important; border-color: #27272A !important; }
+        .leaflet-control-zoom a:hover { background: #27272A !important; }
+        .leaflet-popup-content-wrapper { background: #18181B; color: #FAFAF9; border-radius: 10px; border: 1px solid #27272A; }
+        .leaflet-popup-tip { background: #18181B; }
+        .leaflet-popup-content { margin: 10px 14px; font-family: 'DM Sans', sans-serif; }
+        .custom-marker {
+            width: 32px; height: 32px; background: #D4A853; border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg); border: 3px solid #09090B;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .custom-marker span { transform: rotate(45deg); font-size: 12px; font-weight: 700; color: #09090B; }
+
+        /* Mobile menu */
+        .mobile-overlay { transition: opacity 0.3s; }
+        .mobile-panel { transition: transform 0.35s cubic-bezier(0.16,1,0.3,1); }
+
+        /* Filter modal */
+        .filter-overlay { transition: opacity 0.3s; }
+        .filter-sheet { transition: transform 0.4s cubic-bezier(0.16,1,0.3,1); }
+
+        /* Toast */
+        .toast {
+            animation: toastIn 0.4s cubic-bezier(0.16,1,0.3,1);
+        }
+        .toast.removing { animation: toastOut 0.3s ease forwards; }
+        @keyframes toastIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes toastOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(40px); } }
+
+        /* Nav link underline */
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
+            background: #D4A853; transition: width 0.3s ease; border-radius: 1px;
+        }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+
+        /* Image gallery */
+        .gallery-thumb { transition: border-color 0.2s, opacity 0.2s; border: 2px solid transparent; }
+        .gallery-thumb.active { border-color: #D4A853; }
+        .gallery-thumb:not(.active) { opacity: 0.6; }
+        .gallery-thumb:hover { opacity: 1; }
+
+        /* Review modal */
+        .modal-overlay { transition: opacity 0.25s; }
+        .modal-box { transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), opacity 0.25s; }
+
+        /* Price dots */
+        .price-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 3px; }
+        .price-dot.filled { background: #D4A853; }
+        .price-dot.empty { background: #3F3F46; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toasts -->
+    <div id="toast-container" class="fixed top-6 right-6 z-[200] flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- Review Modal -->
+    <div id="review-modal" class="fixed inset-0 z-[150] hidden">
+        <div class="modal-overlay absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeReviewModal()"></div>
+        <div class="modal-box absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-card border border-border rounded-2xl p-6">
+            <h3 class="font-display text-xl font-semibold mb-1">Write a Review</h3>
+            <p id="review-modal-subtitle" class="text-text-sec text-sm mb-5"></p>
+            <div class="mb-4">
+                <label class="text-sm text-text-sec mb-2 block">Your Rating</label>
+                <div class="star-input flex gap-1 text-2xl text-border-light" id="modal-stars">
+                    <i class="fa-solid fa-star" data-val="1"></i>
+                    <i class="fa-solid fa-star" data-val="2"></i>
+                    <i class="fa-solid fa-star" data-val="3"></i>
+                    <i class="fa-solid fa-star" data-val="4"></i>
+                    <i class="fa-solid fa-star" data-val="5"></i>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="text-sm text-text-sec mb-2 block">Your Name</label>
+                <input id="review-name" type="text" placeholder="Enter your name" class="w-full bg-surface border border-border rounded-lg px-4 py-2.5 text-text placeholder:text-text-muted focus:outline-none focus:border-accent-border transition">
+            </div>
+            <div class="mb-6">
+                <label class="text-sm text-text-sec mb-2 block">Your Review</label>
+                <textarea id="review-text" rows="4" placeholder="Share your experience..." class="w-full bg-surface border border-border rounded-lg px-4 py-2.5 text-text placeholder:text-text-muted focus:outline-none focus:border-accent-border transition resize-none"></textarea>
+            </div>
+            <div class="flex gap-3 justify-end">
+                <button onclick="closeReviewModal()" class="px-5 py-2.5 rounded-lg border border-border text-text-sec hover:bg-surface transition text-sm font-medium">Cancel</button>
+                <button onclick="submitReview()" class="px-5 py-2.5 rounded-lg bg-accent text-bg font-semibold hover:bg-accent-h transition text-sm">Submit Review</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 z-[100] hidden">
+        <div class="mobile-overlay absolute inset-0 bg-black/60" onclick="closeMobileMenu()"></div>
+        <div class="mobile-panel absolute top-0 right-0 h-full w-72 bg-surface border-l border-border p-6 flex flex-col">
+            <div class="flex justify-between items-center mb-8">
+                <span class="font-display font-bold text-lg text-accent">Locale</span>
+                <button onclick="closeMobileMenu()" class="text-text-sec hover:text-text transition" aria-label="Close menu"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <nav class="flex flex-col gap-1">
+                <a href="#home" onclick="closeMobileMenu()" class="px-4 py-3 rounded-lg text-text-sec hover:text-text hover:bg-card transition font-medium">Home</a>
+                <a href="#listings" onclick="closeMobileMenu()" class="px-4 py-3 rounded-lg text-text-sec hover:text-text hover:bg-card transition font-medium">Listings</a>
+                <a href="#dashboard" onclick="closeMobileMenu()" class="px-4 py-3 rounded-lg text-text-sec hover:text-text hover:bg-card transition font-medium">Dashboard</a>
+            </nav>
+            <div class="mt-auto">
+                <button onclick="closeMobileMenu()" class="w-full py-3 rounded-xl bg-accent text-bg font-semibold hover:bg-accent-h transition">Get Started</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Filter Sheet -->
+    <div id="filter-sheet" class="fixed inset-0 z-[90] hidden">
+        <div class="filter-overlay absolute inset-0 bg-black/50" onclick="closeFilterSheet()"></div>
+        <div class="filter-sheet absolute bottom-0 left-0 right-0 bg-surface border-t border-border rounded-t-2xl max-h-[80vh] overflow-y-auto p-6">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="font-display text-lg font-semibold">Filters</h3>
+                <button onclick="closeFilterSheet()" class="text-text-sec hover:text-text transition" aria-label="Close filters"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div id="mobile-filters-content"></div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="clearFilters()" class="flex-1 py-3 rounded-xl border border-border text-text-sec font-medium hover:bg-card transition">Clear All</button>
+                <button onclick="closeFilterSheet()" class="flex-1 py-3 rounded-xl bg-accent text-bg font-semibold hover:bg-accent-h transition">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Shell -->
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- Navbar -->
+        <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16 sm:h-18">
+                    <a href="#home" class="font-display font-bold text-xl text-accent tracking-tight">Locale</a>
+                    <div class="hidden md:flex items-center gap-8">
+                        <a href="#home" class="nav-link text-sm font-medium text-text-sec hover:text-text transition" data-nav="home">Home</a>
+                        <a href="#listings" class="nav-link text-sm font-medium text-text-sec hover:text-text transition" data-nav="listings">Listings</a>
+                        <a href="#dashboard" class="nav-link text-sm font-medium text-text-sec hover:text-text transition" data-nav="dashboard">Dashboard</a>
+                    </div>
+                    <div class="hidden md:flex items-center gap-3">
+                        <a href="#dashboard" class="px-4 py-2 text-sm font-medium text-text-sec hover:text-text transition">Sign In</a>
+                        <a href="#listings" class="px-5 py-2.5 rounded-xl bg-accent text-bg text-sm font-semibold hover:bg-accent-h transition">Explore</a>
+                    </div>
+                    <button onclick="openMobileMenu()" class="md:hidden text-text-sec hover:text-text transition p-2" aria-label="Open menu">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main id="page-content" class="flex-1 pt-16 sm:pt-18"></main>
+
+        <!-- Footer -->
+        <footer id="app-footer" class="border-t border-border bg-surface/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+                    <div class="col-span-2 md:col-span-1">
+                        <span class="font-display font-bold text-xl text-accent">Locale</span>
+                        <p class="text-text-muted text-sm mt-3 leading-relaxed">Discover and connect with exceptional places in your city. Curated listings, real reviews.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-display font-semibold text-sm mb-4 text-text">Platform</h4>
+                        <div class="flex flex-col gap-2.5">
+                            <a href="#listings" class="text-text-sec text-sm hover:text-accent transition">Browse Listings</a>
+                            <a href="#" class="text-text-sec text-sm hover:text-accent transition">Categories</a>
+                            <a href="#" class="text-text-sec text-sm hover:text-accent transition">Top Rated</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-display font-semibold text-sm mb-4 text-text">Company</h4>
+                        <div class="flex flex-col gap-2.5">
+                            <a href="#" class="text-text-sec text-sm hover:text-accent transition">About</a>
+                            <a href="#" class="text-text-sec text-sm hover:text-accent transition">Careers</a>
+                            <a href="#" class="text-text-sec text-sm hover:text-accent transition">Contact</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-display font-semibold text-sm mb-4 text-text">Legal</h4>
+                        <div class="flex flex-col gap-2.5">
+                            <a href="#" class="text-text-sec text-sm hover:text-accent transition">Privacy</a>
+                            <a href="#" class="text-text-sec text-sm hover:text-accent transition">Terms</a>
+                            <a href="#" class="text-text-sec text-sm hover:text-accent transition">Cookies</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-border pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <p class="text-text-muted text-sm">2025 Locale. All rights reserved.</p>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-text-muted hover:text-accent transition" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="#" class="text-text-muted hover:text-accent transition" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="text-text-muted hover:text-accent transition" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+<script>
+/* ============================================================
+   DATA
+   ============================================================ */
+const CATEGORIES = ['Dining', 'Wellness', 'Workspace', 'Professional', 'Retail', 'Entertainment'];
+const LOCATIONS = ['Downtown', 'Midtown', 'Uptown', 'Westside', 'Eastside', 'Harbor District'];
+const CATEGORY_ICONS = {
+    Dining: 'fa-utensils', Wellness: 'fa-spa', Workspace: 'fa-briefcase',
+    Professional: 'fa-scale-balanced', Retail: 'fa-bag-shopping', Entertainment: 'fa-masks-theater'
+};
+
+const LISTINGS = [
+    { id:1, name:"Ember & Oak", category:"Dining", location:"Downtown", address:"142 Oak Street, Downtown", priceLevel:3, rating:4.8, reviewCount:234, image:"https://picsum.photos/seed/ember-oak/800/600", images:["https://picsum.photos/seed/ember-oak/800/600","https://picsum.photos/seed/eo-2/800/600","https://picsum.photos/seed/eo-3/800/600"], description:"A modern American bistro where seasonal ingredients meet craft cocktails. Chef Marcus Rivera brings 15 years of fine dining experience to this intimate Downtown setting, creating dishes that honor tradition while embracing innovation.", coords:[40.7580,-73.9855], amenities:["Outdoor Seating","Full Bar","Private Dining","Wheelchair Accessible"], hours:"Tue-Sun 5:00 PM - 11:00 PM", phone:"(212) 555-0142", website:"emberandoak.com", featured:true, reviews:[
+        {id:1,user:"Sarah Mitchell",avatar:"https://picsum.photos/seed/sarah-m/100/100",rating:5,text:"Absolutely incredible experience. The braised short rib was melt-in-your-mouth perfect, and the ambiance is unmatched in the area.",date:"2 weeks ago"},
+        {id:2,user:"James Kowalski",avatar:"https://picsum.photos/seed/james-k/100/100",rating:4,text:"Great food and service. The tasting menu is worth every penny. Only minor note — the noise level gets high on weekends.",date:"1 month ago"},
+        {id:3,user:"Priya Lahiri",avatar:"https://picsum.photos/seed/priya-l/100/100",rating:5,text:"Our anniversary dinner here was perfect. The staff went above and beyond to make it special. The chocolate soufflé is a must-try.",date:"1 month ago"},
+    ]},
+    { id:2, name:"The Still Room", category:"Wellness", location:"Midtown", address:"88 Elm Avenue, Midtown", priceLevel:2, rating:4.9, reviewCount:189, image:"https://picsum.photos/seed/still-room/800/600", images:["https://picsum.photos/seed/still-room/800/600","https://picsum.photos/seed/sr-2/800/600","https://picsum.photos/seed/sr-3/800/600"], description:"An urban sanctuary offering mindfulness classes, therapeutic massage, and holistic wellness programs. Designed for those seeking balance in the heart of the city.", coords:[40.7549,-73.9840], amenities:["Sauna","Yoga Studio","Massage Rooms","Tea Lounge"], hours:"Mon-Sat 7:00 AM - 9:00 PM", phone:"(212) 555-0288", website:"stillroomwellness.com", featured:true, reviews:[
+        {id:4,user:"Elena Vasquez",avatar:"https://picsum.photos/seed/elena-v/100/100",rating:5,text:"The deep tissue massage was exactly what I needed. Therapist was incredibly skilled and attentive.",date:"3 days ago"},
+        {id:5,user:"Tom Baker",avatar:"https://picsum.photos/seed/tom-b/100/100",rating:5,text:"Best meditation space in the city. The guided sessions have genuinely changed my daily routine.",date:"2 weeks ago"},
+    ]},
+    { id:3, name:"Hive Collective", category:"Workspace", location:"Downtown", address:"201 Broad Street, Downtown", priceLevel:2, rating:4.6, reviewCount:312, image:"https://picsum.photos/seed/hive-col/800/600", images:["https://picsum.photos/seed/hive-col/800/600","https://picsum.photos/seed/hc-2/800/600","https://picsum.photos/seed/hc-3/800/600"], description:"A thoughtfully designed coworking space with high-speed internet, private pods, meeting rooms, and a vibrant community of freelancers and startups.", coords:[40.7565,-73.9870], amenities:["High-Speed WiFi","Meeting Rooms","Private Pods","Coffee Bar","Event Space"], hours:"24/7 Access", phone:"(212) 555-0312", website:"hivecollective.space", featured:true, reviews:[
+        {id:6,user:"Alex Chen",avatar:"https://picsum.photos/seed/alex-c/100/100",rating:5,text:"Been here for 6 months. The community events alone are worth the membership. Great people, great space.",date:"1 week ago"},
+        {id:7,user:"Maria Santos",avatar:"https://picsum.photos/seed/maria-s/100/100",rating:4,text:"Solid coworking option. Fast internet, clean facilities. Wish the meeting rooms were slightly larger.",date:"3 weeks ago"},
+    ]},
+    { id:4, name:"Sterling & Associates", category:"Professional", location:"Uptown", address:"500 Park Avenue, Uptown", priceLevel:4, rating:4.7, reviewCount:156, image:"https://picsum.photos/seed/sterling/800/600", images:["https://picsum.photos/seed/sterling/800/600","https://picsum.photos/seed/st-2/800/600","https://picsum.photos/seed/st-3/800/600"], description:"A boutique law firm specializing in corporate law, intellectual property, and startup advisory. Known for their personalized approach and exceptional track record.", coords:[40.7831,-73.9712], amenities:["Private Conference Rooms","Virtual Consultations","Notary Services"], hours:"Mon-Fri 9:00 AM - 6:00 PM", phone:"(212) 555-0456", website:"sterlinglaw.com", featured:false, reviews:[
+        {id:8,user:"David Park",avatar:"https://picsum.photos/seed/david-p/100/100",rating:5,text:"Handled our Series A paperwork flawlessly. Responsive, thorough, and genuinely cared about our success.",date:"2 months ago"},
+        {id:9,user:"Rachel Green",avatar:"https://picsum.photos/seed/rachel-g/100/100",rating:4,text:"Excellent IP counsel. Helped us navigate a complex patent situation with clarity.",date:"3 months ago"},
+    ]},
+    { id:5, name:"Noma Supply Co.", category:"Retail", location:"Westside", address:"77 Hudson Lane, Westside", priceLevel:3, rating:4.5, reviewCount:278, image:"https://picsum.photos/seed/noma-sup/800/600", images:["https://picsum.photos/seed/noma-sup/800/600","https://picsum.photos/seed/ns-2/800/600","https://picsum.photos/seed/ns-3/800/600"], description:"A curated home goods and lifestyle store featuring artisan-made ceramics, hand-poured candles, linen textiles, and sustainably sourced furniture pieces.", coords:[40.7490,-74.0010], amenities:["Gift Wrapping","Interior Consultation","Delivery Service"], hours:"Mon-Sat 10:00 AM - 7:00 PM, Sun 11:00 AM - 5:00 PM", phone:"(212) 555-0577", website:"nomasupply.co", featured:false, reviews:[
+        {id:10,user:"Claire Dubois",avatar:"https://picsum.photos/seed/claire-d/100/100",rating:5,text:"Every piece in this store feels intentional. The ceramics collection is extraordinary — I've furnished half my apartment here.",date:"5 days ago"},
+        {id:11,user:"Michael Torres",avatar:"https://picsum.photos/seed/michael-t/100/100",rating:4,text:"Beautiful store with great taste. Prices are on the higher side but quality justifies it.",date:"2 weeks ago"},
+    ]},
+    { id:6, name:"Velvet Stage", category:"Entertainment", location:"Harbor District", address:"33 Pier Street, Harbor District", priceLevel:2, rating:4.4, reviewCount:421, image:"https://picsum.photos/seed/velvet-stg/800/600", images:["https://picsum.photos/seed/velvet-stg/800/600","https://picsum.photos/seed/vs-2/800/600","https://picsum.photos/seed/vs-3/800/600"], description:"An intimate live music venue and cocktail bar hosting emerging artists, jazz nights, comedy showcases, and themed DJ sets in a stunning industrial space.", coords:[40.7061,-74.0087], amenities:["Full Bar","Sound System","VIP Lounge","Outdoor Terrace"], hours:"Wed-Sun 7:00 PM - 2:00 AM", phone:"(212) 555-0633", website:"velvetstage.com", featured:true, reviews:[
+        {id:12,user:"Nina Ross",avatar:"https://picsum.photos/seed/nina-r/100/100",rating:5,text:"The jazz nights here are magical. Intimate setting, incredible acoustics, and the cocktails are top-notch.",date:"1 week ago"},
+        {id:13,user:"Jake Wilson",avatar:"https://picsum.photos/seed/jake-w/100/100",rating:4,text:"Caught a comedy show last weekend — great lineup, good vibes. Gets crowded so arrive early.",date:"3 weeks ago"},
+    ]},
+    { id:7, name:"Saffron Table", category:"Dining", location:"Eastside", address:"215 Madison Blvd, Eastside", priceLevel:2, rating:4.7, reviewCount:198, image:"https://picsum.photos/seed/saffron-tbl/800/600", images:["https://picsum.photos/seed/saffron-tbl/800/600","https://picsum.photos/seed/stb-2/800/600","https://picsum.photos/seed/stb-3/800/600"], description:"A vibrant Indian-inspired eatery blending traditional flavors with modern presentation. Known for their tandoori platter and seasonal thali specials.", coords:[40.7580,-73.9680], amenities:["Outdoor Patio","Takeout","Catering","Vegetarian Options"], hours:"Mon-Sun 11:30 AM - 10:30 PM", phone:"(212) 555-0715", website:"saffrontable.com", featured:false, reviews:[
+        {id:14,user:"Ananya Patel",avatar:"https://picsum.photos/seed/ananya-p/100/100",rating:5,text:"Finally, Indian food done right in this neighborhood. The lamb rogan josh reminded me of home.",date:"4 days ago"},
+        {id:15,user:"Chris Moore",avatar:"https://picsum.photos/seed/chris-m/100/100",rating:4,text:"Delicious food, generous portions. The thali is an amazing deal for the variety you get.",date:"1 month ago"},
+    ]},
+    { id:8, name:"Ironwood Fitness", category:"Wellness", location:"Westside", address:"90 West End Ave, Westside", priceLevel:2, rating:4.3, reviewCount:345, image:"https://picsum.photos/seed/ironwood/800/600", images:["https://picsum.photos/seed/ironwood/800/600","https://picsum.photos/seed/iw-2/800/600","https://picsum.photos/seed/iw-3/800/600"], description:"A no-frills strength and conditioning gym with top-tier equipment, Olympic lifting platforms, and expert coaches who focus on form over fads.", coords:[40.7505,-74.0030], amenities:["Olympic Platforms","Sauna","Locker Rooms","Personal Training"], hours:"Mon-Fri 5:30 AM - 10:00 PM, Sat-Sun 7:00 AM - 8:00 PM", phone:"(212) 555-0890", website:"ironwoodfitness.com", featured:false, reviews:[
+        {id:16,user:"Brian Lee",avatar:"https://picsum.photos/seed/brian-l/100/100",rating:4,text:"Best gym equipment I've found in the city. The coaches actually know what they're talking about.",date:"2 weeks ago"},
+        {id:17,user:"Sophie Grant",avatar:"https://picsum.photos/seed/sophie-g/100/100",rating:5,text:"Started the 12-week program and saw real results. No gimmicks, just smart training.",date:"1 month ago"},
+    ]},
+    { id:9, name:"Lumen Studio", category:"Professional", location:"Midtown", address:"340 Fifth Avenue, Midtown", priceLevel:3, rating:4.6, reviewCount:127, image:"https://picsum.photos/seed/lumen-st/800/600", images:["https://picsum.photos/seed/lumen-st/800/600","https://picsum.photos/seed/ls-2/800/600","https://picsum.photos/seed/ls-3/800/600"], description:"A creative agency specializing in brand identity, web design, and motion graphics. They've helped over 200 businesses find their visual voice.", coords:[40.7520,-73.9830], amenities:["Client Lounge","Presentation Room","Recording Booth"], hours:"Mon-Fri 10:00 AM - 7:00 PM", phone:"(212) 555-0940", website:"lumenstudio.design", featured:false, reviews:[
+        {id:18,user:"Lisa Chang",avatar:"https://picsum.photos/seed/lisa-c/100/100",rating:5,text:"They completely transformed our brand. The new identity has gotten so many compliments. Worth every cent.",date:"3 weeks ago"},
+        {id:19,user:"Mark Stevens",avatar:"https://picsum.photos/seed/mark-s/100/100",rating:4,text:"Very talented team. Communication could be slightly faster but the end product always delivers.",date:"2 months ago"},
+    ]},
+    { id:10, name:"Chapter & Verse", category:"Retail", location:"Uptown", address:"128 Lexington Ave, Uptown", priceLevel:2, rating:4.8, reviewCount:203, image:"https://picsum.photos/seed/chapter-v/800/600", images:["https://picsum.photos/seed/chapter-v/800/600","https://picsum.photos/seed/cv-2/800/600","https://picsum.photos/seed/cv-3/800/600"], description:"An independent bookstore with a carefully curated selection spanning fiction, poetry, essays, and rare editions. Weekly readings and a cozy café make it a neighborhood gem.", coords:[40.7845,-73.9695], amenities:["Café","Reading Nooks","Author Events","Rare Books Section"], hours:"Mon-Sat 9:00 AM - 9:00 PM, Sun 10:00 AM - 6:00 PM", phone:"(212) 555-1028", website:"chapterandversebooks.com", featured:true, reviews:[
+        {id:20,user:"Emily Watson",avatar:"https://picsum.photos/seed/emily-w/100/100",rating:5,text:"My favorite place in the entire city. The staff recommendations are always spot-on, and the café's oat milk lattes are perfection.",date:"1 week ago"},
+        {id:21,user:"Robert Kim",avatar:"https://picsum.photos/seed/robert-k/100/100",rating:5,text:"Found a first edition here that I'd been hunting for years. The rare books section is a treasure trove.",date:"2 months ago"},
+    ]},
+    { id:11, name:"Apex Climbing", category:"Entertainment", location:"Eastside", address:"450 East River Rd, Eastside", priceLevel:2, rating:4.5, reviewCount:267, image:"https://picsum.photos/seed/apex-climb/800/600", images:["https://picsum.photos/seed/apex-climb/800/600","https://picsum.photos/seed/ac-2/800/600","https://picsum.photos/seed/ac-3/800/600"], description:"A state-of-the-art bouldering and rope climbing facility with routes for all skill levels. Features a fitness area, yoga classes, and a community hangout zone.", coords:[40.7595,-73.9650], amenities:["Bouldering Walls","Rope Climbing","Yoga Classes","Gear Rental","Training Area"], hours:"Mon-Fri 6:00 AM - 10:00 PM, Sat-Sun 8:00 AM - 8:00 PM", phone:"(212) 555-1150", website:"apexclimbing.com", featured:false, reviews:[
+        {id:22,user:"Jordan Blake",avatar:"https://picsum.photos/seed/jordan-b/100/100",rating:5,text:"The route setting here is consistently creative and challenging. Best climbing gym in the city, hands down.",date:"3 days ago"},
+        {id:23,user:"Hannah Reed",avatar:"https://picsum.photos/seed/hannah-r/100/100",rating:4,text:"Great facility, friendly community. The beginner classes are excellent for those just starting out.",date:"1 month ago"},
+    ]},
+    { id:12, name:"Kinara Kitchen", category:"Dining", location:"Harbor District", address:"18 Waterfront Plaza, Harbor District", priceLevel:3, rating:4.6, reviewCount:167, image:"https://picsum.photos/seed/kinara-k/800/600", images:["https://picsum.photos/seed/kinara-k/800/600","https://picsum.photos/seed/kk-2/800/600","https://picsum.photos/seed/kk-3/800/600"], description:"A waterfront Mediterranean restaurant with panoramic harbor views. The menu focuses on fresh seafood, house-made pastas, and an extensive natural wine list.", coords:[40.7045,-74.0065], amenities:["Waterfront Dining","Wine Bar","Private Events","Live Music Fridays"], hours:"Tue-Sun 12:00 PM - 11:00 PM", phone:"(212) 555-1218", website:"kinarakitchen.com", featured:false, reviews:[
+        {id:24,user:"Olivia Hart",avatar:"https://picsum.photos/seed/olivia-h/100/100",rating:5,text:"The views alone would make this special, but the food genuinely matches. The grilled octopus is unforgettable.",date:"6 days ago"},
+        {id:25,user:"Daniel Cho",avatar:"https://picsum.photos/seed/daniel-c/100/100",rating:4,text:"Beautiful spot for a date night. Wine list is impressive. Reservations are essential on weekends.",date:"3 weeks ago"},
+    ]},
+];
+
+/* ============================================================
+   APP STATE
+   ============================================================ */
+const state = {
+    currentRoute: 'home',
+    routeData: null,
+    filters: { search: '', category: [], location: [], priceMin: 1, priceMax: 4, minRating: 0 },
+    sortBy: 'rating',
+    savedListings: new Set(),
+    userReviews: [],
+    mapInstance: null,
+    mapMarkers: [],
+    showMap: false,
+    reviewModalListingId: null,
+    reviewModalRating: 0,
+};
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+function toast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    const el = document.createElement('div');
+    const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+    const color = type === 'success' ? 'text-success' : type === 'error' ? 'text-danger' : 'text-accent';
+    el.className = 'toast pointer-events-auto flex items-center gap-3 bg-card border border-border rounded-xl px-5 py-3.5 shadow-2xl';
+    el.innerHTML = `<i class="fa-solid ${icon} ${color}"></i><span class="text-sm text-text">${message}</span>`;
+    container.appendChild(el);
+    setTimeout(() => { el.classList.add('removing'); setTimeout(() => el.remove(), 300); }, 3000);
+}
+
+function priceLabel(level) {
+    return '$'.repeat(level);
+}
+
+function priceDots(level) {
+    let h = '';
+    for (let i = 1; i <= 4; i++) h += `<span class="price-dot ${i <= level ? 'filled' : 'empty'}"></span>`;
+    return h;
+}
+
+function starsHTML(rating, size = 'text-sm') {
+    let h = '';
+    for (let i = 1; i <= 5; i++) {
+        if (i <= Math.floor(rating)) h += `<i class="fa-solid fa-star text-accent ${size}"></i>`;
+        else if (i - rating < 1 && i - rating > 0) h += `<i class="fa-solid fa-star-half-stroke text-accent ${size}"></i>`;
+        else h += `<i class="fa-regular fa-star text-border-light ${size}"></i>`;
+    }
+    return h;
+}
+
+function ratingBreakdown(reviews) {
+    const counts = [0,0,0,0,0];
+    reviews.forEach(r => { if (r.rating >= 1 && r.rating <= 5) counts[r.rating - 1]++; });
+    return counts;
+}
+
+function avgRating(reviews) {
+    if (!reviews.length) return 0;
+    return reviews.reduce((s, r) => s + r.rating, 0) / reviews.length;
+}
+
+function staggerAnimate(container) {
+    const items = container.querySelectorAll('.stagger-item');
+    items.forEach((el, i) => {
+        setTimeout(() => el.classList.add('visible'), i * 60);
+    });
+}
+
+function getFilteredListings() {
+    let list = [...LISTINGS];
+    const f = state.filters;
+    if (f.search) {
+        const q = f.search.toLowerCase();
+        list = list.filter(l => l.name.toLowerCase().includes(q) || l.category.toLowerCase().includes(q) || l.location.toLowerCase().includes(q) || l.description.toLowerCase().includes(q));
+    }
+    if (f.category.length) list = list.filter(l => f.category.includes(l.category));
+    if (f.location.length) list = list.filter(l => f.location.includes(l.location));
+    list = list.filter(l => l.priceLevel >= f.priceMin && l.priceLevel <= f.priceMax);
+    if (f.minRating) list = list.filter(l => l.rating >= f.minRating);
+    // Sort
+    if (state.sortBy === 'rating') list.sort((a, b) => b.rating - a.rating);
+    else if (state.sortBy === 'reviews') list.sort((a, b) => b.reviewCount - a.reviewCount);
+    else if (state.sortBy === 'name') list.sort((a, b) => a.name.localeCompare(b.name));
+    else if (state.sortBy === 'price-low') list.sort((a, b) => a.priceLevel - b.priceLevel);
+    else if (state.sortBy === 'price-high') list.sort((a, b) => b.priceLevel - a.priceLevel);
+    return list;
+}
+
+function toggleSave(id, e) {
+    if (e) { e.stopPropagation(); e.preventDefault(); }
+    if (state.savedListings.has(id)) { state.savedListings.delete(id); toast('Removed from saved'); }
+    else { state.savedListings.add(id); toast('Saved to your collection'); }
+    // Update bookmark icon
+    document.querySelectorAll(`.bookmark-btn[data-id="${id}"]`).forEach(btn => {
+        btn.classList.toggle('saved', state.savedListings.has(id));
+        btn.classList.add('bookmark-pulse');
+        setTimeout(() => btn.classList.remove('bookmark-pulse'), 300);
+    });
+}
+
+/* ============================================================
+   COMPONENTS
+   ============================================================ */
+function listingCard(l) {
+    const saved = state.savedListings.has(l.id);
+    return `
+    <article class="listing-card stagger-item rounded-2xl bg-card overflow-hidden cursor-pointer group" onclick="navigate('detail',${l.id})">
+        <div class="relative overflow-hidden aspect-[4/3]">
+            <img src="${l.image}" alt="${l.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+            <div class="absolute top-3 left-3 flex gap-2">
+                <span class="px-3 py-1 rounded-lg bg-black/60 backdrop-blur-sm text-xs font-medium text-text"><i class="fa-solid ${CATEGORY_ICONS[l.category]} mr-1.5 text-accent"></i>${l.category}</span>
+            </div>
+            <button class="bookmark-btn absolute top-3 right-3 w-9 h-9 rounded-lg bg-black/60 backdrop-blur-sm flex items-center justify-center transition hover:bg-black/80 ${saved ? 'saved' : 'text-text-sec'}" data-id="${l.id}" onclick="toggleSave(${l.id}, event)" aria-label="Save listing">
+                <i class="fa-${saved ? 'solid' : 'regular'} fa-bookmark text-sm"></i>
+            </button>
+        </div>
+        <div class="p-4 sm:p-5">
+            <div class="flex items-start justify-between gap-2 mb-2">
+                <h3 class="font-display font-semibold text-text text-base leading-tight">${l.name}</h3>
+                <span class="flex items-center gap-1 shrink-0 text-xs text-text-sec mt-0.5">${priceDots(l.priceLevel)}</span>
+            </div>
+            <p class="text-text-muted text-sm mb-3"><i class="fa-solid fa-location-dot mr-1.5 text-xs"></i>${l.location}</p>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1.5">
+                    ${starsHTML(l.rating, 'text-xs')}
+                    <span class="text-text text-sm font-semibold ml-1">${l.rating}</span>
+                    <span class="text-text-muted text-xs">(${l.reviewCount})</span>
+                </div>
+            </div>
+        </div>
+    </article>`;
+}
+
+function filterSidebarHTML(mobile = false) {
+    const f = state.filters;
+    const prefix = mobile ? 'mob-' : '';
+    return `
+    <div class="${mobile ? '' : 'sticky top-24'}">
+        ${mobile ? '' : '<h3 class="font-display font-semibold text-lg mb-5">Filters</h3>'}
+        <!-- Category -->
+        <div class="mb-6">
+            <h4 class="text-sm font-semibold text-text-sec uppercase tracking-wider mb-3">Category</h4>
+            <div class="flex flex-col gap-2">
+                ${CATEGORIES.map(c => `
+                <label class="flex items-center gap-3 cursor-pointer group">
+                    <input type="checkbox" class="filter-check" name="${prefix}category" value="${c}" ${f.category.includes(c) ? 'checked' : ''} onchange="handleFilter('${prefix}', this)">
+                    <span class="text-sm text-text-sec group-hover:text-text transition"><i class="fa-solid ${CATEGORY_ICONS[c]} w-4 text-center mr-1 text-text-muted"></i>${c}</span>
+                </label>`).join('')}
+            </div>
+        </div>
+        <!-- Location -->
+        <div class="mb-6">
+            <h4 class="text-sm font-semibold text-text-sec uppercase tracking-wider mb-3">Location</h4>
+            <div class="flex flex-col gap-2">
+                ${LOCATIONS.map(loc => `
+                <label class="flex items-center gap-3 cursor-pointer group">
+                    <input type="checkbox" class="filter-check" name="${prefix}location" value="${loc}" ${f.location.includes(loc) ? 'checked' : ''} onchange="handleFilter('${prefix}', this)">
+                    <span class="text-sm text-text-sec group-hover:text-text transition">${loc}</span>
+                </label>`).join('')}
+            </div>
+        </div>
+        <!-- Price -->
+        <div class="mb-6">
+            <h4 class="text-sm font-semibold text-text-sec uppercase tracking-wider mb-3">Price Range</h4>
+            <div class="flex gap-2 flex-wrap">
+                ${[1,2,3,4].map(p => `
+                <button class="cat-pill px-4 py-2 rounded-lg text-sm text-text-sec ${f.priceMin <= p && f.priceMax >= p ? 'active' : ''}" onclick="setPriceRange(${p},${p})">${'$'.repeat(p)}</button>`).join('')}
+            </div>
+            <div class="flex gap-2 mt-2">
+                <button class="cat-pill px-3 py-2 rounded-lg text-xs text-text-sec ${f.priceMin===1&&f.priceMax===2?'active':''}" onclick="setPriceRange(1,2)">$ - $$</button>
+                <button class="cat-pill px-3 py-2 rounded-lg text-xs text-text-sec ${f.priceMin===1&&f.priceMax===3?'active':''}" onclick="setPriceRange(1,3)">$ - $$$</button>
+                <button class="cat-pill px-3 py-2 rounded-lg text-xs text-text-sec ${f.priceMin===3&&f.priceMax===4?'active':''}" onclick="setPriceRange(3,4)$$$ - $$$$</button>
+            </div>
+        </div>
+        <!-- Rating -->
+        <div class="mb-6">
+            <h4 class="text-sm font-semibold text-text-sec uppercase tracking-wider mb-3">Minimum Rating</h4>
+            <div class="flex gap-2 flex-wrap">
+                ${[0,3,3.5,4,4.5].map(r => `
+                <button class="cat-pill px-3 py-2 rounded-lg text-sm text-text-sec ${f.minRating === r ? 'active' : ''}" onclick="setMinRating(${r})">${r === 0 ? 'Any' : r + '+'}</button>`).join('')}
+            </div>
+        </div>
+        ${!mobile ? `
+        <button onclick="clearFilters()" class="w-full py-2.5 rounded-xl border border-border text-text-sec text-sm font-medium hover:bg-card transition">Clear All Filters</button>` : ''}
+    </div>`;
+}
+
+function reviewCard(r) {
+    return `
+    <div class="flex gap-4 py-5 border-b border-border last:border-0">
+        <img src="${r.avatar}" alt="${r.user}" class="w-10 h-10 rounded-full object-cover shrink-0" loading="lazy">
+        <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2 mb-1">
+                <span class="font-medium text-sm text-text">${r.user}</span>
+                <span class="text-xs text-text-muted shrink-0">${r.date}</span>
+            </div>
+            <div class="flex items-center gap-0.5 mb-2">${starsHTML(r.rating, 'text-xs')}</div>
+            <p class="text-sm text-text-sec leading-relaxed">${r.text}</p>
+        </div>
+    </div>`;
+}
+
+/* ============================================================
+   PAGES
+   ============================================================ */
+function renderHome() {
+    const featured = LISTINGS.filter(l => l.featured);
+    return `
+    <!-- Hero -->
+    <section class="hero-mesh relative min-h-[85vh] flex items-center overflow-hidden">
+        <div class="float-dot w-3 h-3 top-[20%] left-[10%]" style="animation-delay:0s"></div>
+        <div class="float-dot w-2 h-2 top-[60%] left-[80%]" style="animation-delay:2s"></div>
+        <div class="float-dot w-4 h-4 top-[40%] left-[65%]" style="animation-delay:4s"></div>
+        <div class="float-dot w-2 h-2 top-[80%] left-[25%]" style="animation-delay:6s"></div>
+        <div class="float-dot w-3 h-3 top-[15%] left-[50%]" style="animation-delay:1s"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-20">
+            <div class="max-w-3xl mx-auto text-center">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-dim border border-accent-border mb-8 stagger-item">
+                    <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+                    <span class="text-accent text-sm font-medium">Trusted by 50,000+ locals</span>
+                </div>
+                <h1 class="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight mb-6 stagger-item">
+                    Find Places<br>Worth <span class="text-accent">Remembering</span>
+                </h1>
+                <p class="text-text-sec text-lg sm:text-xl max-w-xl mx-auto mb-10 leading-relaxed stagger-item">
+                    Curated directory of exceptional restaurants, shops, studios, and services — with real reviews from real people.
+                </p>
+                <div class="search-wrap rounded-2xl p-2 max-w-2xl mx-auto stagger-item">
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 flex items-center gap-3 px-4">
+                            <i class="fa-solid fa-magnifying-glass text-text-muted"></i>
+                            <input id="hero-search" type="text" placeholder="Search restaurants, shops, services..." class="w-full py-3 bg-transparent text-text placeholder:text-text-muted focus:outline-none text-base" onkeydown="if(event.key==='Enter'){state.filters.search=this.value;navigate('listings')}">
+                        </div>
+                        <button onclick="state.filters.search=document.getElementById('hero-search').value;navigate('listings')" class="px-6 sm:px-8 py-3 rounded-xl bg-accent text-bg font-semibold hover:bg-accent-h transition shrink-0 text-sm sm:text-base">
+                            Search
+                        </button>
+                    </div>
+                </div>
+                <div class="flex flex-wrap justify-center gap-2 mt-6 stagger-item">
+                    <span class="text-text-muted text-sm">Popular:</span>
+                    ${['Dining','Wellness','Coworking'].map(t => `<button onclick="state.filters.search='${t==='Coworking'?'workspace':t.toLowerCase()}';navigate('listings')" class="text-sm text-accent hover:text-accent-h transition">${t}</button>`).join('<span class="text-text-muted">·</span>')}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="border-y border-border bg-surface/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+                ${[
+                    {val:'12K+', label:'Verified Listings', icon:'fa-list-check'},
+                    {val:'6', label:'City Districts', icon:'fa-map-location-dot'},
+                    {val:'98%', label:'Satisfaction Rate', icon:'fa-face-smile'},
+                    {val:'50K+', label:'Active Users', icon:'fa-users'},
+                ].map(s => `
+                <div class="text-center stagger-item">
+                    <i class="fa-solid ${s.icon} text-accent text-lg mb-2"></i>
+                    <div class="font-display text-2xl sm:text-3xl font-bold text-text">${s.val}</div>
+                    <div class="text-text-muted text-sm mt-1">${s.label}</div>
+                </div>`).join('')}
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="py-16 sm:py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="font-display text-3xl sm:text-4xl font-bold mb-4 stagger-item">Browse by Category</h2>
+                <p class="text-text-sec max-w-lg mx-auto stagger-item">Explore our curated collection across every aspect of city life.</p>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                ${CATEGORIES.map((c, i) => {
+                    const count = LISTINGS.filter(l => l.category === c).length;
+                    const colors = ['from-amber-500/10 to-amber-600/5','from-emerald-500/10 to-emerald-600/5','from-sky-500/10 to-sky-600/5','from-rose-500/10 to-rose-600/5','from-violet-500/10 to-violet-600/5','from-orange-500/10 to-orange-600/5'];
+                    return `
+                    <button onclick="state.filters.category=['${c}'];navigate('listings')" class="stagger-item group bg-gradient-to-br ${colors[i]} border border-border rounded-2xl p-5 text-center hover:border-accent-border transition-all duration-300 hover:-translate-y-1">
+                        <div class="w-12 h-12 rounded-xl bg-card border border-border flex items-center justify-center mx-auto mb-3 group-hover:border-accent-border transition">
+                            <i class="fa-solid ${CATEGORY_ICONS[c]} text-accent"></i>
+                        </div>
+                        <div class="font-display font-semibold text-sm text-text">${c}</div>
+                        <div class="text-text-muted text-xs mt-1">${count} places</div>
+                    </button>`;
+                }).join('')}
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Listings -->
+    <section class="py-16 sm:py-24 bg-surface/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-end justify-between mb-10">
+                <div>
+                    <h2 class="font-display text-3xl sm:text-4xl font-bold mb-3 stagger-item">Featured Places</h2>
+                    <p class="text-text-sec stagger-item">Hand-picked by our editorial team for exceptional quality.</p>
+                </div>
+                <a href="#listings" class="hidden sm:flex items-center gap-2 text-accent hover:text-accent-h transition text-sm font-medium stagger-item">
+                    View all <i class="fa-solid fa-arrow-right text-xs"></i>
+                </a>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6" id="featured-grid">
+                ${featured.map(l => listingCard(l)).join('')}
+            </div>
+            <div class="text-center mt-8 sm:hidden">
+                <a href="#listings" class="inline-flex items-center gap-2 text-accent hover:text-accent-h transition text-sm font-medium">View all listings <i class="fa-solid fa-arrow-right text-xs"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-16 sm:py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-14">
+                <h2 class="font-display text-3xl sm:text-4xl font-bold mb-4 stagger-item">How Locale Works</h2>
+                <p class="text-text-sec max-w-lg mx-auto stagger-item">Three simple steps to find your next favorite place.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                ${[
+                    {num:'01',title:'Search & Filter',desc:'Use powerful filters to narrow down by category, location, price, and rating. Find exactly what you\'re looking for.',icon:'fa-magnifying-glass'},
+                    {num:'02',title:'Compare & Explore',desc:'Dive into detailed profiles with photos, amenities, hours, and — most importantly — honest reviews from real visitors.',icon:'fa-scale-balanced'},
+                    {num:'03',title:'Decide with Confidence',desc:'Save your favorites, write your own reviews, and build a personal collection of trusted places.',icon:'fa-circle-check'},
+                ].map(s => `
+                <div class="stagger-item relative bg-card border border-border rounded-2xl p-7 hover:border-accent-border transition-all duration-300 group">
+                    <div class="text-5xl font-display font-bold text-accent-dim group-hover:text-accent/20 transition absolute top-5 right-6">${s.num}</div>
+                    <div class="w-12 h-12 rounded-xl bg-accent-dim flex items-center justify-center mb-5">
+                        <i class="fa-solid ${s.icon} text-accent"></i>
+                    </div>
+                    <h3 class="font-display font-semibold text-lg text-text mb-3">${s.title}</h3>
+                    <p class="text-text-sec text-sm leading-relaxed">${s.desc}</p>
+                </div>`).join('')}
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 sm:py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="stagger-item relative bg-gradient-to-br from-accent-dim via-card to-card border border-accent-border rounded-3xl p-10 sm:p-16 text-center overflow-hidden">
+                <div class="absolute top-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+                <h2 class="font-display text-3xl sm:text-4xl font-bold mb-4 relative">Ready to Explore?</h2>
+                <p class="text-text-sec max-w-md mx-auto mb-8 relative">Join thousands of locals who use Locale to discover the best their city has to offer.</p>
+                <a href="#listings" class="relative inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-accent text-bg font-semibold hover:bg-accent-h transition text-base">
+                    Start Browsing <i class="fa-solid fa-arrow-right text-sm"></i>
+                </a>
+            </div>
+        </div>
+    </section>`;
+}
+
+function renderListings() {
+    const filtered = getFilteredListings();
+    return `
+    <section class="py-6 sm:py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Top bar -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h1 class="font-display text-2xl sm:text-3xl font-bold">All Listings</h1>
+                    <p class="text-text-sec text-sm mt-1">${filtered.length} place${filtered.length !== 1 ? 's' : ''} found</p>
+                </div>
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <div class="flex-1 sm:flex-none relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-sm"></i>
+                        <input type="text" placeholder="Search listings..." value="${state.filters.search}" oninput="state.filters.search=this.value;renderPage()" class="w-full sm:w-56 pl-9 pr-4 py-2.5 bg-surface border border-border rounded-xl text-sm text-text placeholder:text-text-muted focus:outline-none focus:border-accent-border transition">
+                    </div>
+                    <select onchange="state.sortBy=this.value;renderPage()" class="bg-surface border border-border rounded-xl px-4 py-2.5 text-sm text-text-sec focus:outline-none focus:border-accent-border transition appearance-none cursor-pointer">
+                        <option value="rating" ${state.sortBy==='rating'?'selected':''}>Top Rated</option>
+                        <option value="reviews" ${state.sortBy==='reviews'?'selected':''}>Most Reviewed</option>
+                        <option value="name" ${state.sortBy==='name'?'selected':''}>Name A-Z</option>
+                        <option value="price-low" ${state.sortBy==='price-low'?'selected':''}>Price: Low</option>
+                        <option value="price-high" ${state.sortBy==='price-high'?'selected':''}>Price: High</option>
+                    </select>
+                    <button onclick="toggleMapView()" class="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl border ${state.showMap ? 'bg-accent-dim border-accent-border text-accent' : 'bg-surface border-border text-text-sec hover:border-accent-border'} transition text-sm font-medium" id="map-toggle-btn">
+                        <i class="fa-solid fa-map"></i> Map
+                    </button>
+                    <button onclick="openFilterSheet()" class="sm:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface border border-border text-text-sec text-sm font-medium">
+                        <i class="fa-solid fa-sliders"></i> Filters
+                    </button>
+                </div>
+            </div>
+
+            <!-- Active filters -->
+            ${(() => {
+                const f = state.filters;
+                const tags = [];
+                if (f.search) tags.push({label:`"${f.search}"`, clear:`state.filters.search='';renderPage()`});
+                f.category.forEach(c => tags.push({label:c, clear:`state.filters.category=state.filters.category.filter(x=>x!=='${c}');renderPage()`}));
+                f.location.forEach(l => tags.push({label:l, clear:`state.filters.location=state.filters.location.filter(x=>x!=='${l}');renderPage()`}));
+                if (f.minRating) tags.push({label:f.minRating+'+ stars', clear:`state.filters.minRating=0;renderPage()`});
+                if (!tags.length) return '';
+                return `<div class="flex flex-wrap items-center gap-2 mb-6">
+                    <span class="text-xs text-text-muted">Active filters:</span>
+                    ${tags.map(t => `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-accent-dim border border-accent-border text-accent text-xs font-medium">
+                        ${t.label} <button onclick="${t.clear}" class="hover:text-text transition"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+                    </span>`).join('')}
+                    <button onclick="clearFilters()" class="text-xs text-text-muted hover:text-danger transition ml-1">Clear all</button>
+                </div>`;
+            })()}
+
+            <div class="flex gap-8">
+                <!-- Sidebar (desktop) -->
+                <aside class="hidden lg:block w-64 shrink-0">${filterSidebarHTML(false)}</aside>
+
+                <!-- Content -->
+                <div class="flex-1 min-w-0">
+                    <!-- Map -->
+                    ${state.showMap ? `
+                    <div class="mb-6 rounded-2xl overflow-hidden border border-border" style="height:400px">
+                        <div id="listings-map" class="w-full h-full"></div>
+                    </div>` : ''}
+
+                    <!-- Grid -->
+                    ${filtered.length ? `
+                    <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5" id="listings-grid">
+                        ${filtered.map(l => listingCard(l)).join('')}
+                    </div>` : `
+                    <div class="text-center py-20">
+                        <div class="w-16 h-16 rounded-2xl bg-card border border-border flex items-center justify-center mx-auto mb-5">
+                            <i class="fa-solid fa-magnifying-glass text-text-muted text-xl"></i>
+                        </div>
+                        <h3 class="font-display font-semibold text-lg text-text mb-2">No listings found</h3>
+                        <p class="text-text-sec text-sm mb-6">Try adjusting your filters or search terms.</p>
+                        <button onclick="clearFilters()" class="px-5 py-2.5 rounded-xl bg-accent text-bg font-semibold text-sm hover:bg-accent-h transition">Clear Filters</button>
+                    </div>`}
+                </div>
+            </div>
+        </div>
+    </section>`;
+}
+
+function renderDetail(id) {
+    const l = LISTINGS.find(x => x.id === id);
+    if (!l) return `<div class="text-center py-32"><h2 class="font-display text-2xl font-bold mb-4">Listing not found</h2><a href="#listings" class="text-accent hover:text-accent-h transition">Browse all listings</a></div>`;
+
+    const breakdown = ratingBreakdown(l.reviews);
+    const totalReviews = l.reviews.length;
+    const similar = LISTINGS.filter(x => x.category === l.category && x.id !== l.id).slice(0, 3);
+
+    return `
+    <section class="py-6 sm:py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Breadcrumb -->
+            <nav class="flex items-center gap-2 text-sm text-text-muted mb-6">
+                <a href="#home" class="hover:text-text transition">Home</a>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                <a href="#listings" class="hover:text-text transition">Listings</a>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                <span class="text-text-sec">${l.name}</span>
+            </nav>
+
+            <div class="grid lg:grid-cols-5 gap-8 lg:gap-10">
+                <!-- Left: Gallery + Info -->
+                <div class="lg:col-span-3">
+                    <!-- Gallery -->
+                    <div class="stagger-item rounded-2xl overflow-hidden mb-6 border border-border">
+                        <img id="detail-main-img" src="${l.images[0]}" alt="${l.name}" class="w-full aspect-[16/10] object-cover">
+                    </div>
+                    ${l.images.length > 1 ? `
+                    <div class="flex gap-3 mb-8 overflow-x-auto pb-2">
+                        ${l.images.map((img, i) => `
+                        <button onclick="document.getElementById('detail-main-img').src='${img}';document.querySelectorAll('.gallery-thumb').forEach(t=>t.classList.remove('active'));this.classList.add('active')" class="gallery-thumb shrink-0 w-20 h-14 rounded-lg overflow-hidden ${i === 0 ? 'active' : ''}">
+                            <img src="${img}" alt="Gallery ${i+1}" class="w-full h-full object-cover">
+                        </button>`).join('')}
+                    </div>` : ''}
+
+                    <!-- Description -->
+                    <div class="stagger-item mb-8">
+                        <h2 class="font-display text-xl font-semibold mb-3">About</h2>
+                        <p class="text-text-sec leading-relaxed">${l.description}</p>
+                    </div>
+
+                    <!-- Amenities -->
+                    <div class="stagger-item mb-8">
+                        <h2 class="font-display text-xl font-semibold mb-3">Amenities</h2>
+                        <div class="grid grid-cols-2 gap-2">
+                            ${l.amenities.map(a => `
+                            <div class="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-surface border border-border">
+                                <i class="fa-solid fa-check text-accent text-xs"></i>
+                                <span class="text-sm text-text-sec">${a}</span>
+                            </div>`).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Reviews -->
+                    <div class="stagger-item">
+                        <div class="flex items-center justify-between mb-5">
+                            <h2 class="font-display text-xl font-semibold">Reviews</h2>
+                            <button onclick="openReviewModal(${l.id})" class="px-4 py-2 rounded-xl bg-accent-dim border border-accent-border text-accent text-sm font-medium hover:bg-accent/20 transition">
+                                Write a Review
+                            </button>
+                        </div>
+
+                        <!-- Rating Summary -->
+                        <div class="flex flex-col sm:flex-row gap-6 mb-6 p-5 rounded-2xl bg-surface border border-border">
+                            <div class="text-center sm:pr-6 sm:border-r sm:border-border">
+                                <div class="font-display text-5xl font-bold text-text">${l.rating}</div>
+                                <div class="flex justify-center gap-0.5 mt-2">${starsHTML(l.rating)}</div>
+                                <div class="text-text-muted text-sm mt-1">${totalReviews} review${totalReviews !== 1 ? 's' : ''}</div>
+                            </div>
+                            <div class="flex-1 flex flex-col justify-center gap-2">
+                                ${[5,4,3,2,1].map(star => {
+                                    const count = breakdown[star - 1];
+                                    const pct = totalReviews ? Math.round((count / totalReviews) * 100) : 0;
+                                    return `
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-xs text-text-muted w-3">${star}</span>
+                                        <i class="fa-solid fa-star text-accent text-[10px]"></i>
+                                        <div class="flex-1 h-2 rounded-full bg-border overflow-hidden">
+                                            <div class="h-full rounded-full bg-accent transition-all duration-500" style="width:${pct}%"></div>
+                                        </div>
+                                        <span class="text-xs text-text-muted w-8 text-right">${pct}%</span>
+                                    </div>`;
+                                }).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Review List -->
+                        <div id="detail-reviews">
+                            ${l.reviews.length ? l.reviews.map(r => reviewCard(r)).join('') : '<p class="text-text-muted text-sm py-8 text-center">No reviews yet. Be the first to share your experience.</p>'}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Sidebar Info -->
+                <div class="lg:col-span-2">
+                    <div class="sticky top-24">
+                        <!-- Main Info Card -->
+                        <div class="stagger-item bg-card border border-border rounded-2xl p-6 mb-5">
+                            <div class="flex items-start justify-between gap-3 mb-4">
+                                <div>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-accent-dim text-accent text-xs font-medium mb-3"><i class="fa-solid ${CATEGORY_ICONS[l.category]}"></i>${l.category}</span>
+                                    <h1 class="font-display text-2xl font-bold">${l.name}</h1>
+                                </div>
+                                <button class="bookmark-btn w-10 h-10 rounded-xl border border-border flex items-center justify-center transition hover:border-accent-border ${state.savedListings.has(l.id) ? 'saved' : 'text-text-muted hover:text-accent'}" data-id="${l.id}" onclick="toggleSave(${l.id}, event)" aria-label="Save">
+                                    <i class="fa-${state.savedListings.has(l.id) ? 'solid' : 'regular'} fa-bookmark"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center gap-3 mb-5">
+                                <div class="flex items-center gap-1">${starsHTML(l.rating)}</div>
+                                <span class="font-semibold text-text">${l.rating}</span>
+                                <span class="text-text-muted text-sm">(${l.reviewCount} reviews)</span>
+                            </div>
+                            <div class="flex items-center gap-2 mb-2 text-text-sec">
+                                <i class="fa-solid fa-location-dot text-accent text-sm w-5 text-center"></i>
+                                <span class="text-sm">${l.address}</span>
+                            </div>
+                            <div class="flex items-center gap-2 mb-2 text-text-sec">
+                                <i class="fa-solid fa-clock text-accent text-sm w-5 text-center"></i>
+                                <span class="text-sm">${l.hours}</span>
+                            </div>
+                            <div class="flex items-center gap-2 mb-2 text-text-sec">
+                                <i class="fa-solid fa-phone text-accent text-sm w-5 text-center"></i>
+                                <span class="text-sm">${l.phone}</span>
+                            </div>
+                            <div class="flex items-center gap-2 mb-5 text-text-sec">
+                                <i class="fa-solid fa-globe text-accent text-sm w-5 text-center"></i>
+                                <span class="text-sm">${l.website}</span>
+                            </div>
+                            <div class="flex items-center gap-2 mb-6">
+                                <span class="text-sm text-text-muted">Price level:</span>
+                                <div class="flex items-center gap-0.5">${priceDots(l.priceLevel)}</div>
+                                <span class="text-sm text-text-sec ml-1">${priceLabel(l.priceLevel)}</span>
+                            </div>
+                            <button onclick="toast('Contact request sent to ${l.name}')" class="w-full py-3.5 rounded-xl bg-accent text-bg font-semibold hover:bg-accent-h transition text-sm">Contact Business</button>
+                        </div>
+
+                        <!-- Map -->
+                        <div class="stagger-item rounded-2xl overflow-hidden border border-border" style="height:250px">
+                            <div id="detail-map" class="w-full h-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Similar -->
+            ${similar.length ? `
+            <div class="mt-16">
+                <h2 class="font-display text-xl font-semibold mb-6 stagger-item">Similar Places</h2>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5" id="similar-grid">
+                    ${similar.map(s => listingCard(s)).join('')}
+                </div>
+            </div>` : ''}
+        </div>
+    </section>`;
+}
+
+function renderDashboard() {
+    const savedArr = LISTINGS.filter(l => state.savedListings.has(l.id));
+    const reviewCount = state.userReviews.length;
+    const avgGiven = reviewCount ? (state.userReviews.reduce((s,r) => s + r.rating, 0) / reviewCount).toFixed(1) : '—';
+
+    return `
+    <section class="py-6 sm:py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+                <div>
+                    <h1 class="font-display text-2xl sm:text-3xl font-bold">Dashboard</h1>
+                    <p class="text-text-sec text-sm mt-1">Welcome back. Here's your activity overview.</p>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+                ${[
+                    {val: savedArr.length, label:'Saved Places', icon:'fa-bookmark', color:'text-accent'},
+                    {val: reviewCount, label:'Reviews Written', icon:'fa-pen', color:'text-success'},
+                    {val: avgGiven, label:'Avg Rating Given', icon:'fa-star', color:'text-amber-400'},
+                    {val: LISTINGS.length, label:'Total Listings', icon:'fa-list', color:'text-sky-400'},
+                ].map(s => `
+                <div class="stat-card stagger-item bg-card border border-border rounded-2xl p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-surface flex items-center justify-center">
+                            <i class="fa-solid ${s.icon} ${s.color}"></i>
+                        </div>
+                    </div>
+                    <div class="font-display text-2xl font-bold text-text">${s.val}</div>
+                    <div class="text-text-muted text-sm mt-1">${s.label}</div>
+                </div>`).join('')}
+            </div>
+
+            <!-- Saved Listings -->
+            <div class="mb-10">
+                <h2 class="font-display text-xl font-semibold mb-5 stagger-item">Saved Places</h2>
+                ${savedArr.length ? `
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5" id="saved-grid">
+                    ${savedArr.map(l => listingCard(l)).join('')}
+                </div>` : `
+                <div class="stagger-item text-center py-16 bg-card border border-border rounded-2xl">
+                    <div class="w-14 h-14 rounded-2xl bg-surface border border-border flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-regular fa-bookmark text-text-muted text-xl"></i>
+                    </div>
+                    <h3 class="font-display font-semibold text-text mb-2">No saved places yet</h3>
+                    <p class="text-text-sec text-sm mb-5">Start exploring and save the places that catch your eye.</p>
+                    <a href="#listings" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-bg font-semibold text-sm hover:bg-accent-h transition">
+                        Browse Listings <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                </div>`}
+            </div>
+
+            <!-- My Reviews -->
+            <div class="mb-10">
+                <h2 class="font-display text-xl font-semibold mb-5 stagger-item">My Reviews</h2>
+                ${reviewCount ? `
+                <div class="bg-card border border-border rounded-2xl divide-y divide-border overflow-hidden">
+                    ${state.userReviews.map(r => {
+                        const listing = LISTINGS.find(l => l.id === r.listingId);
+                        return `
+                        <div class="flex flex-col sm:flex-row gap-4 p-5">
+                            ${listing ? `<img src="${listing.image}" alt="${listing.name}" class="w-16 h-16 rounded-xl object-cover shrink-0 cursor-pointer" onclick="navigate('detail',${listing.id})">` : ''}
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div>
+                                        ${listing ? `<a href="#detail/${listing.id}" class="font-medium text-sm text-text hover:text-accent transition">${listing.name}</a>` : ''}
+                                        <div class="flex items-center gap-1 mt-1">${starsHTML(r.rating, 'text-xs')}</div>
+                                    </div>
+                                    <span class="text-xs text-text-muted shrink-0">${r.date}</span>
+                                </div>
+                                <p class="text-sm text-text-sec mt-2">${r.text}</p>
+                            </div>
+                            <button onclick="deleteReview(${r.id})" class="self-start text-text-muted hover:text-danger transition shrink-0 p-1" aria-label="Delete review"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                        </div>`;
+                    }).join('')}
+                </div>` : `
+                <div class="stagger-item text-center py-16 bg-card border border-border rounded-2xl">
+                    <div class="w-14 h-14 rounded-2xl bg-surface border border-border flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-solid fa-pen text-text-muted text-xl"></i>
+                    </div>
+                    <h3 class="font-display font-semibold text-text mb-2">No reviews yet</h3>
+                    <p class="text-text-sec text-sm">Share your experiences to help others make informed decisions.</p>
+                </div>`}
+            </div>
+
+            <!-- Quick Links -->
+            <div class="stagger-item grid sm:grid-cols-2 gap-4">
+                <a href="#listings" class="group flex items-center gap-4 p-5 bg-card border border-border rounded-2xl hover:border-accent-border transition">
+                    <div class="w-12 h-12 rounded-xl bg-accent-dim flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-compass text-accent text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="font-display font-semibold text-text group-hover:text-accent transition">Explore Listings</div>
+                        <div class="text-text-muted text-sm">Browse all ${LISTINGS.length} places</div>
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-text-muted group-hover:text-accent transition ml-auto"></i>
+                </a>
+                <a href="#dashboard" onclick="navigate('dashboard')" class="group flex items-center gap-4 p-5 bg-card border border-border rounded-2xl hover:border-accent-border transition">
+                    <div class="w-12 h-12 rounded-xl bg-surface flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-user text-text-muted text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="font-display font-semibold text-text">Profile Settings</div>
+                        <div class="text-text-muted text-sm">Open your dashboard and manage saved places.</div>
+                    </div>
+                    <span class="ml-auto px-3 py-1 rounded-lg bg-accent-dim border border-accent-border text-xs text-accent">Open</span>
+                </a>
+            </div>
+        </div>
+    </section>`;
+}
+
+/* ============================================================
+   ROUTER
+   ============================================================ */
+function navigate(route, data = null) {
+    if (route === 'detail' && data) {
+        window.location.hash = `detail/${data}`;
+    } else {
+        window.location.hash = route;
+    }
+}
+
+function resolveRoute() {
+    const hash = window.location.hash.slice(1) || 'home';
+    const parts = hash.split('/');
+    const route = parts[0];
+    const param = parts[1] ? parseInt(parts[1]) : null;
+
+    state.currentRoute = route;
+    state.routeData = param;
+
+    // Update nav active state
+    document.querySelectorAll('[data-nav]').forEach(el => {
+        el.classList.toggle('active', el.dataset.nav === route);
+    });
+
+    renderPage();
+}
+
+function renderPage() {
+    const content = document.getElementById('page-content');
+    content.classList.add('fade-out');
+
+    setTimeout(() => {
+        let html = '';
+        switch (state.currentRoute) {
+            case 'home': html = renderHome(); break;
+            case 'listings': html = renderListings(); break;
+            case 'detail': html = renderDetail(state.routeData); break;
+            case 'dashboard': html = renderDashboard(); break;
+            default: html = renderHome();
+        }
+
+        content.innerHTML = html;
+        content.classList.remove('fade-out');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+
+        // Stagger animations
+        requestAnimationFrame(() => {
+            staggerAnimate(content);
+        });
+
+        // Post-render
+        postRender();
+    }, 300);
+}
+
+function postRender() {
+    // Init maps
+    if (state.currentRoute === 'listings' && state.showMap) {
+        initListingsMap();
+    }
+    if (state.currentRoute === 'detail' && state.routeData) {
+        setTimeout(() => initDetailMap(state.routeData), 100);
+    }
+}
+
+/* ============================================================
+   MAP FUNCTIONS
+   ============================================================ */
+function createMarkerIcon(priceLevel) {
+    return L.divIcon({
+        className: '',
+        html: `<div class="custom-marker"><span>${'$'.repeat(priceLevel)}</span></div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -34],
+    });
+}
+
+function initListingsMap() {
+    const container = document.getElementById('listings-map');
+    if (!container) return;
+
+    if (state.mapInstance) { state.mapInstance.remove(); state.mapInstance = null; }
+
+    const filtered = getFilteredListings();
+    const map = L.map(container, { zoomControl: true, scrollWheelZoom: true }).setView([40.7550, -73.9850], 13);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+        maxZoom: 19,
+    }).addTo(map);
+
+    state.mapMarkers = [];
+    filtered.forEach(l => {
+        const marker = L.marker(l.coords, { icon: createMarkerIcon(l.priceLevel) })
+            .addTo(map)
+            .bindPopup(`
+                <div style="min-width:160px">
+                    <img src="${l.image}" style="width:100%;height:80px;object-fit:cover;border-radius:6px;margin-bottom:6px" alt="${l.name}">
+                    <div style="font-weight:600;font-size:14px;margin-bottom:2px">${l.name}</div>
+                    <div style="color:#A1A1AA;font-size:12px">${l.category} · ${l.location}</div>
+                    <div style="margin-top:4px"><span style="color:#D4A853;font-size:12px">★ ${l.rating}</span> <span style="color:#63636E;font-size:11px">(${l.reviewCount})</span></div>
+                </div>
+            `);
+        marker.on('click', () => navigate('detail', l.id));
+        state.mapMarkers.push(marker);
+    });
+
+    if (filtered.length) {
+        const group = L.featureGroup(state.mapMarkers);
+        map.fitBounds(group.getBounds().pad(0.15));
+    }
+
+    state.mapInstance = map;
+}
+
+function initDetailMap(id) {
+    const container = document.getElementById('detail-map');
+    if (!container) return;
+
+    const l = LISTINGS.find(x => x.id === id);
+    if (!l) return;
+
+    const map = L.map(container, { zoomControl: false, scrollWheelZoom: false, dragging: true }).setView(l.coords, 15);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OSM &copy; CARTO', maxZoom: 19,
+    }).addTo(map);
+
+    L.marker(l.coords, { icon: createMarkerIcon(l.priceLevel) })
+        .addTo(map)
+        .bindPopup(`<div style="font-weight:600;font-size:13px">${l.name}</div><div style="color:#A1A1AA;font-size:11px">${l.address}</div>`)
+        .openPopup();
+}
+
+/* ============================================================
+   FILTER HANDLERS
+   ============================================================ */
+function handleFilter(prefix, el) {
+    const name = el.name.replace(prefix, '');
+    const val = el.value;
+    if (el.checked) {
+        if (!state.filters[name].includes(val)) state.filters[name].push(val);
+    } else {
+        state.filters[name] = state.filters[name].filter(v => v !== val);
+    }
+    renderPage();
+    // Sync other filter panel
+    syncFilters();
+}
+
+function setPriceRange(min, max) {
+    state.filters.priceMin = min;
+    state.filters.priceMax = max;
+    renderPage();
+    syncFilters();
+}
+
+function setMinRating(val) {
+    state.filters.minRating = val;
+    renderPage();
+    syncFilters();
+}
+
+function clearFilters() {
+    state.filters = { search: '', category: [], location: [], priceMin: 1, priceMax: 4, minRating: 0 };
+    state.sortBy = 'rating';
+    renderPage();
+}
+
+function syncFilters() {
+    // Keep both desktop and mobile filter sheets in sync by re-rendering
+    const mobContent = document.getElementById('mobile-filters-content');
+    if (mobContent) mobContent.innerHTML = filterSidebarHTML(true);
+}
+
+function toggleMapView() {
+    state.showMap = !state.showMap;
+    renderPage();
+}
+
+/* ============================================================
+   REVIEW MODAL
+   ============================================================ */
+function openReviewModal(listingId) {
+    state.reviewModalListingId = listingId;
+    state.reviewModalRating = 0;
+    const l = LISTINGS.find(x => x.id === listingId);
+    document.getElementById('review-modal-subtitle').textContent = l ? `Reviewing ${l.name}` : '';
+    document.getElementById('review-name').value = '';
+    document.getElementById('review-text').value = '';
+    updateModalStars();
+    document.getElementById('review-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeReviewModal() {
+    document.getElementById('review-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+    state.reviewModalListingId = null;
+    state.reviewModalRating = 0;
+}
+
+function updateModalStars() {
+    document.querySelectorAll('#modal-stars i').forEach(star => {
+        const val = parseInt(star.dataset.val);
+        star.classList.toggle('active', val <= state.reviewModalRating);
+    });
+}
+
+function submitReview() {
+    const name = document.getElementById('review-name').value.trim();
+    const text = document.getElementById('review-text').value.trim();
+    if (!state.reviewModalRating) { toast('Please select a rating', 'error'); return; }
+    if (!name) { toast('Please enter your name', 'error'); return; }
+    if (!text) { toast('Please write a review', 'error'); return; }
+    if (text.length < 10) { toast('Review must be at least 10 characters', 'error'); return; }
+
+    const review = {
+        id: Date.now(),
+        user: name,
+        avatar: `https://picsum.photos/seed/user-${Date.now()}/100/100`,
+        rating: state.reviewModalRating,
+        text: text,
+        date: 'Just now',
+    };
+
+    // Add to listing
+    const l = LISTINGS.find(x => x.id === state.reviewModalListingId);
+    if (l) {
+        l.reviews.unshift(review);
+        l.reviewCount = l.reviews.length;
+        l.rating = parseFloat(avgRating(l.reviews).toFixed(1));
+    }
+
+    // Add to user reviews
+    state.userReviews.unshift({ ...review, listingId: state.reviewModalListingId });
+
+    closeReviewModal();
+    toast('Review submitted successfully');
+    renderPage();
+}
+
+function deleteReview(reviewId) {
+    const idx = state.userReviews.findIndex(r => r.id === reviewId);
+    if (idx > -1) {
+        const removed = state.userReviews.splice(idx, 1)[0];
+        // Remove from listing too
+        const l = LISTINGS.find(x => x.id === removed.listingId);
+        if (l) {
+            const lIdx = l.reviews.findIndex(r => r.id === reviewId);
+            if (lIdx > -1) l.reviews.splice(lIdx, 1);
+            l.reviewCount = l.reviews.length;
+            l.rating = l.reviews.length ? parseFloat(avgRating(l.reviews).toFixed(1)) : 0;
+        }
+        toast('Review deleted');
+        renderPage();
+    }
+}
+
+/* ============================================================
+   MOBILE HANDLERS
+   ============================================================ */
+function openMobileMenu() {
+    document.getElementById('mobile-menu').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+function closeMobileMenu() {
+    document.getElementById('mobile-menu').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+function openFilterSheet() {
+    const content = document.getElementById('mobile-filters-content');
+    content.innerHTML = filterSidebarHTML(true);
+    document.getElementById('filter-sheet').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+function closeFilterSheet() {
+    document.getElementById('filter-sheet').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+/* ============================================================
+   NAVBAR SCROLL
+   ============================================================ */
+let lastScroll = 0;
+function handleNavScroll() {
+    const nav = document.getElementById('navbar');
+    const scrollY = window.scrollY;
+    if (scrollY > 50) {
+        nav.style.background = 'rgba(9,9,11,0.85)';
+        nav.style.backdropFilter = 'blur(20px)';
+        nav.style.borderBottom = '1px solid rgba(39,39,42,0.5)';
+    } else {
+        nav.style.background = 'transparent';
+        nav.style.backdropFilter = 'none';
+        nav.style.borderBottom = '1px solid transparent';
+    }
+    lastScroll = scrollY;
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function init() {
+    // Star input handlers (delegated)
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('#modal-stars')) {
+            const star = e.target.closest('i');
+            if (star) {
+                state.reviewModalRating = parseInt(star.dataset.val);
+                updateModalStars();
+            }
+        }
+    });
+
+    // Scroll handler
+    window.addEventListener('scroll', handleNavScroll, { passive: true });
+
+    // Router
+    window.addEventListener('hashchange', resolveRoute);
+    resolveRoute();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

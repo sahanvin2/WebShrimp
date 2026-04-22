@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Nexus — Enterprise solutions that transform how businesses operate. AI-powered analytics, cloud infrastructure, and digital transformation services.">
+    <meta name="keywords" content="enterprise solutions, SaaS, digital transformation, cloud infrastructure, AI analytics">
+    <meta name="author" content="Nexus Corp">
+    <title>Nexus — Enterprise Solutions That Drive Growth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] },
+                    colors: {
+                        dark: { 950: '#09090b', 900: '#18181b', 800: '#27272a', 700: '#3f3f46', 500: '#71717a', 400: '#a1a1aa' },
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #09090b; color: #f4f4f5; overflow-x: hidden; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #09090b; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
+
+        /* Glassmorphism */
+        .glass { background: rgba(24,24,27,0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); }
+        .glass-strong { background: rgba(24,24,27,0.8); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.1); }
+        .glass-card { background: rgba(24,24,27,0.4); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.06); transition: all 0.5s cubic-bezier(0.4,0,0.2,1); }
+        .glass-card:hover { background: rgba(24,24,27,0.6); border-color: rgba(255,255,255,0.15); transform: translateY(-4px); box-shadow: 0 20px 60px -15px rgba(0,0,0,0.5); }
+
+        /* Animations */
+        .anim-fade { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.4,0,0.2,1); }
+        .anim-fade.visible { opacity: 1; transform: translateY(0); }
+        .anim-fade-left { opacity: 0; transform: translateX(-40px); transition: all 0.8s cubic-bezier(0.4,0,0.2,1); }
+        .anim-fade-left.visible { opacity: 1; transform: translateX(0); }
+        .anim-fade-right { opacity: 0; transform: translateX(40px); transition: all 0.8s cubic-bezier(0.4,0,0.2,1); }
+        .anim-fade-right.visible { opacity: 1; transform: translateX(0); }
+        .anim-scale { opacity: 0; transform: scale(0.9); transition: all 0.8s cubic-bezier(0.4,0,0.2,1); }
+        .anim-scale.visible { opacity: 1; transform: scale(1); }
+        .stagger-1 { transition-delay: 0.1s !important; }
+        .stagger-2 { transition-delay: 0.2s !important; }
+        .stagger-3 { transition-delay: 0.3s !important; }
+        .stagger-4 { transition-delay: 0.4s !important; }
+        .stagger-5 { transition-delay: 0.5s !important; }
+        .stagger-6 { transition-delay: 0.6s !important; }
+
+        /* Hero glow */
+        .hero-glow { position: absolute; width: 800px; height: 600px; border-radius: 50%; filter: blur(120px); opacity: 0.15; pointer-events: none; }
+        .hero-glow-1 { background: #3b82f6; top: -200px; left: 50%; transform: translateX(-50%); }
+        .hero-glow-2 { background: #6366f1; top: -100px; right: -200px; width: 500px; height: 500px; opacity: 0.1; }
+
+        /* Grid background */
+        .grid-bg { background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 60px 60px; }
+
+        /* Marquee */
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .marquee-track { animation: marquee 30s linear infinite; }
+        .marquee-track:hover { animation-play-state: paused; }
+
+        /* Gradient text */
+        .gradient-text { background: linear-gradient(135deg, #ffffff 0%, #3b82f6 50%, #6366f1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .gradient-text-subtle { background: linear-gradient(to bottom, #f4f4f5, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+        /* Button glow */
+        .btn-primary { position: relative; overflow: hidden; }
+        .btn-primary::before { content: ''; position: absolute; inset: -2px; background: linear-gradient(135deg, #3b82f6, #6366f1, #3b82f6); border-radius: inherit; opacity: 0; transition: opacity 0.4s; z-index: -1; filter: blur(12px); }
+        .btn-primary:hover::before { opacity: 0.6; }
+
+        /* Pulse ring */
+        @keyframes pulse-ring { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(1.5); opacity: 0; } }
+        .pulse-ring::after { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 2px solid #3b82f6; animation: pulse-ring 2s ease-out infinite; }
+
+        /* Float animation */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .float { animation: float 6s ease-in-out infinite; }
+
+        /* Counter */
+        .counter { font-variant-numeric: tabular-nums; }
+
+        /* Nav active */
+        .nav-link { position: relative; }
+        .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 50%; width: 0; height: 2px; background: #3b82f6; transition: all 0.3s; transform: translateX(-50%); }
+        .nav-link.active::after, .nav-link:hover::after { width: 100%; }
+
+        /* Toast */
+        .toast { position: fixed; bottom: 30px; right: 30px; z-index: 9999; transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
+        .toast.show { transform: translateX(0); }
+
+        /* Mobile menu */
+        .mobile-menu { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
+        .mobile-menu.open { transform: translateX(0); }
+
+        /* Service icon container */
+        .service-icon { position: relative; }
+        .service-icon::after { content: ''; position: absolute; inset: -4px; border-radius: 16px; background: linear-gradient(135deg, rgba(59,130,246,0.2), transparent); opacity: 0; transition: opacity 0.4s; }
+        .glass-card:hover .service-icon::after { opacity: 1; }
+
+        /* Case study image overlay */
+        .case-overlay { background: linear-gradient(to top, rgba(9,9,11,0.95) 0%, rgba(9,9,11,0.3) 50%, transparent 100%); }
+
+        /* Progress bar for skills */
+        .skill-bar { background: rgba(255,255,255,0.05); border-radius: 999px; overflow: hidden; }
+        .skill-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #3b82f6, #6366f1); transform: scaleX(0); transform-origin: left; transition: transform 1.2s cubic-bezier(0.4,0,0.2,1); }
+        .skill-fill.visible { transform: scaleX(1); }
+
+        /* Map container */
+        .map-container { position: relative; overflow: hidden; border-radius: 16px; }
+        .map-container::after { content: ''; position: absolute; inset: 0; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; pointer-events: none; }
+
+        /* Accordion */
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1); }
+        .accordion-item.open .accordion-content { max-height: 300px; }
+        .accordion-item.open .accordion-icon { transform: rotate(45deg); }
+        .accordion-icon { transition: transform 0.3s; }
+
+        /* Particle canvas */
+        #particles { position: absolute; inset: 0; pointer-events: none; }
+    </style>
+</head>
+<body class="font-inter antialiased">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="glass-strong rounded-xl px-6 py-4 flex items-center gap-3 shadow-2xl">
+            <span class="iconify text-emerald-400 text-xl" data-icon="lucide:check-circle"></span>
+            <span id="toast-message" class="text-sm text-zinc-200">Message sent successfully!</span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="#home" class="flex items-center gap-2.5 group">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-lg shadow-brand-500/20 group-hover:shadow-brand-500/40 transition-shadow">
+                    <span class="iconify text-white text-sm" data-icon="lucide:hexagon"></span>
+                </div>
+                <span class="text-lg font-semibold tracking-tight text-white">Nexus</span>
+            </a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#home" class="nav-link text-sm text-zinc-400 hover:text-white transition-colors active">Home</a>
+                <a href="#services" class="nav-link text-sm text-zinc-400 hover:text-white transition-colors">Services</a>
+                <a href="#about" class="nav-link text-sm text-zinc-400 hover:text-white transition-colors">About</a>
+                <a href="#cases" class="nav-link text-sm text-zinc-400 hover:text-white transition-colors">Case Studies</a>
+                <a href="#contact" class="nav-link text-sm text-zinc-400 hover:text-white transition-colors">Contact</a>
+            </div>
+            <div class="hidden md:flex items-center gap-4">
+                <button onclick="openModal('login')" class="text-sm text-zinc-400 hover:text-white transition-colors px-4 py-2">Sign In</button>
+                <a href="#contact" class="btn-primary bg-white text-black text-sm font-medium px-5 py-2 rounded-full hover:bg-zinc-200 transition-colors">Get Started</a>
+            </div>
+            <button id="menuBtn" onclick="toggleMobileMenu()" class="md:hidden text-white p-2">
+                <span class="iconify text-xl" data-icon="lucide:menu"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu fixed inset-0 z-50 bg-dark-950/95 backdrop-blur-xl md:hidden">
+        <div class="flex justify-end p-6">
+            <button onclick="toggleMobileMenu()" class="text-white p-2"><span class="iconify text-2xl" data-icon="lucide:x"></span></button>
+        </div>
+        <div class="flex flex-col items-center gap-8 mt-16">
+            <a href="#home" onclick="toggleMobileMenu()" class="text-2xl font-medium text-white hover:text-brand-400 transition-colors">Home</a>
+            <a href="#services" onclick="toggleMobileMenu()" class="text-2xl font-medium text-zinc-400 hover:text-brand-400 transition-colors">Services</a>
+            <a href="#about" onclick="toggleMobileMenu()" class="text-2xl font-medium text-zinc-400 hover:text-brand-400 transition-colors">About</a>
+            <a href="#cases" onclick="toggleMobileMenu()" class="text-2xl font-medium text-zinc-400 hover:text-brand-400 transition-colors">Case Studies</a>
+            <a href="#contact" onclick="toggleMobileMenu()" class="text-2xl font-medium text-zinc-400 hover:text-brand-400 transition-colors">Contact</a>
+            <div class="mt-8 flex flex-col gap-3 w-60">
+                <a href="#contact" onclick="toggleMobileMenu()" class="bg-white text-black text-center font-medium px-6 py-3 rounded-full">Get Started</a>
+                <button onclick="openModal('login');toggleMobileMenu()" class="glass text-white text-center font-medium px-6 py-3 rounded-full">Sign In</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);">
+        <div class="glass-strong rounded-2xl p-8 w-full max-w-md relative anim-scale visible" style="animation:none;">
+            <button onclick="closeModal('login')" class="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors">
+                <span class="iconify text-xl" data-icon="lucide:x"></span>
+            </button>
+            <div class="text-center mb-8">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center mx-auto mb-4">
+                    <span class="iconify text-white text-xl" data-icon="lucide:hexagon"></span>
+                </div>
+                <h3 class="text-xl font-semibold text-white">Welcome Back</h3>
+                <p class="text-sm text-zinc-500 mt-1">Sign in to your Nexus account</p>
+            </div>
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="text-xs text-zinc-400 mb-1.5 block">Email</label>
+                    <input type="email" required placeholder="you@company.com" class="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20 transition-all">
+                </div>
+                <div>
+                    <label class="text-xs text-zinc-400 mb-1.5 block">Password</label>
+                    <input type="password" required placeholder="••••••••" class="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20 transition-all">
+                </div>
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" class="w-4 h-4 rounded accent-brand-500">
+                        <span class="text-xs text-zinc-400">Remember me</span>
+                    </label>
+                    <a href="#" class="text-xs text-brand-400 hover:text-brand-300 transition-colors">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn-primary w-full bg-white text-black font-medium py-3 rounded-xl hover:bg-zinc-200 transition-colors">Sign In</button>
+            </form>
+            <p class="text-center text-xs text-zinc-500 mt-6">Don't have an account? <a href="#contact" onclick="closeModal('login')" class="text-brand-400 hover:text-brand-300">Start free trial</a></p>
+        </div>
+    </div>
+
+    <!-- ===== HERO ===== -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden grid-bg">
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
+        <canvas id="particles"></canvas>
+
+        <div class="relative z-10 max-w-5xl mx-auto px-6 text-center pt-32 pb-20">
+            <div class="anim-fade inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 mb-8">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 relative pulse-ring"></span>
+                <span class="text-xs font-medium text-zinc-400">Now serving 2,000+ enterprises globally</span>
+            </div>
+
+            <h1 class="anim-fade stagger-1 text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight leading-[1.05] mb-6">
+                <span class="gradient-text-subtle">Transform your</span><br>
+                <span class="gradient-text">business at scale</span>
+            </h1>
+
+            <p class="anim-fade stagger-2 text-base md:text-lg text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+                Nexus provides AI-powered infrastructure and digital transformation solutions that help enterprises streamline operations, reduce costs, and accelerate growth.
+            </p>
+
+            <div class="anim-fade stagger-3 flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+                <a href="#contact" class="btn-primary bg-white text-black font-medium px-8 py-3.5 rounded-full text-sm hover:bg-zinc-200 transition-colors flex items-center gap-2">
+                    Start Free Trial
+                    <span class="iconify" data-icon="lucide:arrow-right"></span>
+                </a>
+                <button onclick="openModal('demo')" class="glass text-white font-medium px-8 py-3.5 rounded-full text-sm hover:bg-white/10 transition-colors flex items-center gap-2">
+                    <span class="iconify text-brand-400" data-icon="lucide:play-circle"></span>
+                    Watch Demo
+                </button>
+            </div>
+
+            <div class="anim-fade stagger-4 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-zinc-500">
+                <div class="flex items-center gap-2">
+                    <span class="iconify text-emerald-400" data-icon="lucide:check"></span>
+                    No credit card required
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="iconify text-emerald-400" data-icon="lucide:check"></span>
+                    14-day free trial
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="iconify text-emerald-400" data-icon="lucide:check"></span>
+                    Cancel anytime
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 anim-fade stagger-5">
+            <a href="#clients" class="text-zinc-600 hover:text-zinc-400 transition-colors float">
+                <span class="iconify text-xl" data-icon="lucide:chevron-down"></span>
+            </a>
+        </div>
+    </section>
+
+    <!-- ===== CLIENT LOGOS ===== -->
+    <section id="clients" class="relative py-20 border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <p class="anim-fade text-center text-xs font-medium uppercase tracking-widest text-zinc-600 mb-12">Trusted by industry leaders worldwide</p>
+            <div class="overflow-hidden relative">
+                <div class="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-dark-950 to-transparent z-10"></div>
+                <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-dark-950 to-transparent z-10"></div>
+                <div class="marquee-track flex items-center gap-16 whitespace-nowrap">
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Google</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Microsoft</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Amazon</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Stripe</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Shopify</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Slack</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Notion</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Figma</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Vercel</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Linear</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Google</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Microsoft</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Amazon</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Stripe</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Shopify</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Slack</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Notion</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Figma</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Vercel</span>
+                    <span class="text-2xl font-bold text-zinc-800 tracking-tight">Linear</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SERVICES ===== -->
+    <section id="services" class="relative py-24 md:py-32 overflow-hidden">
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-500/5 rounded-full filter blur-[150px] pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="max-w-3xl mb-16">
+                <p class="anim-fade text-xs font-medium uppercase tracking-widest text-brand-400 mb-4">Our Services</p>
+                <h2 class="anim-fade stagger-1 text-3xl md:text-5xl font-semibold tracking-tight mb-6">
+                    <span class="gradient-text-subtle">Everything you need to</span><br>
+                    <span class="text-white">modernize your stack</span>
+                </h2>
+                <p class="anim-fade stagger-2 text-zinc-400 text-base md:text-lg leading-relaxed">
+                    From cloud migration to AI integration, we deliver end-to-end solutions designed for enterprise scale.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Service 1 -->
+                <div class="glass-card rounded-2xl p-8 anim-fade stagger-1 group">
+                    <div class="service-icon w-12 h-12 rounded-xl bg-brand-500/10 flex items-center justify-center mb-6 relative">
+                        <span class="iconify text-brand-400 text-xl" data-icon="lucide:cloud"></span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-3">Cloud Infrastructure</h3>
+                    <p class="text-sm text-zinc-400 leading-relaxed mb-6">Scalable, secure cloud architecture built on AWS, Azure, or GCP. We handle migration, optimization, and ongoing management.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">AWS</span>
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">Azure</span>
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">GCP</span>
+                    </div>
+                </div>
+                <!-- Service 2 -->
+                <div class="glass-card rounded-2xl p-8 anim-fade stagger-2 group">
+                    <div class="service-icon w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-6 relative">
+                        <span class="iconify text-purple-400 text-xl" data-icon="lucide:brain"></span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-3">AI & Machine Learning</h3>
+                    <p class="text-sm text-zinc-400 leading-relaxed mb-6">Custom ML models and AI solutions that automate decisions, predict outcomes, and unlock insights from your data.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">NLP</span>
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">Computer Vision</span>
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">LLM</span>
+                    </div>
+                </div>
+                <!-- Service 3 -->
+                <div class="glass-card rounded-2xl p-8 anim-fade stagger-3 group">
+                    <div class="service-icon w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-6 relative">
+                        <span class="iconify text-emerald-400 text-xl" data-icon="lucide:shield-check"></span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-3">Cybersecurity</h3>
+                    <p class="text-sm text-zinc-400 leading-relaxed mb-6">Enterprise-grade security including threat detection, compliance automation, zero-trust architecture, and incident response.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">SOC2</span>
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">ISO 27001</span>
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">Zero Trust</span>
+                    </div>
+                </div>
+                <!-- Service 4 -->
+                <div class="glass-card rounded-2xl p-8 anim-fade stagger-4 group">
+                    <div class="service-icon w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center mb-6 relative">
+                        <span class="iconify text-orange-400 text-xl" data-icon="lucide:bar-chart-3"></span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-3">Data Analytics</h3>
+                    <p class="text-sm text-zinc-400 leading-relaxed mb-6">Real-time dashboards, predictive analytics, and data warehousing that turn raw data into actionable business intelligence.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">Snowflake</span>
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">dbt</span>
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">Looker</span>
+                    </div>
+                </div>
+                <!-- Service 5 -->
+                <div class="glass-card rounded-2xl p-8 anim-fade stagger-5 group">
+                    <div class="service-icon w-12 h-12 rounded-xl bg-rose-500/10 flex items-center justify-center mb-6 relative">
+                        <span class="iconify text-rose-400 text-xl" data-icon="lucide:smartphone"></span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-3">Digital Products</h3>
+                    <p class="text-sm text-zinc-400 leading-relaxed mb-6">Full-stack product development from MVP to scale. Web apps, mobile apps, and SaaS platforms built for performance.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">React</span>
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">Next.js</span>
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">React Native</span>
+                    </div>
+                </div>
+                <!-- Service 6 -->
+                <div class="glass-card rounded-2xl p-8 anim-fade stagger-6 group">
+                    <div class="service-icon w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-6 relative">
+                        <span class="iconify text-cyan-400 text-xl" data-icon="lucide:workflow"></span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-3">Process Automation</h3>
+                    <p class="text-sm text-zinc-400 leading-relaxed mb-6">Intelligent automation of business workflows using RPA, custom integrations, and event-driven architectures.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">RPA</span>
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">APIs</span>
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-zinc-500 bg-zinc-800/50 px-2.5 py-1 rounded-full">Event-Driven</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ABOUT ===== -->
+    <section id="about" class="relative py-24 md:py-32 border-t border-white/5 overflow-hidden">
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/5 rounded-full filter blur-[150px] pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
+                <div>
+                    <p class="anim-fade text-xs font-medium uppercase tracking-widest text-brand-400 mb-4">About Nexus</p>
+                    <h2 class="anim-fade stagger-1 text-3xl md:text-5xl font-semibold tracking-tight mb-6">
+                        <span class="text-white">Built by engineers,</span><br>
+                        <span class="gradient-text-subtle">for engineers</span>
+                    </h2>
+                    <p class="anim-fade stagger-2 text-zinc-400 text-base md:text-lg leading-relaxed mb-6">
+                        Founded in 2018, Nexus started as a small team of infrastructure engineers frustrated with the complexity of enterprise technology. Today, we're a 200+ person company serving clients across 40 countries.
+                    </p>
+                    <p class="anim-fade stagger-3 text-zinc-400 text-base leading-relaxed mb-8">
+                        Our mission is simple: make enterprise-grade technology accessible, reliable, and beautiful. We believe the best infrastructure is the kind you never have to think about.
+                    </p>
+                    <div class="anim-fade stagger-4 flex items-center gap-6">
+                        <div class="flex -space-x-3">
+                            <img src="https://picsum.photos/seed/team1/80/80" class="w-10 h-10 rounded-full border-2 border-dark-950 object-cover" alt="Team">
+                            <img src="https://picsum.photos/seed/team2/80/80" class="w-10 h-10 rounded-full border-2 border-dark-950 object-cover" alt="Team">
+                            <img src="https://picsum.photos/seed/team3/80/80" class="w-10 h-10 rounded-full border-2 border-dark-950 object-cover" alt="Team">
+                            <img src="https://picsum.photos/seed/team4/80/80" class="w-10 h-10 rounded-full border-2 border-dark-950 object-cover" alt="Team">
+                            <div class="w-10 h-10 rounded-full border-2 border-dark-950 bg-brand-500/20 flex items-center justify-center text-xs font-medium text-brand-400">+196</div>
+                        </div>
+                        <span class="text-sm text-zinc-500">Join our growing team</span>
+                    </div>
+                </div>
+                <div class="anim-fade-right relative">
+                    <div class="glass rounded-2xl overflow-hidden">
+                        <img src="https://picsum.photos/seed/nexus-office/800/600" class="w-full h-80 md:h-96 object-cover opacity-80" alt="Nexus Office">
+                    </div>
+                    <div class="absolute -bottom-6 -left-6 glass-strong rounded-xl p-5 float">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                                <span class="iconify text-emerald-400" data-icon="lucide:trending-up"></span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-white">98.7% Uptime</p>
+                                <p class="text-xs text-zinc-500">Industry leading SLA</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="glass-card rounded-2xl p-6 text-center anim-fade stagger-1">
+                    <p class="text-3xl md:text-4xl font-semibold text-white counter" data-target="2000">0</p>
+                    <p class="text-xs text-zinc-500 mt-2 uppercase tracking-wider">Enterprise Clients</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6 text-center anim-fade stagger-2">
+                    <p class="text-3xl md:text-4xl font-semibold text-white counter" data-target="40">0</p>
+                    <p class="text-xs text-zinc-500 mt-2 uppercase tracking-wider">Countries</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6 text-center anim-fade stagger-3">
+                    <p class="text-3xl md:text-4xl font-semibold text-white counter" data-target="99">0</p>
+                    <p class="text-xs text-zinc-500 mt-2 uppercase tracking-wider">Retention Rate %</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6 text-center anim-fade stagger-4">
+                    <p class="text-3xl md:text-4xl font-semibold text-white counter" data-target="500">0</p>
+                    <p class="text-xs text-zinc-500 mt-2 uppercase tracking-wider">Projects Delivered</p>
+                </div>
+            </div>
+
+            <!-- Team -->
+            <div class="mt-24">
+                <h3 class="anim-fade text-2xl md:text-3xl font-semibold tracking-tight text-white mb-10 text-center">Leadership Team</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="glass-card rounded-2xl p-6 text-center anim-fade stagger-1">
+                        <img src="https://picsum.photos/seed/ceo-nexus/200/200" class="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-2 border-white/10" alt="CEO">
+                        <h4 class="text-sm font-semibold text-white">Sarah Chen</h4>
+                        <p class="text-xs text-zinc-500 mt-1">CEO & Co-Founder</p>
+                        <div class="flex justify-center gap-3 mt-4">
+                            <a href="#" class="text-zinc-600 hover:text-brand-400 transition-colors"><span class="iconify text-sm" data-icon="lucide:linkedin"></span></a>
+                            <a href="#" class="text-zinc-600 hover:text-brand-400 transition-colors"><span class="iconify text-sm" data-icon="lucide:twitter"></span></a>
+                        </div>
+                    </div>
+                    <div class="glass-card rounded-2xl p-6 text-center anim-fade stagger-2">
+                        <img src="https://picsum.photos/seed/cto-nexus/200/200" class="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-2 border-white/10" alt="CTO">
+                        <h4 class="text-sm font-semibold text-white">Marcus Rivera</h4>
+                        <p class="text-xs text-zinc-500 mt-1">CTO & Co-Founder</p>
+                        <div class="flex justify-center gap-3 mt-4">
+                            <a href="#" class="text-zinc-600 hover:text-brand-400 transition-colors"><span class="iconify text-sm" data-icon="lucide:linkedin"></span></a>
+                            <a href="#" class="text-zinc-600 hover:text-brand-400 transition-colors"><span class="iconify text-sm" data-icon="lucide:github"></span></a>
+                        </div>
+                    </div>
+                    <div class="glass-card rounded-2xl p-6 text-center anim-fade stagger-3">
+                        <img src="https://picsum.photos/seed/vp-eng/200/200" class="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-2 border-white/10" alt="VP Engineering">
+                        <h4 class="text-sm font-semibold text-white">Emily Nakamura</h4>
+                        <p class="text-xs text-zinc-500 mt-1">VP of Engineering</p>
+                        <div class="flex justify-center gap-3 mt-4">
+                            <a href="#" class="text-zinc-600 hover:text-brand-400 transition-colors"><span class="iconify text-sm" data-icon="lucide:linkedin"></span></a>
+                            <a href="#" class="text-zinc-600 hover:text-brand-400 transition-colors"><span class="iconify text-sm" data-icon="lucide:twitter"></span></a>
+                        </div>
+                    </div>
+                    <div class="glass-card rounded-2xl p-6 text-center anim-fade stagger-4">
+                        <img src="https://picsum.photos/seed/vp-sales/200/200" class="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-2 border-white/10" alt="VP Sales">
+                        <h4 class="text-sm font-semibold text-white">David Okonkwo</h4>
+                        <p class="text-xs text-zinc-500 mt-1">VP of Sales</p>
+                        <div class="flex justify-center gap-3 mt-4">
+                            <a href="#" class="text-zinc-600 hover:text-brand-400 transition-colors"><span class="iconify text-sm" data-icon="lucide:linkedin"></span></a>
+                            <a href="#" class="text-zinc-600 hover:text-brand-400 transition-colors"><span class="iconify text-sm" data-icon="lucide:twitter"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CASE STUDIES ===== -->
+    <section id="cases" class="relative py-24 md:py-32 border-t border-white/5 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <p class="anim-fade text-xs font-medium uppercase tracking-widest text-brand-400 mb-4">Case Studies</p>
+                <h2 class="anim-fade stagger-1 text-3xl md:text-5xl font-semibold tracking-tight mb-6">
+                    <span class="text-white">Real results from</span><br>
+                    <span class="gradient-text-subtle">real partnerships</span>
+                </h2>
+                <p class="anim-fade stagger-2 text-zinc-400 text-base md:text-lg">See how we've helped organizations across industries transform their operations.</p>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="anim-fade flex flex-wrap justify-center gap-2 mb-12">
+                <button onclick="filterCases('all')" class="case-filter active text-xs font-medium px-4 py-2 rounded-full border border-white/10 text-white bg-white/10 transition-all" data-filter="all">All</button>
+                <button onclick="filterCases('fintech')" class="case-filter text-xs font-medium px-4 py-2 rounded-full border border-white/10 text-zinc-500 hover:text-white hover:bg-white/5 transition-all" data-filter="fintech">Fintech</button>
+                <button onclick="filterCases('healthcare')" class="case-filter text-xs font-medium px-4 py-2 rounded-full border border-white/10 text-zinc-500 hover:text-white hover:bg-white/5 transition-all" data-filter="healthcare">Healthcare</button>
+                <button onclick="filterCases('ecommerce')" class="case-filter text-xs font-medium px-4 py-2 rounded-full border border-white/10 text-zinc-500 hover:text-white hover:bg-white/5 transition-all" data-filter="ecommerce">E-Commerce</button>
+                <button onclick="filterCases('saas')" class="case-filter text-xs font-medium px-4 py-2 rounded-full border border-white/10 text-zinc-500 hover:text-white hover:bg-white/5 transition-all" data-filter="saas">SaaS</button>
+            </div>
+
+            <div id="casesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Case 1 -->
+                <div class="case-item glass-card rounded-2xl overflow-hidden anim-fade stagger-1 group" data-category="fintech">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="https://picsum.photos/seed/fintech-case/600/400" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Fintech Case">
+                        <div class="case-overlay absolute inset-0"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <span class="text-[10px] font-medium uppercase tracking-wider text-brand-400 bg-brand-500/10 px-2.5 py-1 rounded-full border border-brand-500/20">Fintech</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-base font-semibold text-white mb-2">Modernizing payment infrastructure for NeoBank</h3>
+                        <p class="text-sm text-zinc-400 leading-relaxed mb-4">Migrated legacy payment systems to a microservices architecture, reducing transaction latency by 85%.</p>
+                        <div class="flex items-center gap-6 text-xs text-zinc-500">
+                            <div><span class="text-emerald-400 font-semibold text-lg">85%</span><br>Latency Reduction</div>
+                            <div class="w-px h-8 bg-white/10"></div>
+                            <div><span class="text-emerald-400 font-semibold text-lg">3x</span><br>Throughput</div>
+                            <div class="w-px h-8 bg-white/10"></div>
+                            <div><span class="text-emerald-400 font-semibold text-lg">$2M</span><br>Annual Savings</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Case 2 -->
+                <div class="case-item glass-card rounded-2xl overflow-hidden anim-fade stagger-2 group" data-category="healthcare">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="https://picsum.photos/seed/health-case/600/400" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Healthcare Case">
+                        <div class="case-overlay absolute inset-0"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <span class="text-[10px] font-medium uppercase tracking-wider text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/20">Healthcare</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-base font-semibold text-white mb-2">AI diagnostics platform for MedTech Global</h3>
+                        <p class="text-sm text-zinc-400 leading-relaxed mb-4">Built an ML-powered imaging analysis system that detects anomalies with 97.3% accuracy in real-time.</p>
+                        <div class="flex items-center gap-6 text-xs text-zinc-500">
+                            <div><span class="text-purple-400 font-semibold text-lg">97.3%</span><br>Accuracy</div>
+                            <div class="w-px h-8 bg-white/10"></div>
+                            <div><span class="text-purple-400 font-semibold text-lg">10s</span><br>Analysis Time</div>
+                            <div class="w-px h-8 bg-white/10"></div>
+                            <div><span class="text-purple-400 font-semibold text-lg">500K</span><br>Images Processed</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Case 3 -->
+                <div class="case-item glass-card rounded-2xl overflow-hidden anim-fade stagger-3 group" data-category="ecommerce">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="https://picsum.photos/seed/ecom-case/600/400" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="E-Commerce Case">
+                        <div class="case-overlay absolute inset-0"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <span class="text-[10px] font-medium uppercase tracking-wider text-orange-400 bg-orange-500/10 px-2.5 py-1 rounded-full border border-orange-500/20">E-Commerce</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-base font-semibold text-white mb-2">Scalable marketplace for LuxeRetail</h3>
+                        <p class="text-sm text-zinc-400 leading-relaxed mb-4">Designed and built a headless commerce platform handling 50K concurrent users during peak sales events.</p>
+                        <div class="flex items-center gap-6 text-xs text-zinc-500">
+                            <div><span class="text-orange-400 font-semibold text-lg">50K</span><br>Concurrent Users</div>
+                            <div class="w-px h-8 bg-white/10"></div>
+                            <div><span class="text-orange-400 font-semibold text-lg">99.99%</span><br>Uptime</div>
+                            <div class="w-px h-8 bg-white/10"></div>
+                            <div><span class="text-orange-400 font-semibold text-lg">40%</span><br>Conversion Lift</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Case 4 -->
+                <div class="case-item glass-card rounded-2xl overflow-hidden anim-fade stagger-4 group" data-category="saas">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="https://picsum.photos/seed/saas-case1/600/400" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="SaaS Case">
+                        <div class="case-overlay absolute inset-0"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <span class="text-[10px] font-medium uppercase tracking-wider text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-full border border-cyan-500/20">SaaS</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-base font-semibold text-white mb-2">Multi-tenant platform for CloudHR</h3>
+                        <p class="text-sm text-zinc-400 leading-relaxed mb-4">Architected a multi-tenant SaaS platform serving 3,000+ organizations with granular role-based access.</p>
+                        <div class="flex items-center gap-6 text-xs text-zinc-500">
+                            <div><span class="text-cyan-400 font-semibold text-lg">3K+</span><br>Organizations</div>
+                            <div class="w-px h-8 bg-white/10"></div>
+                            <div><span class="text-cyan-400 font-semibold text-lg">200ms</span><br>Response Time</div>
+                            <div class="w-px h-8 bg-white/10"></div>
+                            <div><span class="text-cyan-400 font-semibold text-lg">Zero</span><br>Downtime Migrations</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Case 5 -->
+                <div class="case-item glass-card rounded-2xl overflow-hidden anim-fade stagger-5 group" data-category="fintech">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="https://picsum.photos/seed/fintech-case2/600/400" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Fintech Case 2">
+                        <div class="case-overlay absolute inset-0"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <span class="text-[10px] font-medium uppercase tracking-wider text-brand-400 bg-brand-500/10 px-2.5 py-1 rounded-full border border-brand-500/20">Fintech</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-base font-semibold text-white mb-2">Real-time fraud detection for PayShield</h3>
+                        <p class="text-sm text-zinc-400 leading-relaxed mb-4">Deployed an AI-powered fraud detection engine processing 1M transactions/second with sub-10ms decision latency.</p>
+                        <div class="flex items-center gap-6 text-xs text-zinc-500">
+                            <div><span class="text-brand-400 font-semibold text-lg">1M/s</span><br>Transactions</div>
+                            <div class="w-px h-8 bg-white/10"></div>
+                            <div><span class="text-brand-400 font-semibold text-lg">&lt;10ms</span><br>Latency</div>
+                            <div class="w-px h-8 bg-white/10"></div>
+                            <div><span class="text-brand-400 font-semibold text-lg">$15M</span><br>Fraud Prevented</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Case 6 -->
+                <div class="case-item glass-card rounded-2xl overflow-hidden anim-fade stagger-6 group" data-category="healthcare">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="https://picsum.photos/seed/health-case2/600/400" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Healthcare Case 2">
+                        <div class="case-overlay absolute inset-0"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <span class="text-[10px] font-medium uppercase tracking-wider text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/20">Healthcare</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-base font-semibold text-white mb-2">Patient data platform for HealthBridge</h3>
+                        <p class="text-sm text-zinc-400 leading-relaxed mb-4">Unified 12 disparate EHR systems into a single HIPAA-compliant platform serving 200+ clinics.</p>
+                        <div class="flex items-center gap-6 text-xs text-zinc-500">
+                            <div><span class="text-purple-400 font-semibold text-lg">12</span><br>Systems Unified</div>
+                            <div class="w-px h-8 bg-white/10"></div>
+                            <div><span class="text-purple-400 font-semibold text-lg">200+</span><br>Clinics Served</div>
+                            <div class="w-px h-8 bg-white/10"></div>
+                            <div><span class="text-purple-400 font-semibold text-lg">HIPAA</span><br>Compliant</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TESTIMONIALS ===== -->
+    <section id="testimonials" class="relative py-24 md:py-32 border-t border-white/5 overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-brand-500/5 rounded-full filter blur-[150px] pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <p class="anim-fade text-xs font-medium uppercase tracking-widest text-brand-400 mb-4">Testimonials</p>
+                <h2 class="anim-fade stagger-1 text-3xl md:text-5xl font-semibold tracking-tight text-white">What our clients say</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card rounded-2xl p-8 anim-fade stagger-1">
+                    <div class="flex gap-1 mb-4">
+                        <span class="iconify text-yellow-400" data-icon="lucide:star"></span>
+                        <span class="iconify text-yellow-400" data-icon="lucide:star"></span>
+                        <span class="iconify text-yellow-400" data-icon="lucide:star"></span>
+                        <span class="iconify text-yellow-400" data-icon="lucide:star"></span>
+                        <span class="iconify text-yellow-400" data-icon="lucide:star"></span>
+                    </div>
+                    <p class="text-sm text-zinc-300 leading-relaxed mb-6">"Nexus transformed our entire infrastructure in 4 months. What we thought would take 2 years was delivered ahead of schedule. Their engineering team is world-class."</p>
+                    <div class="flex items-center gap-3">
+                        <img src="https://picsum.photos/seed/testimonial1/60/60" class="w-10 h-10 rounded-full object-cover" alt="Client">
+                        <div>
+                            <p class="text-sm font-medium text-white">Alexandra Petrov</p>
+                            <p class="text-xs text-zinc-500">CTO, NeoBank</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card rounded-2xl p-8 anim-fade stagger-2">
+                    <div class="flex gap-1 mb-4">
+                        <span class="iconify text-yellow-400" data-icon="lucide:star"></span>
+                        <span class="iconify text-yellow-400" data-icon="lucide:star"></span>
+                        <span class="iconify text-yellow-400" data-icon="lucide:star"></span>
+                        <span class="iconify text-yellow-400" data-icon="lucide:star"></span>
+                        <span class="iconify text-yellow-400" data-icon="lucide:star"></span>
+                    </div>
+                    <p class="text-sm text-zinc-300 leading-relaxed mb-6">"The AI diagnostics platform Nexus built has literally saved lives. The accuracy and speed are unmatched. They understood our regulatory requirements from day one."</p>
+                    <div class="flex items-center gap-3">
+                        <img src="https://picsum.photos/seed/testimonial2/60/60" class="w-10 h-10 rounded-full object-cover" alt="Client">
+                        <div>
+                            <p class="text-sm font-medium text-white">Dr. James Wong</p>
+                            <p class="text-xs text-zinc-500">CEO, MedTech Global</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card rounded-2xl p-8 anim-fade stagger-3">
+                    <div class="flex gap-1 mb-4">
+                        <span class="iconify text-yellow-400" data-icon="lucide:star"></span>
+                        <span class="iconify text-yellow-400" data-icon="lucide:star"></span>
+                        <span class="iconify text-yellow-400" data-icon="lucide:star"></span>
+                        <span class="iconify text-yellow-400" data-icon="lucide:star"></span>
+                        <span class="iconify text-yellow-400" data-icon="lucide:star"></span>
+                    </div>
+                    <p class="text-sm text-zinc-300 leading-relaxed mb-6">"Black Friday went from our biggest fear to our biggest win. The platform handled 50K concurrent users without breaking a sweat. Revenue up 40% YoY."</p>
+                    <div class="flex items-center gap-3">
+                        <img src="https://picsum.photos/seed/testimonial3/60/60" class="w-10 h-10 rounded-full object-cover" alt="Client">
+                        <div>
+                            <p class="text-sm font-medium text-white">Priya Sharma</p>
+                            <p class="text-xs text-zinc-500">VP Engineering, LuxeRetail</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section class="relative py-24 md:py-32 border-t border-white/5">
+        <div class="max-w-3xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <p class="anim-fade text-xs font-medium uppercase tracking-widest text-brand-400 mb-4">FAQ</p>
+                <h2 class="anim-fade stagger-1 text-3xl md:text-4xl font-semibold tracking-tight text-white">Common questions</h2>
+            </div>
+            <div class="space-y-3">
+                <div class="accordion-item glass-card rounded-xl overflow-hidden anim-fade stagger-1">
+                    <button onclick="toggleAccordion(this)" class="w-full flex items-center justify-between p-5 text-left">
+                        <span class="text-sm font-medium text-white">How long does a typical engagement take?</span>
+                        <span class="iconify accordion-icon text-zinc-500 text-lg flex-shrink-0 ml-4" data-icon="lucide:plus"></span>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="px-5 pb-5 text-sm text-zinc-400 leading-relaxed">Most engagements run between 3-6 months depending on scope. We start with a 2-week discovery phase to map out the full roadmap. For cloud migrations, we typically see initial value within 30 days.</p>
+                    </div>
+                </div>
+                <div class="accordion-item glass-card rounded-xl overflow-hidden anim-fade stagger-2">
+                    <button onclick="toggleAccordion(this)" class="w-full flex items-center justify-between p-5 text-left">
+                        <span class="text-sm font-medium text-white">Do you work with startups or only enterprises?</span>
+                        <span class="iconify accordion-icon text-zinc-500 text-lg flex-shrink-0 ml-4" data-icon="lucide:plus"></span>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="px-5 pb-5 text-sm text-zinc-400 leading-relaxed">We primarily serve mid-market and enterprise clients (50+ employees), but we do have programs for high-growth startups that are scaling rapidly. Book a call and we'll let you know if we're a fit.</p>
+                    </div>
+                </div>
+                <div class="accordion-item glass-card rounded-xl overflow-hidden anim-fade stagger-3">
+                    <button onclick="toggleAccordion(this)" class="w-full flex items-center justify-between p-5 text-left">
+                        <span class="text-sm font-medium text-white">What's your pricing model?</span>
+                        <span class="iconify accordion-icon text-zinc-500 text-lg flex-shrink-0 ml-4" data-icon="lucide:plus"></span>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="px-5 pb-5 text-sm text-zinc-400 leading-relaxed">We offer both project-based and retainer pricing. Project engagements start at $50K for focused sprints. Retainer packages start at $15K/month for ongoing engineering support. All pricing is transparent with no hidden fees.</p>
+                    </div>
+                </div>
+                <div class="accordion-item glass-card rounded-xl overflow-hidden anim-fade stagger-4">
+                    <button onclick="toggleAccordion(this)" class="w-full flex items-center justify-between p-5 text-left">
+                        <span class="text-sm font-medium text-white">What happens after the project is delivered?</span>
+                        <span class="iconify accordion-icon text-zinc-500 text-lg flex-shrink-0 ml-4" data-icon="lucide:plus"></span>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="px-5 pb-5 text-sm text-zinc-400 leading-relaxed">Every project includes a 30-day handoff period with full documentation, knowledge transfer sessions, and runbook creation. After that, clients can opt into our managed services for ongoing support, monitoring, and optimization.</p>
+                    </div>
+                </div>
+                <div class="accordion-item glass-card rounded-xl overflow-hidden anim-fade stagger-5">
+                    <button onclick="toggleAccordion(this)" class="w-full flex items-center justify-between p-5 text-left">
+                        <span class="text-sm font-medium text-white">Do you provide SLA guarantees?</span>
+                        <span class="iconify accordion-icon text-zinc-500 text-lg flex-shrink-0 ml-4" data-icon="lucide:plus"></span>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="px-5 pb-5 text-sm text-zinc-400 leading-relaxed">Yes. Our standard SLA guarantees 99.9% uptime for production systems, with 15-minute response times for P1 incidents and 4-hour resolution targets. Custom SLAs up to 99.99% are available for mission-critical systems.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA / LEAD GEN ===== -->
+    <section class="relative py-24 md:py-32 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-brand-500/5 via-transparent to-transparent pointer-events-none"></div>
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+            <div class="glass-strong rounded-3xl p-10 md:p-16">
+                <div class="anim-fade inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 mb-8">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    <span class="text-xs font-medium text-emerald-400">Limited spots available this quarter</span>
+                </div>
+                <h2 class="anim-fade stagger-1 text-3xl md:text-5xl font-semibold tracking-tight text-white mb-4">Ready to transform<br>your infrastructure?</h2>
+                <p class="anim-fade stagger-2 text-zinc-400 text-base md:text-lg mb-8 max-w-xl mx-auto">Get a free architecture assessment and see how Nexus can help you scale. No commitment required.</p>
+                <form id="leadForm" onsubmit="handleLeadForm(event)" class="anim-fade stagger-3 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                    <input type="email" required placeholder="Enter your work email" class="flex-1 bg-zinc-900/50 border border-white/10 rounded-full px-5 py-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20 transition-all">
+                    <button type="submit" class="btn-primary bg-white text-black font-medium px-6 py-3 rounded-full text-sm hover:bg-zinc-200 transition-colors whitespace-nowrap flex items-center gap-2 justify-center">
+                        Get Free Assessment
+                        <span class="iconify" data-icon="lucide:arrow-right"></span>
+                    </button>
+                </form>
+                <p class="anim-fade stagger-4 text-xs text-zinc-600 mt-4">Free assessment • No credit card • Response within 24 hours</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CONTACT ===== -->
+    <section id="contact" class="relative py-24 md:py-32 border-t border-white/5 overflow-hidden">
+        <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-brand-500/5 rounded-full filter blur-[150px] pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <p class="anim-fade text-xs font-medium uppercase tracking-widest text-brand-400 mb-4">Contact</p>
+                <h2 class="anim-fade stagger-1 text-3xl md:text-5xl font-semibold tracking-tight text-white mb-4">Let's build something<br><span class="gradient-text">extraordinary together</span></h2>
+                <p class="anim-fade stagger-2 text-zinc-400 text-base md:text-lg">Tell us about your project and we'll get back to you within 24 hours.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <!-- Contact Form -->
+                <div class="lg:col-span-3">
+                    <form id="contactForm" onsubmit="handleContactForm(event)" class="glass-strong rounded-2xl p-8 space-y-5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="text-xs text-zinc-400 mb-1.5 block">First Name *</label>
+                                <input type="text" required placeholder="John" class="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20 transition-all">
+                            </div>
+                            <div>
+                                <label class="text-xs text-zinc-400 mb-1.5 block">Last Name *</label>
+                                <input type="text" required placeholder="Doe" class="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20 transition-all">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs text-zinc-400 mb-1.5 block">Work Email *</label>
+                            <input type="email" required placeholder="john@company.com" class="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20 transition-all">
+                        </div>
+                        <div>
+                            <label class="text-xs text-zinc-400 mb-1.5 block">Company</label>
+                            <input type="text" placeholder="Your company name" class="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20 transition-all">
+                        </div>
+                        <div>
+                            <label class="text-xs text-zinc-400 mb-1.5 block">Service Interested In</label>
+                            <select class="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-zinc-400 focus:outline-none focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20 transition-all appearance-none cursor-pointer">
+                                <option value="">Select a service</option>
+                                <option value="cloud">Cloud Infrastructure</option>
+                                <option value="ai">AI & Machine Learning</option>
+                                <option value="security">Cybersecurity</option>
+                                <option value="analytics">Data Analytics</option>
+                                <option value="products">Digital Products</option>
+                                <option value="automation">Process Automation</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs text-zinc-400 mb-1.5 block">Project Details *</label>
+                            <textarea required rows="4" placeholder="Tell us about your project, timeline, and goals..." class="w-full bg-zinc-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20 transition-all resize-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="text-xs text-zinc-400 mb-1.5 block">Budget Range</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                <label class="budget-option cursor-pointer">
+                                    <input type="radio" name="budget" value="50-100k" class="hidden peer">
+                                    <span class="block text-center text-xs text-zinc-500 border border-white/10 rounded-lg py-2 peer-checked:border-brand-500/50 peer-checked:text-brand-400 peer-checked:bg-brand-500/5 transition-all hover:border-white/20">$50K-$100K</span>
+                                </label>
+                                <label class="budget-option cursor-pointer">
+                                    <input type="radio" name="budget" value="100-250k" class="hidden peer">
+                                    <span class="block text-center text-xs text-zinc-500 border border-white/10 rounded-lg py-2 peer-checked:border-brand-500/50 peer-checked:text-brand-400 peer-checked:bg-brand-500/5 transition-all hover:border-white/20">$100K-$250K</span>
+                                </label>
+                                <label class="budget-option cursor-pointer">
+                                    <input type="radio" name="budget" value="250-500k" class="hidden peer">
+                                    <span class="block text-center text-xs text-zinc-500 border border-white/10 rounded-lg py-2 peer-checked:border-brand-500/50 peer-checked:text-brand-400 peer-checked:bg-brand-500/5 transition-all hover:border-white/20">$250K-$500K</span>
+                                </label>
+                                <label class="budget-option cursor-pointer">
+                                    <input type="radio" name="budget" value="500k+" class="hidden peer">
+                                    <span class="block text-center text-xs text-zinc-500 border border-white/10 rounded-lg py-2 peer-checked:border-brand-500/50 peer-checked:text-brand-400 peer-checked:bg-brand-500/5 transition-all hover:border-white/20">$500K+</span>
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" id="contactSubmit" class="btn-primary w-full bg-white text-black font-medium py-3.5 rounded-xl text-sm hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2">
+                            <span>Send Message</span>
+                            <span class="iconify" data-icon="lucide:send"></span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Contact Info + Map -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="glass-card rounded-2xl p-6 anim-fade stagger-1">
+                        <h4 class="text-sm font-semibold text-white mb-4">Get in touch</h4>
+                        <div class="space-y-4">
+                            <a href="mailto:hello@nexus.com" class="flex items-center gap-3 text-sm text-zinc-400 hover:text-brand-400 transition-colors">
+                                <span class="iconify text-lg" data-icon="lucide:mail"></span>
+                                hello@nexus.com
+                            </a>
+                            <a href="tel:+14155550123" class="flex items-center gap-3 text-sm text-zinc-400 hover:text-brand-400 transition-colors">
+                                <span class="iconify text-lg" data-icon="lucide:phone"></span>
+                                +1 (415) 555-0123
+                            </a>
+                            <div class="flex items-start gap-3 text-sm text-zinc-400">
+                                <span class="iconify text-lg mt-0.5" data-icon="lucide:map-pin"></span>
+                                <span>100 Market Street, Suite 400<br>San Francisco, CA 94105</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 anim-fade stagger-2">
+                        <h4 class="text-sm font-semibold text-white mb-4">Office Hours</h4>
+                        <div class="space-y-2 text-sm text-zinc-400">
+                            <div class="flex justify-between"><span>Monday — Friday</span><span class="text-zinc-300">9:00 AM — 6:00 PM</span></div>
+                            <div class="flex justify-between"><span>Saturday</span><span class="text-zinc-500">Closed</span></div>
+                            <div class="flex justify-between"><span>Sunday</span><span class="text-zinc-500">Closed</span></div>
+                        </div>
+                    </div>
+
+                    <div class="map-container anim-fade stagger-3">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.0863!2d-122.3988!3d37.7935!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085806285ddb1a3%3A0xad0e6c1b4a3c5b9!2s100%20Market%20St%2C%20San%20Francisco%2C%20CA%2094105!5e0!3m2!1sen!2sus!4v1234567890" width="100%" height="220" style="border:0; filter: invert(0.9) hue-rotate(180deg) brightness(0.8) contrast(1.2); border-radius: 16px;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+
+                    <div class="flex gap-3 anim-fade stagger-4">
+                        <a href="#" class="glass flex-1 rounded-xl p-4 flex items-center justify-center gap-2 text-sm text-zinc-400 hover:text-white hover:bg-white/5 transition-all">
+                            <span class="iconify" data-icon="lucide:linkedin"></span>
+                            LinkedIn
+                        </a>
+                        <a href="#" class="glass flex-1 rounded-xl p-4 flex items-center justify-center gap-2 text-sm text-zinc-400 hover:text-white hover:bg-white/5 transition-all">
+                            <span class="iconify" data-icon="lucide:twitter"></span>
+                            Twitter
+                        </a>
+                        <a href="#" class="glass flex-1 rounded-xl p-4 flex items-center justify-center gap-2 text-sm text-zinc-400 hover:text-white hover:bg-white/5 transition-all">
+                            <span class="iconify" data-icon="lucide:github"></span>
+                            GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="border-t border-white/5 py-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+                <div class="col-span-2 md:col-span-1">
+                    <a href="#home" class="flex items-center gap-2.5 mb-4">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center">
+                            <span class="iconify text-white text-sm" data-icon="lucide:hexagon"></span>
+                        </div>
+                        <span class="text-lg font-semibold text-white">Nexus</span>
+                    </a>
+                    <p class="text-sm text-zinc-500 leading-relaxed">Enterprise solutions that transform how businesses operate.</p>
+                </div>
+                <div>
+                    <h5 class="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-4">Product</h5>
+                    <ul class="space-y-2.5">
+                        <li><a href="#services" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Services</a></li>
+                        <li><a href="#cases" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Case Studies</a></li>
+                        <li><a href="#" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Pricing</a></li>
+                        <li><a href="#" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Changelog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-4">Company</h5>
+                    <ul class="space-y-2.5">
+                        <li><a href="#about" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">About</a></li>
+                        <li><a href="#" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Careers</a></li>
+                        <li><a href="#" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Blog</a></li>
+                        <li><a href="#contact" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-4">Resources</h5>
+                    <ul class="space-y-2.5">
+                        <li><a href="#" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Documentation</a></li>
+                        <li><a href="#" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">API Reference</a></li>
+                        <li><a href="#" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Status Page</a></li>
+                        <li><a href="#" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Security</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-4">Legal</h5>
+                    <ul class="space-y-2.5">
+                        <li><a href="#" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Cookie Policy</a></li>
+                        <li><a href="#" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">GDPR</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-xs text-zinc-600">© 2025 Nexus Corp. All rights reserved.</p>
+                <div class="flex items-center gap-4">
+                    <a href="#" class="text-zinc-600 hover:text-zinc-400 transition-colors"><span class="iconify text-lg" data-icon="lucide:linkedin"></span></a>
+                    <a href="#" class="text-zinc-600 hover:text-zinc-400 transition-colors"><span class="iconify text-lg" data-icon="lucide:twitter"></span></a>
+                    <a href="#" class="text-zinc-600 hover:text-zinc-400 transition-colors"><span class="iconify text-lg" data-icon="lucide:github"></span></a>
+                    <a href="#" class="text-zinc-600 hover:text-zinc-400 transition-colors"><span class="iconify text-lg" data-icon="lucide:youtube"></span></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Demo Modal -->
+    <div id="demoModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);">
+        <div class="glass-strong rounded-2xl p-8 w-full max-w-2xl relative">
+            <button onclick="closeModal('demo')" class="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors">
+                <span class="iconify text-xl" data-icon="lucide:x"></span>
+            </button>
+            <div class="text-center mb-6">
+                <h3 class="text-xl font-semibold text-white">Product Demo</h3>
+                <p class="text-sm text-zinc-500 mt-1">See Nexus in action</p>
+            </div>
+            <div class="aspect-video bg-zinc-900 rounded-xl flex items-center justify-center">
+                <div class="text-center">
+                    <div class="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-4 cursor-pointer hover:bg-white/20 transition-colors">
+                        <span class="iconify text-3xl text-white ml-1" data-icon="lucide:play"></span>
+                    </div>
+                    <p class="text-sm text-zinc-500">Demo video placeholder</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== PARTICLES =====
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = canvas.parentElement.offsetHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.3 + 0.1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(59, 130, 246, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+        for (let i = 0; i < 60; i++) particles.push(new Particle());
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            // Draw connections
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(59, 130, 246, ${0.05 * (1 - dist / 120)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // ===== SCROLL ANIMATIONS =====
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Counter animation
+                    if (entry.target.querySelector('.counter')) {
+                        const counter = entry.target.querySelector('.counter');
+                        animateCounter(counter);
+                    }
+                    // Skill bars
+                    entry.target.querySelectorAll('.skill-fill').forEach(bar => {
+                        bar.classList.add('visible');
+                    });
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.anim-fade, .anim-fade-left, .anim-fade-right, .anim-scale').forEach(el => observer.observe(el));
+
+        // ===== COUNTER ANIMATION =====
+        function animateCounter(el) {
+            if (el.dataset.animated) return;
+            el.dataset.animated = true;
+            const target = parseInt(el.dataset.target);
+            const duration = 2000;
+            const start = performance.now();
+            function update(now) {
+                const elapsed = now - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                el.textContent = Math.floor(target * eased).toLocaleString();
+                if (progress < 1) requestAnimationFrame(update);
+                else el.textContent = target.toLocaleString() + (target === 99 ? '.' + 9 : '+');
+            }
+            requestAnimationFrame(update);
+        }
+
+        // ===== NAVBAR SCROLL =====
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            const scrollY = window.scrollY;
+            if (scrollY > 50) {
+                navbar.classList.add('glass-strong');
+                navbar.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+            } else {
+                navbar.classList.remove('glass-strong');
+                navbar.style.borderBottom = 'none';
+            }
+            // Active nav link
+            const sections = ['home', 'services', 'about', 'cases', 'contact'];
+            sections.forEach(id => {
+                const section = document.getElementById(id);
+                if (section) {
+                    const top = section.offsetTop - 100;
+                    const bottom = top + section.offsetHeight;
+                    const link = document.querySelector(`.nav-link[href="#${id}"]`);
+                    if (link) {
+                        if (scrollY >= top && scrollY < bottom) {
+                            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                            link.classList.add('active');
+                        }
+                    }
+                }
+            });
+            lastScroll = scrollY;
+        });
+
+        // ===== MOBILE MENU =====
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('open');
+            document.body.style.overflow = document.getElementById('mobileMenu').classList.contains('open') ? 'hidden' : '';
+        }
+
+        // ===== MODALS =====
+        function openModal(type) {
+            const modal = document.getElementById(type + 'Modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(type) {
+            const modal = document.getElementById(type + 'Modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+        // Close modal on backdrop click
+        document.querySelectorAll('[id$="Modal"]').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    const type = modal.id.replace('Modal', '');
+                    closeModal(type);
+                }
+            });
+        });
+
+        // ===== ACCORDION =====
+        function toggleAccordion(btn) {
+            const item = btn.closest('.accordion-item');
+            const wasOpen = item.classList.contains('open');
+            document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
+            if (!wasOpen) item.classList.add('open');
+        }
+
+        // ===== CASE FILTER =====
+        function filterCases(category) {
+            document.querySelectorAll('.case-filter').forEach(btn => {
+                btn.classList.remove('active', 'text-white', 'bg-white/10');
+                btn.classList.add('text-zinc-500');
+            });
+            const activeBtn = document.querySelector(`.case-filter[data-filter="${category}"]`);
+            activeBtn.classList.add('active', 'text-white', 'bg-white/10');
+            activeBtn.classList.remove('text-zinc-500');
+
+            document.querySelectorAll('.case-item').forEach(item => {
+                if (category === 'all' || item.dataset.category === category) {
+                    item.style.display = '';
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        item.style.transition = 'all 0.5s cubic-bezier(0.4,0,0.2,1)';
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateY(0)';
+                    }, 50);
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // ===== TOAST =====
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        // ===== FORM HANDLERS =====
+        function handleLeadForm(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<span class="iconify animate-spin" data-icon="lucide:loader-2"></span> Sending...';
+            btn.disabled = true;
+            setTimeout(() => {
+                btn.innerHTML = '<span class="iconify text-emerald-500" data-icon="lucide:check-circle"></span> Sent!';
+                showToast('Assessment request received! We\'ll be in touch within 24 hours.');
+                setTimeout(() => {
+                    btn.innerHTML = 'Get Free Assessment <span class="iconify" data-icon="lucide:arrow-right"></span>';
+                    btn.disabled = false;
+                    e.target.reset();
+                }, 3000);
+            }, 1500);
+        }
+
+        function handleContactForm(e) {
+            e.preventDefault();
+            const btn = document.getElementById('contactSubmit');
+            btn.innerHTML = '<span class="iconify animate-spin" data-icon="lucide:loader-2"></span> Sending...';
+            btn.disabled = true;
+            setTimeout(() => {
+                btn.innerHTML = '<span class="iconify text-emerald-500" data-icon="lucide:check-circle"></span> Message Sent!';
+                showToast('Thank you! Your message has been sent successfully.');
+                setTimeout(() => {
+                    btn.innerHTML = '<span>Send Message</span><span class="iconify" data-icon="lucide:send"></span>';
+                    btn.disabled = false;
+                    e.target.reset();
+                    // Reset budget selection
+                    document.querySelectorAll('.budget-option input').forEach(r => r.checked = false);
+                }, 3000);
+            }, 1500);
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<span class="iconify animate-spin" data-icon="lucide:loader-2"></span> Signing in...';
+            btn.disabled = true;
+            setTimeout(() => {
+                closeModal('login');
+                showToast('Welcome back! You\'re now signed in.');
+                btn.innerHTML = 'Sign In';
+                btn.disabled = false;
+                e.target.reset();
+            }, 1500);
+        }
+
+        // ===== KEYBOARD SUPPORT =====
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal('login');
+                closeModal('demo');
+                if (document.getElementById('mobileMenu').classList.contains('open')) toggleMobileMenu();
+            }
+        });
+
+        // ===== SMOOTH SCROLL (fallback for older browsers) =====
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

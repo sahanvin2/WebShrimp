@@ -5,13 +5,10 @@ import SocialBanner from "@/components/home/SocialBanner";
 import TechStack from "@/components/home/TechStack";
 import PortfolioPreview from "@/components/home/PortfolioPreview";
 import ProcessSection from "@/components/home/ProcessSection";
-import Testimonials from "@/components/home/Testimonials";
 import BlogPreview from "@/components/home/BlogPreview";
-import useReveal from "@/hooks/useReveal";
+import PricingSection from "@/components/home/PricingSection";
 
 const Index = () => {
-  useReveal();
-
   return (
     <SiteLayout>
       <HeroSection />
@@ -20,7 +17,7 @@ const Index = () => {
       <TechStack />
       <PortfolioPreview />
       <ProcessSection />
-      <Testimonials />
+      <PricingSection />
       <BlogPreview />
     </SiteLayout>
   );

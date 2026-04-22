@@ -16,9 +16,9 @@ const PageHero = ({ label, title, subtitle, breadcrumb }: PageHeroProps) => {
       <div className="pointer-events-none absolute -bottom-24 -right-20 h-80 w-80 rounded-full bg-brand-orange/15 blur-3xl animate-float-slower" />
 
       <div className="container-x relative py-20 lg:py-28 text-center">
-        {label && <span className="section-label animate-fade-up">{label}</span>}
+        {label && <span className="section-label inline-block mb-3 animate-fade-up">{label}</span>}
         <h1
-          className="mt-4 text-4xl sm:text-5xl lg:text-6xl text-brand-navy animate-fade-up"
+          className="text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-navy animate-fade-up"
           style={{ animationDelay: "80ms" }}
         >
           {title}

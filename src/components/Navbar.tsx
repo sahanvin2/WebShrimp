@@ -30,11 +30,22 @@ const Navbar = () => {
     setOpen(false);
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled ? "glass-nav" : "bg-transparent"
-      }`}
+        scrolled && !open ? "glass-nav" : ""
+      } ${open ? "bg-white border-b border-border/50" : "bg-transparent"}`}
     >
       <div className="container-x flex h-16 lg:h-20 items-center justify-between">
         <Logo />
@@ -84,9 +95,8 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile drawer */}
       <div
-        className={`lg:hidden fixed inset-0 top-16 bg-background/98 backdrop-blur-xl transition-all duration-300 ${
+        className={`lg:hidden fixed inset-0 top-16 bg-white overflow-y-auto transition-all duration-300 ${
           open ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >

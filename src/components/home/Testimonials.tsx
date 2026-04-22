@@ -1,100 +1,84 @@
-import { useState } from "react";
-import { Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star } from "lucide-react";
 
 const TESTIMONIALS = [
   {
-    name: "Nuwan Perera",
-    role: "Founder, Ceylon Spice Co.",
-    initials: "NP",
-    color: "bg-brand-orange",
+    name: "Aaron Reed",
+    role: "Startup Founder",
+    avatar: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=120&q=80",
     quote:
-      "Web Shrimp rebuilt our online store from the ground up. Sales doubled in three months and the team is genuinely a pleasure to work with — fast, thoughtful, and always one step ahead.",
+      "Web Shrimp completely transformed our online presence. Our traffic doubled in mere weeks after launch. A highly recommended agency that knows delivery.",
+    highlighted: false,
   },
   {
-    name: "Anushka Silva",
-    role: "Marketing Lead, BetterFit",
-    initials: "AS",
-    color: "bg-brand-blue",
+    name: "Sarah Kim",
+    role: "Marketing Lead",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80",
     quote:
-      "Our landing page conversions went from 1.4% to 6.2%. They didn't just design what we asked for — they pushed us to do it better. Highly recommend.",
+      "Fast, creative, and remarkably reliable. The team delivered exactly what we needed and their design iteration speed was absolutely phenomenal.",
+    highlighted: true,
   },
   {
-    name: "Rajiv Fernando",
-    role: "Owner, Studio Bloom",
-    initials: "RF",
-    color: "bg-emerald-600",
+    name: "Paul Davies",
+    role: "Director, TechCorp",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80",
     quote:
-      "Beautiful portfolio site, on time, and at a fair price. Communication was clear from day one. We're already planning phase two with them.",
+      "Hands down the best agency experience we have had. Great communication, transparent process, and absolutely pristine quality output.",
+    highlighted: false,
   },
 ];
 
 const Testimonials = () => {
-  const [active, setActive] = useState(0);
-  const t = TESTIMONIALS[active];
-
   return (
-    <section className="bg-brand-blue-soft/60 py-20 lg:py-28">
+    <section className="bg-brand-blue-soft/60 py-20 lg:py-24">
       <div className="container-x">
         <div className="text-center max-w-2xl mx-auto reveal">
-          <span className="section-label">What Our Clients Say</span>
-          <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl text-brand-navy">
-            Trusted by Amazing People
+          <span className="section-label mx-auto">What Our Clients Say</span>
+          <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl text-brand-navy leading-tight">
+            Real Results, Real Feedback
           </h2>
+          <p className="mt-4 text-muted-foreground">
+            Don&apos;t just take our word for it. Here is what our clients have to say about working with us to scale their business.
+          </p>
         </div>
 
-        <div className="mt-12 max-w-3xl mx-auto reveal">
-          <article className="relative bg-card rounded-3xl border border-border shadow-card p-8 sm:p-12 pl-10 sm:pl-14">
-            <span className="absolute left-0 top-8 bottom-8 w-1.5 rounded-r-full bg-brand-blue" aria-hidden />
-            <div className="flex gap-1 mb-5">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="h-4 w-4 fill-brand-yellow text-brand-yellow" />
-              ))}
-            </div>
-            <blockquote className="text-lg sm:text-xl text-brand-navy leading-relaxed font-display font-medium">
-              “{t.quote}”
-            </blockquote>
-            <div className="mt-7 flex items-center gap-4">
-              <div className={`h-12 w-12 rounded-full ${t.color} text-white flex items-center justify-center font-display font-bold`}>
-                {t.initials}
+        <div className="mt-12 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-5 items-stretch pb-4 lg:grid lg:grid-cols-3 lg:pb-0 lg:overflow-visible">
+          {TESTIMONIALS.map((item, i) => (
+            <article
+              key={item.name}
+              className={`reveal relative rounded-3xl border p-6 sm:p-7 shadow-card transition-all duration-300 w-[85vw] shrink-0 snap-center lg:w-auto lg:shrink ${
+                item.highlighted
+                  ? "bg-blue-grad border-transparent text-white"
+                  : "bg-card border-border text-brand-navy"
+              }`}
+              style={{ transitionDelay: `${i * 70}ms` }}
+            >
+              <div className={`absolute right-6 top-6 text-5xl leading-none ${item.highlighted ? "text-white/20" : "text-brand-navy/8"}`} aria-hidden>
+                &rdquo;
               </div>
-              <div>
-                <p className="font-semibold text-brand-navy">{t.name}</p>
-                <p className="text-sm text-muted-foreground">{t.role}</p>
+              <div className="flex gap-1 mb-5">
+                {Array.from({ length: 5 }).map((_, starIndex) => (
+                  <Star key={starIndex} className="h-4 w-4 fill-brand-yellow text-brand-yellow" />
+                ))}
               </div>
-            </div>
-          </article>
 
-          <div className="mt-6 flex items-center justify-center gap-3">
-            <button
-              type="button"
-              aria-label="Previous testimonial"
-              onClick={() => setActive((a) => (a - 1 + TESTIMONIALS.length) % TESTIMONIALS.length)}
-              className="h-10 w-10 rounded-full bg-card border border-border flex items-center justify-center text-brand-navy hover:bg-brand-blue hover:text-white transition-colors"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <div className="flex gap-2">
-              {TESTIMONIALS.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  aria-label={`Go to testimonial ${i + 1}`}
-                  onClick={() => setActive(i)}
-                  className={`h-2 rounded-full transition-all ${
-                    active === i ? "bg-brand-blue w-8" : "bg-brand-blue/30 w-2"
-                  }`}
+              <blockquote className={`text-lg sm:text-xl leading-relaxed ${item.highlighted ? "text-white/95" : "text-brand-navy"}`}>
+                &quot;{item.quote}&quot;
+              </blockquote>
+
+              <div className="mt-7 flex items-center gap-3.5">
+                <img
+                  src={item.avatar}
+                  alt={item.name}
+                  className={`h-12 w-12 rounded-full object-cover ${item.highlighted ? "ring-2 ring-white/30" : "ring-1 ring-border"}`}
+                  loading="lazy"
                 />
-              ))}
-            </div>
-            <button
-              type="button"
-              aria-label="Next testimonial"
-              onClick={() => setActive((a) => (a + 1) % TESTIMONIALS.length)}
-              className="h-10 w-10 rounded-full bg-card border border-border flex items-center justify-center text-brand-navy hover:bg-brand-blue hover:text-white transition-colors"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
+                <div>
+                  <p className={`text-xl ${item.highlighted ? "text-white" : "text-brand-navy"}`}>{item.name}</p>
+                  <p className={`text-sm ${item.highlighted ? "text-white/75" : "text-muted-foreground"}`}>{item.role}</p>
+                </div>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>

@@ -6,11 +6,11 @@ import { useEffect } from "react";
  */
 const useReveal = () => {
   useEffect(() => {
-    const els = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
-    if (!els.length) return;
+    const getPendingElements = () =>
+      Array.from(document.querySelectorAll<HTMLElement>(".reveal:not(.is-visible)"));
 
     if (typeof IntersectionObserver === "undefined") {
-      els.forEach((el) => el.classList.add("is-visible"));
+      getPendingElements().forEach((el) => el.classList.add("is-visible"));
       return;
     }
 
@@ -26,8 +26,30 @@ const useReveal = () => {
       { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
     );
 
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+    const observePending = () => {
+      getPendingElements().forEach((el) => io.observe(el));
+    };
+
+    observePending();
+
+    let rafId = 0;
+    const mo = new MutationObserver(() => {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(() => {
+        observePending();
+        rafId = 0;
+      });
+    });
+
+    mo.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+      }
+      mo.disconnect();
+      io.disconnect();
+    };
   }, []);
 };
 

@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<meta name="description" content="NEXUS — Your premium source for breaking news, technology, business, and world affairs.">
+<meta property="og:title" content="NEXUS News">
+<meta property="og:description" content="Premium editorial coverage of the world's most important stories.">
+<title>NEXUS — Breaking News, Tech, Business & World</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ink: #0a0a0b;
+    --ink-2: #1c1c1e;
+    --ink-3: #3a3a3c;
+    --muted: #8e8e93;
+    --border: #e5e5ea;
+    --surface: #f5f5f7;
+    --white: #ffffff;
+    --red: #e53935;
+    --red-dark: #b71c1c;
+    --gold: #b8860b;
+    --blue: #1a6eb5;
+    --green: #2d6a4f;
+
+    --ff-display: 'Playfair Display', Georgia, serif;
+    --ff-body: 'DM Sans', -apple-system, sans-serif;
+    --ff-mono: 'DM Mono', monospace;
+
+    --nav-h: 64px;
+    --ticker-h: 40px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: var(--ff-body);
+    background: var(--white);
+    color: var(--ink);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  button { font-family: var(--ff-body); cursor: pointer; border: none; background: none; }
+
+  /* ─── TICKER ─────────────────────────────────────────────── */
+  .ticker-bar {
+    background: var(--ink);
+    color: var(--white);
+    height: var(--ticker-h);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .ticker-label {
+    background: var(--red);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 0 14px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+  .ticker-track {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    animation: ticker 38s linear infinite;
+    white-space: nowrap;
+    padding-left: 24px;
+  }
+  .ticker-track:hover { animation-play-state: paused; }
+  .ticker-item {
+    font-size: 12.5px;
+    font-weight: 400;
+    color: #d1d1d6;
+    padding-right: 60px;
+  }
+  .ticker-item span { color: var(--white); font-weight: 500; }
+  .ticker-dot {
+    display: inline-block;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--red);
+    margin-right: 60px;
+    flex-shrink: 0;
+    vertical-align: middle;
+  }
+  @keyframes ticker { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+
+  /* ─── NAV ─────────────────────────────────────────────────── */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    height: var(--nav-h);
+  }
+  .nav-inner {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .logo {
+    font-family: var(--ff-display);
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+  .logo span { color: var(--red); }
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+    flex: 1;
+  }
+  .nav-links a {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-3);
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all .18s;
+    letter-spacing: .01em;
+  }
+  .nav-links a:hover, .nav-links a.active { background: var(--surface); color: var(--ink); }
+  .nav-links a.active { font-weight: 600; }
+  .nav-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+  .nav-date { font-size: 12px; color: var(--muted); font-weight: 400; white-space: nowrap; }
+  .nav-search {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 13px;
+    color: var(--muted);
+    transition: all .2s;
+  }
+  .nav-search:hover { border-color: var(--ink-3); color: var(--ink); }
+  .nav-subscribe {
+    background: var(--ink);
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 8px;
+    transition: background .2s;
+  }
+  .nav-subscribe:hover { background: var(--red); }
+
+  /* ─── PAGE WRAPPER ────────────────────────────────────────── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ─── HERO / HOMEPAGE ─────────────────────────────────────── */
+  .hero {
+    padding: 40px 0 0;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .breaking-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--red);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+  .breaking-badge::before {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #fff;
+    animation: pulse 1.4s ease infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .5; transform: scale(1.4); }
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 320px;
+    grid-template-rows: auto auto;
+    gap: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .hero-main {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+    border-right: 1px solid var(--border);
+    padding: 28px 32px 28px 0;
+    cursor: pointer;
+  }
+  .hero-main:hover .hero-main-img { transform: scale(1.02); }
+  .hero-main-img-wrap {
+    overflow: hidden;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
+    position: relative;
+  }
+  .hero-main-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .5s ease;
+  }
+  .hero-main-img-placeholder {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .img-placeholder-inner {
+    text-align: center; color: rgba(255,255,255,.25);
+  }
+  .img-icon { font-size: 48px; display: block; margin-bottom: 8px; }
+
+  .story-category {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 10px;
+  }
+  .story-category.tech { color: var(--blue); }
+  .story-category.biz { color: var(--green); }
+  .story-category.world { color: var(--gold); }
+
+  .hero-title {
+    font-family: var(--ff-display);
+    font-size: 34px;
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 14px;
+    transition: color .2s;
+  }
+  .hero-main:hover .hero-title { color: var(--red); }
+
+  .hero-deck {
+    font-size: 15px;
+    color: var(--ink-3);
+    line-height: 1.65;
+    margin-bottom: 16px;
+    font-weight: 300;
+  }
+  .byline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .byline-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; color: var(--ink-3);
+    flex-shrink: 0;
+  }
+  .byline strong { color: var(--ink-3); font-weight: 500; }
+  .byline-sep { color: var(--border); }
+
+  .hero-secondary {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    border-right: 1px solid var(--border);
+    padding: 28px 28px 28px 32px;
+    cursor: pointer;
+  }
+  .hero-secondary:hover .sec-img { transform: scale(1.03); }
+  .sec-img-wrap {
+    overflow: hidden;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    aspect-ratio: 16/9;
+  }
+  .sec-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .4s ease;
+    background: linear-gradient(135deg, #1b4332, #2d6a4f);
+  }
+  .sec-title {
+    font-family: var(--ff-display);
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+    transition: color .2s;
+  }
+  .hero-secondary:hover .sec-title { color: var(--blue); }
+  .sec-deck { font-size: 13.5px; color: var(--ink-3); line-height: 1.6; font-weight: 300; margin-bottom: 12px; }
+
+  .hero-tertiary {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    border-right: 1px solid var(--border);
+    padding: 20px 28px 28px 32px;
+    cursor: pointer;
+    border-top: 1px solid var(--border);
+  }
+  .hero-tertiary:hover .ter-title { color: var(--green); }
+  .ter-title {
+    font-family: var(--ff-display);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 8px;
+    transition: color .2s;
+  }
+  .ter-deck { font-size: 13px; color: var(--ink-3); line-height: 1.55; font-weight: 300; }
+
+  /* ─── SIDEBAR ─────────────────────────────────────────────── */
+  .hero-sidebar {
+    grid-column: 3 / 4;
+    grid-row: 1 / 3;
+    padding: 0 0 28px 28px;
+  }
+  .sidebar-section {
+    margin-bottom: 28px;
+  }
+  .sidebar-heading {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 16px;
+  }
+  .trending-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .trending-item:hover { opacity: .75; }
+  .trending-num {
+    font-family: var(--ff-display);
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--border);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 28px;
+    text-align: right;
+  }
+  .trending-info {}
+  .trending-title {
+    font-family: var(--ff-display);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+  .trending-meta {
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+
+  .ad-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+  }
+  .ad-label {
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    font-family: var(--ff-mono);
+  }
+  .newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+  }
+  .newsletter-title {
+    font-family: var(--ff-display);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+  .newsletter-sub {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .newsletter-input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--ff-body);
+    font-size: 13px;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .newsletter-input:focus { border-color: var(--ink); }
+  .newsletter-btn {
+    background: var(--ink);
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 14px;
+    border-radius: 6px;
+    width: 100%;
+    transition: background .2s;
+  }
+  .newsletter-btn:hover { background: var(--red); }
+
+  /* ─── BELOW HERO ──────────────────────────────────────────── */
+  .section { padding: 40px 0; }
+  .section + .section { border-top: 1px solid var(--border); }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .section-title {
+    font-family: var(--ff-display);
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .section-title-accent {
+    display: inline-block;
+    width: 4px; height: 22px;
+    background: var(--red);
+    border-radius: 2px;
+    vertical-align: middle;
+    margin-right: 10px;
+  }
+  .section-more {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--blue);
+    margin-left: auto;
+    display: flex; align-items: center; gap: 4px;
+    letter-spacing: .01em;
+  }
+  .section-more:hover { text-decoration: underline; }
+
+  /* Cards grid */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  .card {
+    cursor: pointer;
+  }
+  .card-img-wrap {
+    overflow: hidden;
+    border-radius: 4px;
+    margin-bottom: 14px;
+    aspect-ratio: 16/9;
+  }
+  .card-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .4s ease;
+  }
+  .card:hover .card-img { transform: scale(1.04); }
+  .card-category { margin-bottom: 7px; }
+  .card-title {
+    font-family: var(--ff-display);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+    transition: color .2s;
+  }
+  .card:hover .card-title { color: var(--red); }
+  .card-deck { font-size: 13.5px; color: var(--ink-3); line-height: 1.6; font-weight: 300; margin-bottom: 12px; }
+
+  /* List articles */
+  .list-articles { display: flex; flex-direction: column; gap: 0; }
+  .list-article {
+    display: grid;
+    grid-template-columns: 1fr 100px;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    align-items: center;
+  }
+  .list-article:hover .list-title { color: var(--red); }
+  .list-title {
+    font-family: var(--ff-display);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 8px;
+    transition: color .2s;
+  }
+  .list-deck { font-size: 13px; color: var(--ink-3); font-weight: 300; }
+  .list-img {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .list-img-el {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .4s;
+  }
+  .list-article:hover .list-img-el { transform: scale(1.08); }
+
+  /* ─── CATEGORY PAGE ───────────────────────────────────────── */
+  .cat-hero {
+    padding: 40px 0 32px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 40px;
+  }
+  .cat-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    font-family: var(--ff-mono);
+  }
+  .cat-title {
+    font-family: var(--ff-display);
+    font-size: 52px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .cat-title.tech { color: var(--blue); }
+  .cat-title.biz { color: var(--green); }
+  .cat-title.world { color: var(--gold); }
+  .cat-desc { font-size: 16px; color: var(--ink-3); font-weight: 300; max-width: 520px; }
+
+  .cat-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 48px;
+    align-items: start;
+  }
+  .cat-main {}
+  .cat-sidebar { position: sticky; top: calc(var(--nav-h) + 24px); }
+
+  .cat-featured {
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .cat-featured:hover .cat-feat-title { color: var(--red); }
+  .cat-feat-img-wrap {
+    overflow: hidden;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    aspect-ratio: 16/7;
+  }
+  .cat-feat-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .5s;
+  }
+  .cat-featured:hover .cat-feat-img { transform: scale(1.02); }
+  .cat-feat-title {
+    font-family: var(--ff-display);
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+    transition: color .2s;
+  }
+  .cat-feat-deck { font-size: 15px; color: var(--ink-3); font-weight: 300; line-height: 1.65; margin-bottom: 14px; }
+
+  .cat-articles {}
+
+  /* ─── ARTICLE PAGE ────────────────────────────────────────── */
+  .article-wrap {
+    padding: 48px 0 80px;
+  }
+  .article-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 64px;
+    align-items: start;
+  }
+  .article-body { min-width: 0; }
+  .article-sidebar { position: sticky; top: calc(var(--nav-h) + 24px); }
+
+  .article-header { margin-bottom: 32px; }
+  .article-category { margin-bottom: 14px; }
+  .article-title {
+    font-family: var(--ff-display);
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1.13;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+  .article-deck {
+    font-size: 18px;
+    color: var(--ink-3);
+    font-weight: 300;
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+  }
+  .article-author { display: flex; align-items: center; gap: 10px; }
+  .author-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, #1a6eb5, #0f3460);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 14px; flex-shrink: 0;
+  }
+  .author-name { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .author-role { font-size: 12px; color: var(--muted); }
+  .article-stats {
+    margin-left: auto;
+    display: flex; gap: 16px;
+    font-size: 12.5px; color: var(--muted);
+  }
+  .article-stats span { display: flex; align-items: center; gap: 4px; }
+
+  .article-hero-img {
+    width: 100%;
+    aspect-ratio: 16/8;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #1a1a2e, #0f3460);
+  }
+  .article-img-caption { font-size: 12px; color: var(--muted); margin-bottom: 28px; font-style: italic; }
+
+  .article-content { font-size: 17px; line-height: 1.78; color: var(--ink-2); font-weight: 300; }
+  .article-content p { margin-bottom: 24px; }
+  .article-content h2 {
+    font-family: var(--ff-display);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 36px 0 16px;
+    letter-spacing: -0.01em;
+  }
+  .article-content h3 {
+    font-family: var(--ff-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 28px 0 12px;
+  }
+  .article-content blockquote {
+    border-left: 4px solid var(--red);
+    padding: 16px 24px;
+    margin: 32px 0;
+    background: var(--surface);
+    border-radius: 0 6px 6px 0;
+    font-family: var(--ff-display);
+    font-style: italic;
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .article-content strong { font-weight: 600; color: var(--ink); }
+  .article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border); }
+  .tag {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 100px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--ink-3);
+    transition: all .2s;
+    cursor: pointer;
+  }
+  .tag:hover { background: var(--ink); color: var(--white); border-color: var(--ink); }
+
+  /* Related */
+  .related-section { margin-top: 52px; padding-top: 32px; border-top: 2px solid var(--ink); }
+  .related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 24px; }
+
+  /* ─── SVG PLACEHOLDER IMAGES ──────────────────────────────── */
+  .img-svg {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ─── FOOTER ──────────────────────────────────────────────── */
+  .footer {
+    background: var(--ink);
+    color: rgba(255,255,255,.6);
+    padding: 48px 0 24px;
+    margin-top: 64px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  .footer-logo {
+    font-family: var(--ff-display);
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+  .footer-logo span { color: var(--red); }
+  .footer-tagline { font-size: 13px; line-height: 1.6; margin-bottom: 20px; }
+  .footer-col-title { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--white); margin-bottom: 16px; }
+  .footer-links { display: flex; flex-direction: column; gap: 10px; }
+  .footer-links a { font-size: 13.5px; transition: color .2s; }
+  .footer-links a:hover { color: var(--white); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,.1);
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+  }
+
+  /* ─── UTILITIES ───────────────────────────────────────────── */
+  .read-time { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+
+  /* animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .page.active .container,
+  .page.active .ticker-bar {
+    animation: fadeUp .35s ease both;
+  }
+
+  /* ─── COLOR STRIPE IMAGES ─────────────────────────────────── */
+  .bg-1 { background: linear-gradient(135deg, #0f3460 0%, #1a6eb5 60%, #4a90d9 100%); }
+  .bg-2 { background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 60%, #52b788 100%); }
+  .bg-3 { background: linear-gradient(135deg, #7b2d00 0%, #b8450a 60%, #e07841 100%); }
+  .bg-4 { background: linear-gradient(135deg, #3d0066 0%, #6a0dad 60%, #9b59b6 100%); }
+  .bg-5 { background: linear-gradient(135deg, #003153 0%, #005b8e 60%, #0088cc 100%); }
+  .bg-6 { background: linear-gradient(135deg, #1a0a00 0%, #6b2d00 60%, #c85400 100%); }
+  .bg-7 { background: linear-gradient(135deg, #001a33 0%, #003d6b 60%, #0066b3 100%); }
+  .bg-8 { background: linear-gradient(135deg, #0d2200 0%, #1e4d00 60%, #3a8200 100%); }
+  .svg-label {
+    font-family: var(--ff-display);
+    font-size: 16px;
+    font-weight: 700;
+    fill: rgba(255,255,255,.3);
+    text-anchor: middle;
+  }
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-label">Breaking</div>
+  <div class="ticker-track" id="tickerTrack">
+    <span class="ticker-item"><span>Markets:</span> S&P 500 hits record high above 5,900 amid Fed pause expectations</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span>Tech:</span> OpenAI unveils GPT-5 with multimodal reasoning capabilities</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span>World:</span> G7 leaders convene emergency summit on Middle East tensions</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span>Climate:</span> UN report warns of irreversible tipping points by 2035 without action</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span>Business:</span> Apple announces $100B buyback; quarterly revenue exceeds $120B</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span>Science:</span> CERN discovers new particle that could rewrite Standard Model</span>
+    <span class="ticker-dot"></span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item"><span>Markets:</span> S&P 500 hits record high above 5,900 amid Fed pause expectations</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span>Tech:</span> OpenAI unveils GPT-5 with multimodal reasoning capabilities</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span>World:</span> G7 leaders convene emergency summit on Middle East tensions</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span>Climate:</span> UN report warns of irreversible tipping points by 2035 without action</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span>Business:</span> Apple announces $100B buyback; quarterly revenue exceeds $120B</span>
+    <span class="ticker-dot"></span>
+    <span class="ticker-item"><span>Science:</span> CERN discovers new particle that could rewrite Standard Model</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="logo">NEX<span>US</span></div>
+    <ul class="nav-links">
+      <li><a href="#" class="active" onclick="showPage('home',this)">Home</a></li>
+      <li><a href="#" onclick="showPage('tech',this)">Technology</a></li>
+      <li><a href="#" onclick="showPage('business',this)">Business</a></li>
+      <li><a href="#" onclick="showPage('world',this)">World</a></li>
+      <li><a href="#" onclick="showPage('article',this)">Article</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="nav-date" id="navDate"></span>
+      <button class="nav-search">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        Search
+      </button>
+      <button class="nav-subscribe">Subscribe</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════ HOME PAGE ═══════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <div class="hero">
+    <div class="container">
+      <div class="breaking-badge">Breaking News</div>
+
+      <div class="hero-grid">
+        <!-- Main Story -->
+        <div class="hero-main" onclick="showPage('article', null)">
+          <div class="hero-main-img-wrap">
+            <svg class="img-svg bg-1" viewBox="0 0 720 405" xmlns="http://www.w3.org/2000/svg">
+              <rect width="720" height="405" fill="url(#g1)"/>
+              <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#0f3460"/><stop offset="100%" stop-color="#4a90d9"/>
+              </linearGradient></defs>
+              <circle cx="360" cy="160" r="80" fill="rgba(255,255,255,.04)"/>
+              <circle cx="360" cy="160" r="50" fill="rgba(255,255,255,.06)"/>
+              <text x="360" y="260" class="svg-label" font-size="22">AI · GLOBAL POLICY</text>
+              <text x="360" y="290" class="svg-label" font-size="14">Feature Story</text>
+            </svg>
+          </div>
+          <div class="story-category">🔴 Breaking</div>
+          <h1 class="hero-title">World Leaders Reach Landmark AI Governance Accord at Geneva Summit</h1>
+          <p class="hero-deck">In a historic 72-hour negotiation, representatives from 48 nations agreed to binding safety standards and a global AI incident reporting framework that experts say could reshape the future of the technology.</p>
+          <div class="byline">
+            <div class="byline-avatar">SR</div>
+            <span>By <strong>Sofia Renard</strong></span>
+            <span class="byline-sep">·</span>
+            <span>2 hours ago</span>
+            <span class="byline-sep">·</span>
+            <span class="read-time">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              8 min read
+            </span>
+          </div>
+        </div>
+
+        <!-- Secondary -->
+        <div class="hero-secondary" onclick="showPage('article', null)">
+          <div class="sec-img-wrap">
+            <svg class="img-svg bg-2" viewBox="0 0 480 270" xmlns="http://www.w3.org/2000/svg">
+              <rect width="480" height="270" fill="url(#g2)"/>
+              <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#1b4332"/><stop offset="100%" stop-color="#52b788"/>
+              </linearGradient></defs>
+              <text x="240" y="145" class="svg-label">BUSINESS · MARKETS</text>
+            </svg>
+          </div>
+          <div class="story-category biz">Business</div>
+          <h2 class="sec-title">Fed Signals Pause as Inflation Data Offers First Glimmer of Relief</h2>
+          <p class="sec-deck">Core PCE fell to 2.4% in March, prompting markets to rally. Analysts now see June rate cut as a 68% probability.</p>
+          <div class="byline">
+            <div class="byline-avatar">MK</div>
+            <span>By <strong>Marcus Kline</strong></span>
+            <span class="byline-sep">·</span>
+            <span>4 hrs ago</span>
+          </div>
+        </div>
+
+        <!-- Tertiary -->
+        <div class="hero-tertiary" onclick="showPage('article', null)">
+          <div class="story-category tech">Technology</div>
+          <div class="ter-title">Quantum Computing Startup Raises $800M, Valuation Surpasses $12 Billion</div>
+          <p class="ter-deck">QScale's Series D round, led by Andreessen Horowitz and SoftBank, marks the largest single raise in quantum history.</p>
+          <div class="byline" style="margin-top:10px">
+            <span>By <strong>Priya Nair</strong></span>
+            <span class="byline-sep">·</span>
+            <span>6 hrs ago</span>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="hero-sidebar">
+          <div class="sidebar-section">
+            <div class="sidebar-heading">Trending Now</div>
+            <div class="trending-item" onclick="showPage('article',null)">
+              <div class="trending-num">1</div>
+              <div class="trending-info">
+                <div class="trending-title">EU Digital Markets Act Enforcement Begins Monday</div>
+                <div class="trending-meta">Business · 1.2k reads</div>
+              </div>
+            </div>
+            <div class="trending-item" onclick="showPage('article',null)">
+              <div class="trending-num">2</div>
+              <div class="trending-info">
+                <div class="trending-title">SpaceX Starship Completes First Orbital Mission</div>
+                <div class="trending-meta">Tech · 980 reads</div>
+              </div>
+            </div>
+            <div class="trending-item" onclick="showPage('article',null)">
+              <div class="trending-num">3</div>
+              <div class="trending-info">
+                <div class="trending-title">India Overtakes Germany as World's Third-Largest Economy</div>
+                <div class="trending-meta">World · 875 reads</div>
+              </div>
+            </div>
+            <div class="trending-item" onclick="showPage('article',null)">
+              <div class="trending-num">4</div>
+              <div class="trending-info">
+                <div class="trending-title">Climate Scientists Record Hottest Day in 125,000 Years</div>
+                <div class="trending-meta">World · 742 reads</div>
+              </div>
+            </div>
+            <div class="trending-item" onclick="showPage('article',null)">
+              <div class="trending-num">5</div>
+              <div class="trending-info">
+                <div class="trending-title">Apple Intelligence Announces Real-Time Translation OS</div>
+                <div class="trending-meta">Tech · 694 reads</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="ad-block">
+              <div class="ad-label">Newsletter</div>
+              <div class="newsletter-form">
+                <div class="newsletter-title">Morning Briefing</div>
+                <div class="newsletter-sub">The 5 stories that matter, delivered at 7 AM. Read by 240,000 professionals.</div>
+                <input class="newsletter-input" type="email" placeholder="Enter your email">
+                <button class="newsletter-btn">Subscribe Free →</button>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- Latest in Tech -->
+  <div class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title"><span class="section-title-accent"></span>Latest in Technology</h2>
+        <a href="#" class="section-more" onclick="showPage('tech',document.querySelector('[onclick*=tech]'))">All Tech →</a>
+      </div>
+      <div class="cards-grid">
+        <div class="card" onclick="showPage('article',null)">
+          <div class="card-img-wrap">
+            <svg class="img-svg bg-5" viewBox="0 0 480 270"><rect width="480" height="270" fill="url(#g5)"/><defs><linearGradient id="g5" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#001a33"/><stop offset="100%" stop-color="#0066b3"/></linearGradient></defs><text x="240" y="140" class="svg-label">SEMICONDUCTOR</text></svg>
+          </div>
+          <div class="story-category tech">Technology</div>
+          <div class="card-title">TSMC's 1nm Node Enters Risk Production Ahead of Schedule</div>
+          <p class="card-deck">Taiwan Semiconductor's breakthrough could give Apple and Nvidia a significant lead in next-generation silicon.</p>
+          <div class="byline"><span>Elena Voss</span><span class="byline-sep">·</span><span>3h ago</span><span class="byline-sep">·</span><span>5 min</span></div>
+        </div>
+        <div class="card" onclick="showPage('article',null)">
+          <div class="card-img-wrap">
+            <svg class="img-svg bg-4" viewBox="0 0 480 270"><rect width="480" height="270" fill="url(#g4)"/><defs><linearGradient id="g4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3d0066"/><stop offset="100%" stop-color="#9b59b6"/></linearGradient></defs><text x="240" y="140" class="svg-label">CYBERSECURITY</text></svg>
+          </div>
+          <div class="story-category tech">Technology</div>
+          <div class="card-title">Global Ransomware Attack Disrupts 200 Hospitals Across 12 Countries</div>
+          <p class="card-deck">A sophisticated nation-state group exploited a zero-day in widely-used medical imaging software.</p>
+          <div class="byline"><span>James Okafor</span><span class="byline-sep">·</span><span>5h ago</span><span class="byline-sep">·</span><span>7 min</span></div>
+        </div>
+        <div class="card" onclick="showPage('article',null)">
+          <div class="card-img-wrap">
+            <svg class="img-svg bg-7" viewBox="0 0 480 270"><rect width="480" height="270" fill="url(#g7)"/><defs><linearGradient id="g7" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#001a33"/><stop offset="100%" stop-color="#0066b3"/></linearGradient></defs><text x="240" y="140" class="svg-label">SOCIAL MEDIA</text></svg>
+          </div>
+          <div class="story-category tech">Technology</div>
+          <div class="card-title">Meta's New Social Layer Could Reshape How the Open Web Works</div>
+          <p class="card-deck">ActivityPub integration with Instagram and Threads signals a broader decentralisation of social media.</p>
+          <div class="byline"><span>Anika Srivastava</span><span class="byline-sep">·</span><span>8h ago</span><span class="byline-sep">·</span><span>6 min</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Business / World split -->
+  <div class="section">
+    <div class="container">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:48px;">
+        <!-- Business -->
+        <div>
+          <div class="section-header">
+            <h2 class="section-title"><span class="section-title-accent" style="background:var(--green)"></span>Business</h2>
+            <a href="#" class="section-more" onclick="showPage('business', document.querySelectorAll('[onclick*=business]')[0])">More →</a>
+          </div>
+          <div class="list-articles">
+            <div class="list-article" onclick="showPage('article',null)">
+              <div>
+                <div class="story-category biz" style="margin-bottom:5px;">Business</div>
+                <div class="list-title">Goldman Sachs Predicts 40% of Office Jobs Automated by 2030</div>
+                <p class="list-deck">A landmark study models sector-by-sector disruption from generative AI, raising policy alarms.</p>
+                <div class="byline" style="margin-top:8px"><span>2h ago</span><span class="byline-sep">·</span><span>9 min</span></div>
+              </div>
+              <div class="list-img">
+                <svg class="img-svg bg-2" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#lb1)"/><defs><linearGradient id="lb1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1b4332"/><stop offset="100%" stop-color="#52b788"/></linearGradient></defs></svg>
+              </div>
+            </div>
+            <div class="list-article" onclick="showPage('article',null)">
+              <div>
+                <div class="story-category biz" style="margin-bottom:5px;">Business</div>
+                <div class="list-title">Nvidia's Market Cap Eclipses $4 Trillion for First Time</div>
+                <p class="list-deck">AI infrastructure demand shows no signs of slowing, analysts say.</p>
+                <div class="byline" style="margin-top:8px"><span>5h ago</span><span class="byline-sep">·</span><span>4 min</span></div>
+              </div>
+              <div class="list-img">
+                <svg class="img-svg bg-8" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#lb2)"/><defs><linearGradient id="lb2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0d2200"/><stop offset="100%" stop-color="#3a8200"/></linearGradient></defs></svg>
+              </div>
+            </div>
+            <div class="list-article" onclick="showPage('article',null)">
+              <div>
+                <div class="story-category biz" style="margin-bottom:5px;">Business</div>
+                <div class="list-title">Uber Logistics Acquires DHL's European Ground Fleet</div>
+                <p class="list-deck">The $6.2B deal signals Uber's pivot from ride-sharing to supply chain dominance.</p>
+                <div class="byline" style="margin-top:8px"><span>9h ago</span><span class="byline-sep">·</span><span>5 min</span></div>
+              </div>
+              <div class="list-img">
+                <svg class="img-svg bg-6" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#lb3)"/><defs><linearGradient id="lb3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a0a00"/><stop offset="100%" stop-color="#c85400"/></linearGradient></defs></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- World -->
+        <div>
+          <div class="section-header">
+            <h2 class="section-title"><span class="section-title-accent" style="background:var(--gold)"></span>World</h2>
+            <a href="#" class="section-more" onclick="showPage('world', document.querySelectorAll('[onclick*=world]')[0])">More →</a>
+          </div>
+          <div class="list-articles">
+            <div class="list-article" onclick="showPage('article',null)">
+              <div>
+                <div class="story-category world" style="margin-bottom:5px;">World</div>
+                <div class="list-title">NATO Approves Largest Peacetime Expansion of Defence Spending</div>
+                <p class="list-deck">Member nations pledge 3% of GDP to defence amid rising eastern European tensions.</p>
+                <div class="byline" style="margin-top:8px"><span>1h ago</span><span class="byline-sep">·</span><span>6 min</span></div>
+              </div>
+              <div class="list-img">
+                <svg class="img-svg bg-3" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#lw1)"/><defs><linearGradient id="lw1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7b2d00"/><stop offset="100%" stop-color="#e07841"/></linearGradient></defs></svg>
+              </div>
+            </div>
+            <div class="list-article" onclick="showPage('article',null)">
+              <div>
+                <div class="story-category world" style="margin-bottom:5px;">World</div>
+                <div class="list-title">Brazil's Amazon Fund Surpasses $3B as Deforestation Drops 67%</div>
+                <p class="list-deck">International donors praise President Lula's environmental record heading into the UN climate summit.</p>
+                <div class="byline" style="margin-top:8px"><span>4h ago</span><span class="byline-sep">·</span><span>5 min</span></div>
+              </div>
+              <div class="list-img">
+                <svg class="img-svg bg-8" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#lw2)"/><defs><linearGradient id="lw2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0d2200"/><stop offset="100%" stop-color="#3a8200"/></linearGradient></defs></svg>
+              </div>
+            </div>
+            <div class="list-article" onclick="showPage('article',null)">
+              <div>
+                <div class="story-category world" style="margin-bottom:5px;">World</div>
+                <div class="list-title">South Korea's Constitutional Court Reinstates Impeached President</div>
+                <p class="list-deck">The 8-0 ruling ends months of political uncertainty and sparks celebrations in Seoul.</p>
+                <div class="byline" style="margin-top:8px"><span>7h ago</span><span class="byline-sep">·</span><span>7 min</span></div>
+              </div>
+              <div class="list-img">
+                <svg class="img-svg bg-1" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#lw3)"/><defs><linearGradient id="lw3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0f3460"/><stop offset="100%" stop-color="#4a90d9"/></linearGradient></defs></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-home -->
+
+
+<!-- ═══════════════════════════ TECH PAGE ═══════════════════════════ -->
+<div class="page" id="page-tech">
+  <div class="cat-hero">
+    <div class="container">
+      <div class="cat-eyebrow">Section</div>
+      <div class="cat-title tech">Technology</div>
+      <div class="cat-desc">Covering the companies, breakthroughs, and ideas rewriting the rules of the digital age.</div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="cat-layout">
+      <div class="cat-main">
+        <div class="cat-featured" onclick="showPage('article',null)">
+          <div class="cat-feat-img-wrap">
+            <svg class="img-svg bg-1" viewBox="0 0 900 394"><rect width="900" height="394" fill="url(#cg1)"/><defs><linearGradient id="cg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0f3460"/><stop offset="100%" stop-color="#4a90d9"/></linearGradient></defs><text x="450" y="200" class="svg-label" font-size="24">ARTIFICIAL INTELLIGENCE</text></svg>
+          </div>
+          <div class="story-category tech">Technology · Featured</div>
+          <div class="cat-feat-title">The Race to AGI: Inside the Labs Betting Everything on the Next Leap</div>
+          <p class="cat-feat-deck">Exclusive access to OpenAI, Anthropic, DeepMind, and xAI reveals a field marked by extraordinary ambition, profound uncertainty, and increasing regulatory friction.</p>
+          <div class="byline"><div class="byline-avatar">TW</div><span>By <strong>Thomas Whitfield</strong></span><span class="byline-sep">·</span><span>Today</span><span class="byline-sep">·</span><span>18 min read</span></div>
+        </div>
+
+        <div class="cat-articles">
+          <div class="section-header" style="margin-bottom:20px">
+            <h3 class="section-title" style="font-size:16px; letter-spacing:.06em;">LATEST STORIES</h3>
+          </div>
+          <div class="list-articles">
+            <div class="list-article" onclick="showPage('article',null)">
+              <div><div class="story-category tech" style="margin-bottom:5px;">AI</div><div class="list-title">Mistral 3 Beats GPT-4 on 14 of 16 Standard Benchmarks</div><p class="list-deck">The French startup's open-weight model is setting a new bar for efficiency versus performance tradeoffs.</p><div class="byline" style="margin-top:8px"><span>2h ago</span><span class="byline-sep">·</span><span>5 min</span></div></div>
+              <div class="list-img"><svg class="img-svg bg-4" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#ct1)"/><defs><linearGradient id="ct1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3d0066"/><stop offset="100%" stop-color="#9b59b6"/></linearGradient></defs></svg></div>
+            </div>
+            <div class="list-article" onclick="showPage('article',null)">
+              <div><div class="story-category tech" style="margin-bottom:5px;">Hardware</div><div class="list-title">AMD's MI400 GPU Promises 3× Performance Jump for AI Training</div><p class="list-deck">Jensen Huang called it "the most consequential compute product in two decades."</p><div class="byline" style="margin-top:8px"><span>5h ago</span><span class="byline-sep">·</span><span>4 min</span></div></div>
+              <div class="list-img"><svg class="img-svg bg-5" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#ct2)"/><defs><linearGradient id="ct2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#001a33"/><stop offset="100%" stop-color="#0066b3"/></linearGradient></defs></svg></div>
+            </div>
+            <div class="list-article" onclick="showPage('article',null)">
+              <div><div class="story-category tech" style="margin-bottom:5px;">Policy</div><div class="list-title">EU AI Act's First Compliance Deadline Arrives — Few Companies Are Ready</div><p class="list-deck">Legal experts warn that enforcement could begin as early as September, with fines up to 6% of global revenue.</p><div class="byline" style="margin-top:8px"><span>8h ago</span><span class="byline-sep">·</span><span>7 min</span></div></div>
+              <div class="list-img"><svg class="img-svg bg-6" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#ct3)"/><defs><linearGradient id="ct3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a0a00"/><stop offset="100%" stop-color="#c85400"/></linearGradient></defs></svg></div>
+            </div>
+            <div class="list-article" onclick="showPage('article',null)">
+              <div><div class="story-category tech" style="margin-bottom:5px;">Startups</div><div class="list-title">Perplexity AI Valued at $9B After SoftBank-Led Round</div><p class="list-deck">The AI search startup is now positioned as the most credible challenger to Google's search dominance.</p><div class="byline" style="margin-top:8px"><span>11h ago</span><span class="byline-sep">·</span><span>5 min</span></div></div>
+              <div class="list-img"><svg class="img-svg bg-7" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#ct4)"/><defs><linearGradient id="ct4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#001a33"/><stop offset="100%" stop-color="#0066b3"/></linearGradient></defs></svg></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="cat-sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-heading">Tech Briefing</div>
+          <div class="ad-block">
+            <div class="newsletter-form">
+              <div class="newsletter-title">Tech Intel</div>
+              <div class="newsletter-sub">Weekly deep-dives on AI, chips, and the future of software. 180,000 engineers subscribe.</div>
+              <input class="newsletter-input" type="email" placeholder="your@email.com">
+              <button class="newsletter-btn">Get It Free →</button>
+            </div>
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-heading">Also in Tech</div>
+          <div class="trending-item" onclick="showPage('article',null)"><div class="trending-num">1</div><div class="trending-info"><div class="trending-title">Apple WWDC 2026 Predictions</div><div class="trending-meta">450 reads</div></div></div>
+          <div class="trending-item" onclick="showPage('article',null)"><div class="trending-num">2</div><div class="trending-info"><div class="trending-title">How Tesla's FSD Finally Passed</div><div class="trending-meta">380 reads</div></div></div>
+          <div class="trending-item" onclick="showPage('article',null)"><div class="trending-num">3</div><div class="trending-info"><div class="trending-title">The Solid-State Battery Race</div><div class="trending-meta">312 reads</div></div></div>
+          <div class="trending-item" onclick="showPage('article',null)"><div class="trending-num">4</div><div class="trending-info"><div class="trending-title">Inside Google's Project Astra</div><div class="trending-meta">295 reads</div></div></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════ BUSINESS PAGE ═════════════════════════ -->
+<div class="page" id="page-business">
+  <div class="cat-hero">
+    <div class="container">
+      <div class="cat-eyebrow">Section</div>
+      <div class="cat-title biz">Business</div>
+      <div class="cat-desc">Markets, strategy, and the forces reshaping global commerce and industry.</div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="cat-layout">
+      <div class="cat-main">
+        <div class="cat-featured" onclick="showPage('article',null)">
+          <div class="cat-feat-img-wrap">
+            <svg class="img-svg bg-2" viewBox="0 0 900 394"><rect width="900" height="394" fill="url(#bcg)"/><defs><linearGradient id="bcg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1b4332"/><stop offset="100%" stop-color="#52b788"/></linearGradient></defs><text x="450" y="200" class="svg-label" font-size="24">GLOBAL MARKETS</text></svg>
+          </div>
+          <div class="story-category biz">Business · Analysis</div>
+          <div class="cat-feat-title">The New Industrial Policy: How Governments Are Winning Back Manufacturing</div>
+          <p class="cat-feat-deck">From the CHIPS Act to Europe's Net-Zero Industry Act, a new era of state-directed capitalism is upending four decades of free-market orthodoxy — and it's working.</p>
+          <div class="byline"><div class="byline-avatar">LC</div><span>By <strong>Laura Chen</strong></span><span class="byline-sep">·</span><span>Today</span><span class="byline-sep">·</span><span>14 min read</span></div>
+        </div>
+
+        <div class="cat-articles">
+          <div class="section-header" style="margin-bottom:20px"><h3 class="section-title" style="font-size:16px; letter-spacing:.06em;">LATEST STORIES</h3></div>
+          <div class="list-articles">
+            <div class="list-article" onclick="showPage('article',null)">
+              <div><div class="story-category biz" style="margin-bottom:5px;">Finance</div><div class="list-title">BlackRock's $20T AUM: The World's Largest Asset Manager Gets Bigger</div><p class="list-deck">Its acquisition of Global Infrastructure Partners and HPS Investment Partners closed simultaneously this week.</p><div class="byline" style="margin-top:8px"><span>3h ago</span><span class="byline-sep">·</span><span>6 min</span></div></div>
+              <div class="list-img"><svg class="img-svg bg-2" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#bl1)"/><defs><linearGradient id="bl1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1b4332"/><stop offset="100%" stop-color="#52b788"/></linearGradient></defs></svg></div>
+            </div>
+            <div class="list-article" onclick="showPage('article',null)">
+              <div><div class="story-category biz" style="margin-bottom:5px;">Retail</div><div class="list-title">Amazon's Physical Stores Hit 5,000 Locations as Brick-and-Mortar Bets Pay Off</div><p class="list-deck">Just Walk Out technology now processes 2.1 million transactions daily across the US and UK.</p><div class="byline" style="margin-top:8px"><span>6h ago</span><span class="byline-sep">·</span><span>5 min</span></div></div>
+              <div class="list-img"><svg class="img-svg bg-6" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#bl2)"/><defs><linearGradient id="bl2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a0a00"/><stop offset="100%" stop-color="#c85400"/></linearGradient></defs></svg></div>
+            </div>
+            <div class="list-article" onclick="showPage('article',null)">
+              <div><div class="story-category biz" style="margin-bottom:5px;">Energy</div><div class="list-title">Saudi Aramco Posts Record Profit Despite Oil Price Volatility</div><p class="list-deck">Diversification into petrochemicals and hydrogen is cushioning the state giant against crude swings.</p><div class="byline" style="margin-top:8px"><span>10h ago</span><span class="byline-sep">·</span><span>4 min</span></div></div>
+              <div class="list-img"><svg class="img-svg bg-3" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#bl3)"/><defs><linearGradient id="bl3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7b2d00"/><stop offset="100%" stop-color="#e07841"/></linearGradient></defs></svg></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="cat-sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-heading">Markets Snapshot</div>
+          <div class="ad-block" style="text-align:left">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div style="padding:12px; background:#fff; border:1px solid var(--border); border-radius:6px;">
+                <div style="font-size:11px; color:var(--muted); margin-bottom:4px;">S&P 500</div>
+                <div style="font-family:var(--ff-mono); font-size:16px; font-weight:600; color:var(--green);">5,921</div>
+                <div style="font-size:11px; color:var(--green);">+0.42%</div>
+              </div>
+              <div style="padding:12px; background:#fff; border:1px solid var(--border); border-radius:6px;">
+                <div style="font-size:11px; color:var(--muted); margin-bottom:4px;">NASDAQ</div>
+                <div style="font-family:var(--ff-mono); font-size:16px; font-weight:600; color:var(--green);">19,284</div>
+                <div style="font-size:11px; color:var(--green);">+0.61%</div>
+              </div>
+              <div style="padding:12px; background:#fff; border:1px solid var(--border); border-radius:6px;">
+                <div style="font-size:11px; color:var(--muted); margin-bottom:4px;">EUR/USD</div>
+                <div style="font-family:var(--ff-mono); font-size:16px; font-weight:600; color:var(--red);">1.0812</div>
+                <div style="font-size:11px; color:var(--red);">-0.18%</div>
+              </div>
+              <div style="padding:12px; background:#fff; border:1px solid var(--border); border-radius:6px;">
+                <div style="font-size:11px; color:var(--muted); margin-bottom:4px;">Gold</div>
+                <div style="font-family:var(--ff-mono); font-size:16px; font-weight:600; color:var(--green);">$3,142</div>
+                <div style="font-size:11px; color:var(--green);">+1.02%</div>
+              </div>
+            </div>
+            <div style="font-size:10px; color:var(--muted); margin-top:10px; text-align:center;">Delayed 15min · <a href="#" style="color:var(--blue)">Full Markets →</a></div>
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-heading">Trending in Business</div>
+          <div class="trending-item" onclick="showPage('article',null)"><div class="trending-num">1</div><div class="trending-info"><div class="trending-title">The End of Zero-Interest Rates</div><div class="trending-meta">520 reads</div></div></div>
+          <div class="trending-item" onclick="showPage('article',null)"><div class="trending-num">2</div><div class="trending-info"><div class="trending-title">Why Venture Capital Is Struggling</div><div class="trending-meta">410 reads</div></div></div>
+          <div class="trending-item" onclick="showPage('article',null)"><div class="trending-num">3</div><div class="trending-info"><div class="trending-title">China's EV Dominance in Europe</div><div class="trending-meta">360 reads</div></div></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════ WORLD PAGE ══════════════════════════ -->
+<div class="page" id="page-world">
+  <div class="cat-hero">
+    <div class="container">
+      <div class="cat-eyebrow">Section</div>
+      <div class="cat-title world">World</div>
+      <div class="cat-desc">Dispatches, analysis, and on-the-ground reporting from every corner of the globe.</div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="cat-layout">
+      <div class="cat-main">
+        <div class="cat-featured" onclick="showPage('article',null)">
+          <div class="cat-feat-img-wrap">
+            <svg class="img-svg bg-3" viewBox="0 0 900 394"><rect width="900" height="394" fill="url(#wcg)"/><defs><linearGradient id="wcg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7b2d00"/><stop offset="100%" stop-color="#e07841"/></linearGradient></defs><text x="450" y="200" class="svg-label" font-size="24">GEOPOLITICS</text></svg>
+          </div>
+          <div class="story-category world">World · In-Depth</div>
+          <div class="cat-feat-title">The New Cold War's First Front: Undersea Cable Sabotage and the Battle for Internet Infrastructure</div>
+          <p class="cat-feat-deck">Seven cable cuts in 18 months have prompted NATO to deploy subsea protection assets. We trace the suspected perpetrators, the vulnerabilities, and the high-stakes effort to defend the arteries of the global internet.</p>
+          <div class="byline"><div class="byline-avatar">OM</div><span>By <strong>Olga Marchetti</strong></span><span class="byline-sep">·</span><span>Yesterday</span><span class="byline-sep">·</span><span>22 min read</span></div>
+        </div>
+
+        <div class="cat-articles">
+          <div class="section-header" style="margin-bottom:20px"><h3 class="section-title" style="font-size:16px; letter-spacing:.06em;">LATEST STORIES</h3></div>
+          <div class="list-articles">
+            <div class="list-article" onclick="showPage('article',null)">
+              <div><div class="story-category world" style="margin-bottom:5px;">Middle East</div><div class="list-title">Israel-Hamas Ceasefire Reaches Day 90 as Talks on Permanent Deal Resume</div><p class="list-deck">US mediators return to Doha as Qatar pushes a framework that could reshape the region's security architecture.</p><div class="byline" style="margin-top:8px"><span>1h ago</span><span class="byline-sep">·</span><span>8 min</span></div></div>
+              <div class="list-img"><svg class="img-svg bg-3" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#wl1)"/><defs><linearGradient id="wl1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7b2d00"/><stop offset="100%" stop-color="#e07841"/></linearGradient></defs></svg></div>
+            </div>
+            <div class="list-article" onclick="showPage('article',null)">
+              <div><div class="story-category world" style="margin-bottom:5px;">Africa</div><div class="list-title">Kenya's Tech Ecosystem Surpasses Nigeria as Africa's Largest by Funding</div><p class="list-deck">A mix of regulatory clarity, talent density, and infrastructure investment has given Nairobi an edge.</p><div class="byline" style="margin-top:8px"><span>5h ago</span><span class="byline-sep">·</span><span>6 min</span></div></div>
+              <div class="list-img"><svg class="img-svg bg-8" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#wl2)"/><defs><linearGradient id="wl2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0d2200"/><stop offset="100%" stop-color="#3a8200"/></linearGradient></defs></svg></div>
+            </div>
+            <div class="list-article" onclick="showPage('article',null)">
+              <div><div class="story-category world" style="margin-bottom:5px;">Europe</div><div class="list-title">France Holds Snap Elections After Macron Coalition Loses Parliament Majority</div><p class="list-deck">The shock announcement triggers a constitutional crisis and markets rout in Paris.</p><div class="byline" style="margin-top:8px"><span>9h ago</span><span class="byline-sep">·</span><span>7 min</span></div></div>
+              <div class="list-img"><svg class="img-svg bg-4" viewBox="0 0 100 100"><rect width="100" height="100" fill="url(#wl3)"/><defs><linearGradient id="wl3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3d0066"/><stop offset="100%" stop-color="#9b59b6"/></linearGradient></defs></svg></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="cat-sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-heading">World Correspondents</div>
+          <div style="display:flex; flex-direction:column; gap:14px;">
+            <div style="display:flex; gap:10px; align-items:center; cursor:pointer;">
+              <div class="byline-avatar" style="width:36px;height:36px;flex-shrink:0;background:linear-gradient(135deg,#7b2d00,#e07841);">OM</div>
+              <div><div style="font-size:13px; font-weight:600;">Olga Marchetti</div><div style="font-size:11.5px; color:var(--muted);">Brussels Bureau</div></div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; cursor:pointer;">
+              <div class="byline-avatar" style="width:36px;height:36px;flex-shrink:0;background:linear-gradient(135deg,#1b4332,#52b788);">RJ</div>
+              <div><div style="font-size:13px; font-weight:600;">Ravi Joshi</div><div style="font-size:11.5px; color:var(--muted);">New Delhi Bureau</div></div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; cursor:pointer;">
+              <div class="byline-avatar" style="width:36px;height:36px;flex-shrink:0;background:linear-gradient(135deg,#0f3460,#4a90d9);">YW</div>
+              <div><div style="font-size:13px; font-weight:600;">Yi Wang</div><div style="font-size:11.5px; color:var(--muted);">Hong Kong Bureau</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-heading">Trending World</div>
+          <div class="trending-item" onclick="showPage('article',null)"><div class="trending-num">1</div><div class="trending-info"><div class="trending-title">The Taiwan Strait's Quiet Standoff</div><div class="trending-meta">1.1k reads</div></div></div>
+          <div class="trending-item" onclick="showPage('article',null)"><div class="trending-num">2</div><div class="trending-info"><div class="trending-title">Putin's Succession Plans Emerge</div><div class="trending-meta">890 reads</div></div></div>
+          <div class="trending-item" onclick="showPage('article',null)"><div class="trending-num">3</div><div class="trending-info"><div class="trending-title">Pakistan's IMF Deal Teeters</div><div class="trending-meta">620 reads</div></div></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════ ARTICLE PAGE ══════════════════════════ -->
+<div class="page" id="page-article">
+  <div class="article-wrap">
+    <div class="container">
+      <div class="article-layout">
+        <article class="article-body">
+          <header class="article-header">
+            <div class="article-category">
+              <span class="story-category">🔴 Breaking · World</span>
+            </div>
+            <h1 class="article-title">World Leaders Reach Landmark AI Governance Accord at Geneva Summit</h1>
+            <p class="article-deck">In a historic 72-hour negotiation, representatives from 48 nations agreed to binding safety standards and a global AI incident reporting framework that experts say could fundamentally reshape the future of the technology.</p>
+            <div class="article-meta">
+              <div class="article-author">
+                <div class="author-avatar">SR</div>
+                <div>
+                  <div class="author-name">Sofia Renard</div>
+                  <div class="author-role">Senior Correspondent, Technology Policy</div>
+                </div>
+              </div>
+              <div class="article-stats">
+                <span>
+                  <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  8 min read
+                </span>
+                <span>
+                  <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  14.2k views
+                </span>
+                <span>April 22, 2026</span>
+              </div>
+            </div>
+          </header>
+
+          <svg class="article-hero-img" viewBox="0 0 900 450" xmlns="http://www.w3.org/2000/svg">
+            <rect width="900" height="450" fill="url(#ahg)"/>
+            <defs>
+              <linearGradient id="ahg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#0f3460"/><stop offset="60%" stop-color="#1a6eb5"/><stop offset="100%" stop-color="#4a90d9"/>
+              </linearGradient>
+            </defs>
+            <circle cx="450" cy="180" r="120" fill="rgba(255,255,255,.04)"/>
+            <circle cx="450" cy="180" r="75" fill="rgba(255,255,255,.06)"/>
+            <circle cx="450" cy="180" r="35" fill="rgba(255,255,255,.12)"/>
+            <text x="450" y="340" class="svg-label" font-size="18">GENEVA, SWITZERLAND</text>
+            <text x="450" y="368" class="svg-label" font-size="13">April 20–22, 2026</text>
+          </svg>
+          <div class="article-img-caption">World leaders convened at the Palais des Nations for the three-day AI Safety Summit. Photo: UN/NEXUS</div>
+
+          <div class="article-content">
+            <p>GENEVA — After two days of fractious debate and a dramatic all-night session that stretched into Wednesday morning, delegates from 48 nations emerged from the Palais des Nations with a document that could prove to be the most consequential international agreement since the Paris Climate Accords.</p>
+
+            <p>The Geneva AI Accord, as it is already being called, establishes the first legally binding framework for artificial intelligence safety standards, creates a new international body — the Global AI Incident Registry — and mandates that frontier AI systems above a certain capability threshold undergo third-party evaluation before public deployment.</p>
+
+            <blockquote>"This is not the end of AI innovation. It is the beginning of AI responsibility."</blockquote>
+
+            <p>The agreement emerged from months of preparatory talks but nearly collapsed on Tuesday evening when a coalition of Asian nations, led by South Korea and Japan, pushed for stronger exemptions for sovereign AI development programmes. A last-minute compromise, brokered by the EU's technology commissioner and the US Special Envoy for AI Policy, preserved the exemptions while establishing a binding review mechanism.</p>
+
+            <h2>What the Accord Actually Does</h2>
+
+            <p>The text runs to 94 pages, but its core obligations can be summarised in three pillars. First, any AI system capable of autonomous action across a wide range of domains — a threshold that currently applies to only a handful of products — must be registered with the new Geneva-based secretariat. Second, signatories must establish national AI incident reporting systems that share data with the international registry within 72 hours of a "material" incident. Third, military AI applications are subject to a separate protocol under existing UN conventions.</p>
+
+            <p>Critics from the tech industry were swift to respond. The Computer & Communications Industry Association called the capability threshold "vague and susceptible to regulatory overreach," while Anthropic and DeepMind both issued statements welcoming the accord's emphasis on safety standards, noting that many provisions aligned with their own internal policies.</p>
+
+            <h2>What Comes Next</h2>
+
+            <p>The accord requires ratification by at least 30 of the 48 signatory nations before it enters into force. US officials indicated that the Biden administration would seek Senate approval before year-end, though prospects in a divided Congress remain uncertain. China, notably absent from the summit, issued a statement calling the accord "a well-intentioned but premature attempt to ossify existing technological hierarchies."</p>
+
+            <p>For the estimated 1.4 billion people whose daily lives are already shaped by AI systems in healthcare, finance, and public administration, the accord's most immediate impact may be psychological: a signal that governments are no longer content to let the technology develop without democratic accountability.</p>
+
+            <p>Whether it succeeds will depend, as all such agreements do, not on the elegance of its language but on the willingness of states to enforce it when enforcement becomes costly. That test has not yet arrived.</p>
+          </div>
+
+          <div class="article-tags">
+            <span class="tag">Artificial Intelligence</span>
+            <span class="tag">Geneva Summit</span>
+            <span class="tag">AI Policy</span>
+            <span class="tag">UN</span>
+            <span class="tag">International Relations</span>
+            <span class="tag">Technology Regulation</span>
+          </div>
+        </article>
+
+        <aside class="article-sidebar">
+          <div class="sidebar-section">
+            <div class="sidebar-heading">Most Read Today</div>
+            <div class="trending-item" onclick="showPage('home',null)"><div class="trending-num">1</div><div class="trending-info"><div class="trending-title">Fed Signals Pause as Inflation Eases</div><div class="trending-meta">Finance · 2.1k reads</div></div></div>
+            <div class="trending-item"><div class="trending-num">2</div><div class="trending-info"><div class="trending-title">TSMC 1nm Enters Production</div><div class="trending-meta">Tech · 1.8k reads</div></div></div>
+            <div class="trending-item"><div class="trending-num">3</div><div class="trending-info"><div class="trending-title">India's GDP Overtakes Germany</div><div class="trending-meta">World · 1.4k reads</div></div></div>
+            <div class="trending-item"><div class="trending-num">4</div><div class="trending-info"><div class="trending-title">Nvidia $4T Market Cap</div><div class="trending-meta">Business · 1.2k reads</div></div></div>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="ad-block">
+              <div class="newsletter-form">
+                <div class="newsletter-title">Policy & Power</div>
+                <div class="newsletter-sub">The intersection of government and technology, twice weekly.</div>
+                <input class="newsletter-input" type="email" placeholder="your@email.com">
+                <button class="newsletter-btn">Subscribe →</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-section" style="margin-top:20px">
+            <div class="sidebar-heading">About the Author</div>
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <div class="author-avatar" style="flex-shrink:0;">SR</div>
+              <div>
+                <div style="font-size:14px; font-weight:600; margin-bottom:4px;">Sofia Renard</div>
+                <div style="font-size:12.5px; color:var(--muted); line-height:1.55;">Senior Correspondent covering AI policy, international tech governance, and the geopolitics of emerging technologies. Based in Brussels.</div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Related Articles -->
+      <div class="related-section">
+        <div class="section-header">
+          <h2 class="section-title"><span class="section-title-accent"></span>Related Stories</h2>
+        </div>
+        <div class="related-grid">
+          <div class="card" onclick="showPage('tech',null)">
+            <div class="card-img-wrap"><svg class="img-svg bg-4" viewBox="0 0 480 270"><rect width="480" height="270" fill="url(#rg1)"/><defs><linearGradient id="rg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3d0066"/><stop offset="100%" stop-color="#9b59b6"/></linearGradient></defs><text x="240" y="140" class="svg-label">AI SAFETY</text></svg></div>
+            <div class="story-category tech">Technology</div>
+            <div class="card-title">Inside the AI Safety Research Labs Racing to Solve Alignment</div>
+            <div class="byline"><span>James Okafor</span><span class="byline-sep">·</span><span>Yesterday</span></div>
+          </div>
+          <div class="card" onclick="showPage('tech',null)">
+            <div class="card-img-wrap"><svg class="img-svg bg-1" viewBox="0 0 480 270"><rect width="480" height="270" fill="url(#rg2)"/><defs><linearGradient id="rg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0f3460"/><stop offset="100%" stop-color="#4a90d9"/></linearGradient></defs><text x="240" y="140" class="svg-label">EU AI ACT</text></svg></div>
+            <div class="story-category tech">Policy</div>
+            <div class="card-title">EU AI Act Enforcement: What Every Company Must Do Now</div>
+            <div class="byline"><span>Anika Srivastava</span><span class="byline-sep">·</span><span>2 days ago</span></div>
+          </div>
+          <div class="card" onclick="showPage('world',null)">
+            <div class="card-img-wrap"><svg class="img-svg bg-3" viewBox="0 0 480 270"><rect width="480" height="270" fill="url(#rg3)"/><defs><linearGradient id="rg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7b2d00"/><stop offset="100%" stop-color="#e07841"/></linearGradient></defs><text x="240" y="140" class="svg-label">GEOPOLITICS</text></svg></div>
+            <div class="story-category world">World</div>
+            <div class="card-title">China Unveils Its Own AI Standards Framework, Rejecting Western Model</div>
+            <div class="byline"><span>Yi Wang</span><span class="byline-sep">·</span><span>3 days ago</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">NEX<span>US</span></div>
+        <div class="footer-tagline">Premium editorial journalism for people who need to understand the world. Trusted by 4.2 million readers across 190 countries.</div>
+        <div style="font-size:12px; color:rgba(255,255,255,.35);">© 2026 Nexus Media Group. All rights reserved.</div>
+      </div>
+      <div>
+        <div class="footer-col-title">Sections</div>
+        <div class="footer-links">
+          <a href="#" onclick="showPage('home',null)">Home</a>
+          <a href="#" onclick="showPage('tech',null)">Technology</a>
+          <a href="#" onclick="showPage('business',null)">Business</a>
+          <a href="#" onclick="showPage('world',null)">World</a>
+          <a href="#">Science</a>
+          <a href="#">Culture</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <div class="footer-links">
+          <a href="#">About Nexus</a>
+          <a href="#">Our Journalists</a>
+          <a href="#">Editorial Standards</a>
+          <a href="#">Corrections</a>
+          <a href="#">Careers</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Subscribe</div>
+        <div class="footer-links">
+          <a href="#">Digital Plan</a>
+          <a href="#">Print + Digital</a>
+          <a href="#">Corporate Access</a>
+          <a href="#">Student Discount</a>
+          <a href="#">Gift Subscription</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Privacy Policy · Terms of Service · Cookie Settings · Accessibility</span>
+      <span>Built with precision. Read with purpose.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Set date
+  const d = new Date();
+  document.getElementById('navDate').textContent = d.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
+
+  // Page navigation
+  function showPage(id, linkEl) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const page = document.getElementById('page-' + id);
+    if (page) {
+      page.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    if (linkEl) {
+      linkEl.classList.add('active');
+    } else {
+      // Try to auto-highlight
+      const map = { home: 0, tech: 1, business: 2, world: 3, article: 4 };
+      const idx = map[id];
+      if (idx !== undefined) {
+        const links = document.querySelectorAll('.nav-links a');
+        if (links[idx]) links[idx].classList.add('active');
+      }
+    }
+    return false;
+  }
+
+  // Make nav links work properly
+  document.querySelectorAll('.nav-links a').forEach((link, i) => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+    });
+  });
+
+  // Smooth fade-in on load
+  document.addEventListener('DOMContentLoaded', () => {
+    document.body.style.opacity = '0';
+    requestAnimationFrame(() => {
+      document.body.style.transition = 'opacity .4s ease';
+      document.body.style.opacity = '1';
+    });
+  });
+</script>
+</body>
+</html>

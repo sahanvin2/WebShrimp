@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Check } from "lucide-react";
+import { Check, ShoppingCart, Briefcase, Image as ImageIcon, Rocket, Share2, Wrench, Smartphone, Code2, Search, Link as LinkIcon, ArrowRight } from "lucide-react";
 import SiteLayout from "@/components/SiteLayout";
 import PageHero from "@/components/PageHero";
 import StatsStrip from "@/components/StatsStrip";
@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button";
 
 const SERVICES = [
   {
-    icon: "🛒",
+    slug: "e-commerce-websites",
+    icon: ShoppingCart,
     title: "E-Commerce Websites",
-    color: "bg-brand-orange-soft text-brand-orange",
+    color: "bg-brand-orange-soft text-brand-orange shadow-orange",
     desc: "Sell more with online stores built for speed, conversion and effortless management. Integrated payments and a clean admin keep you focused on growth.",
     features: [
       "Shopping cart & checkout flow",
@@ -19,11 +20,13 @@ const SERVICES = [
       "Order tracking & notifications",
       "Mobile-optimized storefront",
     ],
+    timeline: "4-8 weeks",
   },
   {
-    icon: "💼",
+    slug: "business-websites",
+    icon: Briefcase,
     title: "Business Websites",
-    color: "bg-brand-blue-soft text-brand-blue",
+    color: "bg-brand-blue-soft text-brand-blue shadow-glow",
     desc: "Professional, trust-building websites that turn visitors into customers. Perfect for service businesses, agencies and growing brands.",
     features: [
       "Up to 10 custom-designed pages",
@@ -32,11 +35,13 @@ const SERVICES = [
       "Contact form with email routing",
       "Social media integration",
     ],
+    timeline: "2-4 weeks",
   },
   {
-    icon: "🖼️",
+    slug: "portfolio-websites",
+    icon: ImageIcon,
     title: "Portfolio Websites",
-    color: "bg-purple-50 text-purple-600",
+    color: "bg-purple-50 text-purple-600 shadow-glow",
     desc: "Beautiful, gallery-focused sites that let your work speak for itself — for creatives, freelancers, photographers and studios.",
     features: [
       "Unlimited project showcase",
@@ -45,11 +50,13 @@ const SERVICES = [
       "Optimised image loading",
       "Personal branding focus",
     ],
+    timeline: "2-3 weeks",
   },
   {
-    icon: "🚀",
+    slug: "landing-pages",
+    icon: Rocket,
     title: "Landing Pages",
-    color: "bg-pink-50 text-pink-600",
+    color: "bg-pink-50 text-pink-600 shadow-glow",
     desc: "High-converting single pages purpose-built for your campaigns — paid ads, product launches, or lead generation.",
     features: [
       "A/B test ready structure",
@@ -58,11 +65,13 @@ const SERVICES = [
       "Sub-2s load speed",
       "Lead capture forms",
     ],
+    timeline: "1-2 weeks",
   },
   {
-    icon: "📱",
+    slug: "social-media-content",
+    icon: Share2,
     title: "Social Media Content",
-    color: "bg-emerald-50 text-emerald-600",
+    color: "bg-emerald-50 text-emerald-600 shadow-glow",
     desc: "Eye-catching design and motion content that stops the scroll — built around your brand and your goals.",
     features: [
       "Posters & feed posts",
@@ -71,11 +80,13 @@ const SERVICES = [
       "Branded banners",
       "Brand kits & guidelines",
     ],
+    timeline: "Ongoing / 1 week setup",
   },
   {
-    icon: "🔧",
+    slug: "website-maintenance",
+    icon: Wrench,
     title: "Website Maintenance",
-    color: "bg-amber-50 text-amber-600",
+    color: "bg-amber-50 text-amber-600 shadow-orange",
     desc: "Keep your website fast, secure and up-to-date with monthly maintenance plans handled by our engineering team.",
     features: [
       "Security patches & updates",
@@ -84,14 +95,15 @@ const SERVICES = [
       "Content & copy updates",
       "Performance tuning",
     ],
+    timeline: "Monthly Recurring",
   },
 ];
 
 const ADDITIONAL = [
-  { icon: "📲", title: "Mobile App Development", desc: "Native-feeling apps built with React Native & PWAs." },
-  { icon: "🧠", title: "Custom Software Solutions", desc: "Tailored business tools, dashboards & internal systems." },
-  { icon: "🔍", title: "SEO Optimization", desc: "Technical & on-page SEO to grow organic traffic." },
-  { icon: "🔗", title: "API Development & Integration", desc: "REST APIs and 3rd-party integrations done right." },
+  { icon: Smartphone, title: "Mobile App Development", desc: "Native-feeling apps built with React Native & PWAs.", color: "text-brand-orange" },
+  { icon: Code2, title: "Custom Software Solutions", desc: "Tailored business tools, dashboards & internal systems.", color: "text-brand-blue" },
+  { icon: Search, title: "SEO Optimization", desc: "Technical & on-page SEO to grow organic traffic.", color: "text-emerald-600" },
+  { icon: LinkIcon, title: "API Development & Integration", desc: "REST APIs and 3rd-party integrations done right.", color: "text-purple-600" },
 ];
 
 const Services = () => {
@@ -109,29 +121,39 @@ const Services = () => {
           {SERVICES.map((s, i) => (
             <article
               key={s.title}
-              className="reveal rounded-3xl bg-card border border-border p-8 shadow-card card-lift"
+              className="reveal group flex flex-col rounded-3xl bg-card border border-border p-8 shadow-card hover:shadow-glow transition-all card-lift"
               style={{ transitionDelay: `${i * 60}ms` }}
             >
               <div className="flex items-start gap-5">
-                <div className={`h-16 w-16 rounded-2xl flex items-center justify-center text-3xl shrink-0 ${s.color}`}>
-                  <span aria-hidden>{s.icon}</span>
+                <div className={`h-16 w-16 rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform ${s.color}`}>
+                  <s.icon className="h-8 w-8" />
                 </div>
                 <div>
-                  <h2 className="text-2xl text-brand-navy">{s.title}</h2>
-                  <p className="mt-2 text-muted-foreground">{s.desc}</p>
+                  <h2 className="text-2xl font-bold text-brand-navy">{s.title}</h2>
+                  {s.timeline && <p className="text-xs font-semibold text-brand-orange mt-1">Delivered in {s.timeline}</p>}
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
                 </div>
               </div>
-              <ul className="mt-6 space-y-2.5">
+              <ul className="mt-8 space-y-3 flex-1">
                 {s.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm text-foreground/85">
+                  <li key={f} className="flex items-start gap-3 text-sm text-foreground/85 font-medium">
                     <Check className="h-4 w-4 mt-0.5 text-brand-blue shrink-0" />
                     {f}
                   </li>
                 ))}
               </ul>
-              <Button asChild variant="cta" size="pill" className="mt-7">
-                <Link to="/contact">Get a Quote</Link>
-              </Button>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button asChild variant="hero" size="pill" className="group-hover:shadow-[0_4px_20px_rgb(20,50,225,0.3)] transition-all">
+                  <Link to={s.slug === "website-maintenance" ? "/pricing" : `/services/${s.slug}`}>
+                    View Details <ArrowRight className="h-4 w-4 ml-1" />
+                  </Link>
+                </Button>
+                <Button asChild variant="heroOutline" size="pill">
+                  <a href={`https://wa.me/94703031636?text=Hello! I am interested in the ${s.title} service.`} target="_blank" rel="noopener noreferrer">
+                    Get a Quote
+                  </a>
+                </Button>
+              </div>
             </article>
           ))}
         </div>
@@ -141,22 +163,24 @@ const Services = () => {
       <section className="bg-brand-blue-soft/60 py-20">
         <div className="container-x">
           <div className="text-center max-w-2xl mx-auto reveal">
-            <span className="section-label">More From Us</span>
+            <span className="section-label mx-auto">More From Us</span>
             <h2 className="mt-3 text-3xl sm:text-4xl text-brand-navy">Additional Services</h2>
             <p className="mt-4 text-muted-foreground">
               Beyond websites — we build the digital tools and content your business needs to scale.
             </p>
           </div>
-          <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="mt-12 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-5 pb-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:pb-0 md:overflow-visible">
             {ADDITIONAL.map((a, i) => (
               <div
                 key={a.title}
-                className="reveal rounded-2xl bg-card border border-border p-6 shadow-card card-lift text-center"
+                className="reveal group rounded-3xl bg-card border border-border p-8 shadow-card hover:shadow-glow transition-all card-lift text-center w-[85vw] shrink-0 snap-center md:w-auto md:shrink"
                 style={{ transitionDelay: `${i * 70}ms` }}
               >
-                <div className="text-3xl">{a.icon}</div>
-                <h3 className="mt-4 text-lg text-brand-navy">{a.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{a.desc}</p>
+                <div className={`mx-auto h-16 w-16 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0 group-hover:-translate-y-2 transition-transform shadow-sm border border-border ${a.color}`}>
+                  <a.icon className="h-8 w-8" />
+                </div>
+                <h3 className="mt-6 text-lg font-bold text-brand-navy">{a.title}</h3>
+                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{a.desc}</p>
               </div>
             ))}
           </div>

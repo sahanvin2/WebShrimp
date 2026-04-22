@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rise Together — Every Life Matters</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { display: ['Playfair Display','serif'], body: ['Source Sans 3','sans-serif'] },
+          colors: {
+            primary: '#C45D35', 'primary-dark': '#A34828', 'primary-light': '#E8A080',
+            accent: '#D4A853', 'accent-light': '#F0D48A',
+            fg: '#2D2420', 'text-main': '#3D3029', 'text-muted': '#8B7E74',
+            'bg-warm': '#FAF7F2', 'bg-alt': '#F2EDE6', 'border-warm': '#E5DED5'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root {
+      --primary:#C45D35;--primary-dark:#A34828;--primary-light:#E8A080;
+      --accent:#D4A853;--fg:#2D2420;--text:#3D3029;--text-muted:#8B7E74;
+      --bg:#FAF7F2;--bg-alt:#F2EDE6;--border:#E5DED5;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Source Sans 3',sans-serif;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;}
+    .sr{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1);}
+    .sr.visible{opacity:1;transform:translateY(0);}
+    .sr.d1{transition-delay:.1s}.sr.d2{transition-delay:.2s}.sr.d3{transition-delay:.3s}.sr.d4{transition-delay:.4s}.sr.d5{transition-delay:.5s}
+    .hero-fade{opacity:0;transform:translateY(25px);animation:heroIn .8s cubic-bezier(.16,1,.3,1) forwards;}
+    @keyframes heroIn{to{opacity:1;transform:translateY(0);}}
+    .page-enter{animation:pageIn .5s cubic-bezier(.16,1,.3,1);}
+    @keyframes pageIn{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes slideDown{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+    .progress-fill{transition:width 1.5s cubic-bezier(.16,1,.3,1);}
+    @keyframes pulseGlow{0%,100%{box-shadow:0 4px 20px rgba(196,93,53,.4);}50%{box-shadow:0 4px 30px rgba(196,93,53,.6),0 0 60px rgba(196,93,53,.2);}}
+    @keyframes checkDraw{to{stroke-dashoffset:0;}}
+    @keyframes circleDraw{to{stroke-dashoffset:0;}}
+    ::-webkit-scrollbar{width:8px;}::-webkit-scrollbar-track{background:var(--bg-alt);}::-webkit-scrollbar-thumb{background:var(--primary-light);border-radius:4px;}::-webkit-scrollbar-thumb:hover{background:var(--primary);}
+    ::selection{background:var(--primary-light);color:#fff;}
+    .campaign-card:hover .campaign-img{transform:scale(1.08);}
+    .quote-mark{font-family:'Playfair Display',serif;font-size:120px;line-height:1;color:var(--primary-light);opacity:.3;}
+    .warm-divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+    @keyframes toastIn{from{opacity:0;transform:translateY(-20px) scale(.95);}to{opacity:1;transform:translateY(0) scale(1);}}
+    @keyframes toastOut{from{opacity:1;transform:translateY(0) scale(1);}to{opacity:0;transform:translateY(-20px) scale(.95);}}
+    @keyframes subtleFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+    button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px;}
+    input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+    input[type="number"]{appearance:textfield;-moz-appearance:textfield;}
+    @media(prefers-reduced-motion:reduce){.sr{opacity:1;transform:none;transition:none;}.hero-fade{opacity:1;transform:none;animation:none;}.page-enter{animation:none;}.progress-fill{transition:none;}*{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+  </style>
+</head>
+<body class="bg-bg-warm font-body text-text-main">
+  <div id="root"></div>
+  <script>
+    var h = React.createElement;
+    var useState = React.useState;
+    var useEffect = React.useEffect;
+    var useRef = React.useRef;
+    var Fragment = React.Fragment;
+
+    /* ========== DATA ========== */
+    var impactStats = [
+      { icon:'fa-heart', number:15200, suffix:'+', label:'Lives Changed' },
+      { icon:'fa-house-chimney', number:3400, suffix:'+', label:'Families Sheltered' },
+      { icon:'fa-graduation-cap', number:8700, suffix:'+', label:'Children Educated' },
+      { icon:'fa-earth-americas', number:45, suffix:'', label:'Communities Reached' }
+    ];
+
+    var campaigns = [
+      { id:1, title:'Clean Water for Villages', desc:'Bringing safe, clean drinking water to remote villages in East Africa through sustainable well systems.', img:'https://picsum.photos/seed/water-well-africa/600/400', raised:42500, goal:75000, days:18, cat:'water' },
+      { id:2, title:'Schools of Hope', desc:'Building schools and providing supplies for underprivileged children across South Asia.', img:'https://picsum.photos/seed/school-kids-hope/600/400', raised:68000, goal:100000, days:32, cat:'education' },
+      { id:3, title:'Emergency Food Relief', desc:'Delivering nutritious meals to families affected by natural disasters and conflict zones.', img:'https://picsum.photos/seed/food-relief-box/600/400', raised:31000, goal:50000, days:7, cat:'food' },
+      { id:4, title:'Medical Aid Program', desc:'Providing essential medical care, vaccinations, and supplies to underserved communities.', img:'https://picsum.photos/seed/medical-care-camp/600/400', raised:55000, goal:80000, days:24, cat:'medical' },
+      { id:5, title:'Shelter and Safety', desc:'Building safe homes for displaced families and survivors of domestic violence.', img:'https://picsum.photos/seed/shelter-build-new/600/400', raised:22000, goal:60000, days:45, cat:'shelter' },
+      { id:6, title:'Women Empowerment Fund', desc:'Training and supporting women to build sustainable livelihoods and lead their communities.', img:'https://picsum.photos/seed/women-work-together/600/400', raised:18500, goal:40000, days:28, cat:'education' }
+    ];
+
+    var stories = [
+      { name:'Amara K.', loc:'Nairobi, Kenya', img:'https://picsum.photos/seed/amara-portrait-warm/300/300', quote:'Before Rise Together came to our village, my children walked 5 miles for dirty water. Now, they drink clean water and have time to go to school. My daughter wants to be a doctor.', tag:'Clean Water' },
+      { name:'Sofia M.', loc:'Sao Paulo, Brazil', img:'https://picsum.photos/seed/sofia-woman-smile/300/300', quote:'I lost everything in the floods. Rise Together gave me not just a home, but hope. They helped me restart my small bakery, and now I employ three other women from my neighborhood.', tag:'Shelter' },
+      { name:'Raj P.', loc:'Mumbai, India', img:'https://picsum.photos/seed/raj-young-man/300/300', quote:'The scholarship I received changed my entire life. I was the first in my family to attend college. Now I teach mathematics at a government school, inspiring the next generation.', tag:'Education' }
+    ];
+
+    var team = [
+      { name:'Dr. Sarah Chen', role:'Founder & CEO', img:'https://picsum.photos/seed/sarah-ceo-face/400/400', bio:'Former UN humanitarian worker with 15 years of field experience across 30 countries.' },
+      { name:'Marcus Johnson', role:'Director of Operations', img:'https://picsum.photos/seed/marcus-ops-man/400/400', bio:'Logistics expert who has coordinated relief efforts in crisis zones worldwide.' },
+      { name:'Priya Sharma', role:'Head of Programs', img:'https://picsum.photos/seed/priya-prog-woman/400/400', bio:'Development specialist focused on sustainable, community-driven solutions.' },
+      { name:'David Okafor', role:'Field Director, Africa', img:'https://picsum.photos/seed/david-field-man/400/400', bio:'Community leader bridging international support with grassroots needs.' }
+    ];
+
+    var values = [
+      { icon:'fa-handshake-angle', title:'Dignity First', desc:'Every person deserves respect and dignity, not pity. We partner, not patronize.' },
+      { icon:'fa-seedling', title:'Sustainable Impact', desc:'Our programs create lasting change that outlives our presence in any community.' },
+      { icon:'fa-people-group', title:'Community Led', desc:'Local communities lead the way. We listen, support, and empower — never dictate.' },
+      { icon:'fa-eye', title:'Full Transparency', desc:'Every dollar is tracked and reported. We publish detailed financial and impact reports.' }
+    ];
+
+    var timeline = [
+      { year:'2012', title:'The Spark', desc:'Dr. Sarah Chen founds Rise Together after witnessing a young girl\'s plea for "a chance, not things."' },
+      { year:'2014', title:'First 1,000 Lives', desc:'Our clean water initiative reaches its first milestone in rural Kenya and Tanzania.' },
+      { year:'2016', title:'Going Global', desc:'Operations expand to 10 countries across Africa, South Asia, and Latin America.' },
+      { year:'2019', title:'Education Launch', desc:'Schools of Hope program begins, with a focus on girls\' education in underserved areas.' },
+      { year:'2021', title:'Crisis Response', desc:'Emergency relief reaches over 50,000 families during the global pandemic and subsequent crises.' },
+      { year:'2024', title:'45 Communities', desc:'Today we serve 45+ communities with integrated water, shelter, education, and health programs.' }
+    ];
+
+    var donationHelp = [
+      { amount:25, icon:'fa-droplet', desc:'Provides clean water for a family for an entire month' },
+      { amount:50, icon:'fa-book-open', desc:'Sends a child to school with books and supplies for a semester' },
+      { amount:100, icon:'fa-tent', desc:'Builds a complete shelter kit for a displaced family' },
+      { amount:250, icon:'fa-stethoscope', desc:'Funds a community health workshop serving 100+ people' }
+    ];
+
+    /* ========== UTILITY COMPONENTS ========== */
+    function ScrollReveal(props) {
+      var ref = useRef(null);
+      useEffect(function() {
+        var el = ref.current;
+        if (!el) return;
+        var obs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+        }, { threshold: 0.12 });
+        var items = el.querySelectorAll('.sr');
+        items.forEach(function(item) { obs.observe(item); });
+        return function() { obs.disconnect(); };
+      }, []);
+      var cls = (props.className || '') + ' scroll-reveal-container';
+      return h('div', { ref: ref, className: cls }, props.children);
+    }
+
+    function AnimatedCounter(props) {
+      var countState = useState(0);
+      var count = countState[0];
+      var setCount = countState[1];
+      var ref = useRef(null);
+      var counted = useRef(false);
+      useEffect(function() {
+        var obs = new IntersectionObserver(function(entries) {
+          if (entries[0].isIntersecting && !counted.current) {
+            counted.current = true;
+            var dur = props.duration || 2000;
+            var start = performance.now();
+            function tick(now) {
+              var p = Math.min((now - start) / dur, 1);
+              var eased = 1 - Math.pow(1 - p, 3);
+              setCount(Math.floor(eased * props.end));
+              if (p < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+          }
+        }, { threshold: 0.5 });
+        if (ref.current) obs.observe(ref.current);
+        return function() { obs.disconnect(); };
+      }, [props.end, props.duration]);
+      return h('span', { ref: ref }, count.toLocaleString() + (props.suffix || ''));
+    }
+
+    function SectionHeading(props) {
+      var light = props.light;
+      return h('div', { className: 'text-center max-w-2xl mx-auto mb-16' },
+        props.tag && h('span', { className: 'sr inline-block px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide uppercase mb-4 ' + (light ? 'bg-white/15 text-white/90' : 'bg-primary/10 text-primary') }, props.tag),
+        h('h2', { className: 'sr d1 font-display text-4xl sm:text-5xl font-bold leading-tight mb-4 ' + (light ? 'text-white' : 'text-fg') }, props.title),
+        props.subtitle && h('p', { className: 'sr d2 text-lg leading-relaxed ' + (light ? 'text-white/70' : 'text-text-muted') }, props.subtitle)
+      );
+    }
+
+    function ProgressBar(props) {
+      var pct = Math.min((props.current / props.goal) * 100, 100);
+      return h('div', { className: 'w-full' },
+        h('div', { className: 'w-full h-2.5 rounded-full bg-bg-alt overflow-hidden' },
+          h('div', { className: 'progress-fill h-full rounded-full', style: { width: pct + '%', background: 'linear-gradient(90deg, #C45D35, #D4A853)' } })
+        )
+      );
+    }
+
+    /* ========== TOAST ========== */
+    function Toast(props) {
+      if (!props.visible) return null;
+      return h('div', { className: 'fixed top-6 left-1/2 -translate-x-1/2 z-[100] px-6 py-3.5 bg-fg text-white rounded-2xl shadow-2xl flex items-center gap-3 font-body text-sm font-medium', style: { animation: 'toastIn .4s ease' } },
+        h('i', { className: 'fa-solid fa-circle-check text-accent text-lg' }),
+        props.message
+      );
+    }
+
+    /* ========== FLOATING DONATE ========== */
+    function FloatingDonate(props) {
+      var s = useState(false); var vis = s[0]; var setVis = s[1];
+      useEffect(function() {
+        var fn = function() { setVis(window.scrollY > 500); };
+        window.addEventListener('scroll', fn);
+        return function() { window.removeEventListener('scroll', fn); };
+      }, []);
+      if (!vis) return null;
+      return h('button', {
+        onClick: function() { props.setPage('donate'); },
+        className: 'fixed bottom-6 right-6 z-40 w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform',
+        style: { animation: 'pulseGlow 2s infinite' },
+        'aria-label': 'Donate Now'
+      }, h('i', { className: 'fa-solid fa-heart text-xl' }));
+    }
+
+    /* ========== NAVBAR ========== */
+    function Navbar(props) {
+      var s1 = useState(false); var scrolled = s1[0]; var setScrolled = s1[1];
+      var s2 = useState(false); var mobileOpen = s2[0]; var setMobileOpen = s2[1];
+      useEffect(function() {
+        var fn = function() { setScrolled(window.scrollY > 50); };
+        window.addEventListener('scroll', fn);
+        return function() { window.removeEventListener('scroll', fn); };
+      }, []);
+      var links = [
+        { id:'home', label:'Home' },
+        { id:'about', label:'About Us' },
+        { id:'projects', label:'Campaigns' },
+        { id:'donate', label:'Donate' }
+      ];
+      return h('nav', { className: 'fixed top-0 left-0 right-0 z-50 transition-all duration-500 ' + (scrolled ? 'bg-white/95 backdrop-blur-md shadow-lg' : 'bg-transparent') },
+        h('div', { className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8' },
+          h('div', { className: 'flex items-center justify-between h-20' },
+            h('button', { onClick: function() { props.setPage('home'); }, className: 'flex items-center gap-2.5', 'aria-label': 'Go to homepage' },
+              h('div', { className: 'w-10 h-10 rounded-full flex items-center justify-center transition-colors ' + (scrolled ? 'bg-primary' : 'bg-white/20 backdrop-blur-sm') },
+                h('i', { className: 'fa-solid fa-hands-holding-heart text-white text-lg' })
+              ),
+              h('span', { className: 'text-xl font-bold font-display transition-colors ' + (scrolled ? 'text-fg' : 'text-white') }, 'Rise Together')
+            ),
+            h('div', { className: 'hidden md:flex items-center gap-1' },
+              links.map(function(link) {
+                return h('button', {
+                  key: link.id,
+                  onClick: function() { props.setPage(link.id); },
+                  className: 'px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ' + (
+                    props.page === link.id
+                      ? (scrolled ? 'bg-primary text-white' : 'bg-white/20 text-white backdrop-blur-sm')
+                      : (scrolled ? 'text-text-main hover:bg-bg-alt' : 'text-white/80 hover:text-white hover:bg-white/10')
+                  )
+                }, link.label);
+              }),
+              h('button', {
+                onClick: function() { props.setPage('donate'); },
+                className: 'ml-3 px-6 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-full text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105'
+              }, 'Donate Now')
+            ),
+            h('button', {
+              onClick: function() { setMobileOpen(!mobileOpen); },
+              className: 'md:hidden w-10 h-10 flex items-center justify-center rounded-lg transition-colors ' + (scrolled ? 'text-fg' : 'text-white'),
+              'aria-label': 'Toggle menu'
+            }, h('i', { className: 'fa-solid ' + (mobileOpen ? 'fa-xmark' : 'fa-bars') + ' text-xl' }))
+          )
+        ),
+        mobileOpen && h('div', { className: 'md:hidden bg-white shadow-xl border-t border-border-warm', style: { animation: 'slideDown .3s ease' } },
+          h('div', { className: 'px-4 py-4 space-y-1' },
+            links.map(function(link) {
+              return h('button', {
+                key: link.id,
+                onClick: function() { props.setPage(link.id); setMobileOpen(false); },
+                className: 'w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors ' + (props.page === link.id ? 'bg-primary text-white' : 'text-text-main hover:bg-bg-alt')
+              }, link.label);
+            }),
+            h('button', {
+              onClick: function() { props.setPage('donate'); setMobileOpen(false); },
+              className: 'w-full mt-2 px-6 py-3 bg-primary text-white rounded-xl text-sm font-semibold'
+            }, 'Donate Now')
+          )
+        )
+      );
+    }
+
+    /* ========== FOOTER ========== */
+    function Footer(props) {
+      return h('footer', { className: 'bg-fg text-white/80' },
+        h('div', { className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16' },
+          h('div', { className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12' },
+            h('div', { className: 'lg:col-span-1' },
+              h('div', { className: 'flex items-center gap-2.5 mb-5' },
+                h('div', { className: 'w-10 h-10 rounded-full bg-primary flex items-center justify-center' },
+                  h('i', { className: 'fa-solid fa-hands-holding-heart text-white text-lg' })
+                ),
+                h('span', { className: 'text-xl font-bold font-display text-white' }, 'Rise Together')
+              ),
+              h('p', { className: 'text-white/50 text-sm leading-relaxed mb-6' }, 'Building a world where every person has the opportunity to thrive. Since 2012, we have been partnering with communities to create lasting, sustainable change.'),
+              h('div', { className: 'flex gap-3' },
+                ['fa-facebook-f','fa-twitter','fa-instagram','fa-linkedin-in'].map(function(icon) {
+                  return h('a', { key: icon, href: '#', className: 'w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition-colors', 'aria-label': icon },
+                    h('i', { className: 'fa-brands ' + icon + ' text-sm' })
+                  );
+                })
+              )
+            ),
+            h('div', null,
+              h('h4', { className: 'font-display font-bold text-white mb-5' }, 'Quick Links'),
+              h('ul', { className: 'space-y-3' },
+                [['home','Home'],['about','About Us'],['projects','Campaigns'],['donate','Donate']].map(function(item) {
+                  return h('li', { key: item[0] },
+                    h('button', { onClick: function() { props.setPage(item[0]); }, className: 'text-white/50 hover:text-accent text-sm transition-colors' }, item[1])
+                  );
+                })
+              )
+            ),
+            h('div', null,
+              h('h4', { className: 'font-display font-bold text-white mb-5' }, 'Programs'),
+              h('ul', { className: 'space-y-3' },
+                ['Clean Water Initiative','Schools of Hope','Emergency Relief','Medical Aid','Women Empowerment'].map(function(item) {
+                  return h('li', { key: item }, h('span', { className: 'text-white/50 text-sm' }, item));
+                })
+              )
+            ),
+            h('div', null,
+              h('h4', { className: 'font-display font-bold text-white mb-5' }, 'Contact'),
+              h('ul', { className: 'space-y-3 text-sm text-white/50' },
+                h('li', { className: 'flex items-start gap-2.5' }, h('i', { className: 'fa-solid fa-location-dot mt-1 text-primary-light' }), '1234 Hope Avenue, Suite 200, Washington, DC 20001'),
+                h('li', { className: 'flex items-center gap-2.5' }, h('i', { className: 'fa-solid fa-envelope text-primary-light' }), 'hello@risetogether.org'),
+                h('li', { className: 'flex items-center gap-2.5' }, h('i', { className: 'fa-solid fa-phone text-primary-light' }), '+1 (800) 555-HOPE')
+              )
+            )
+          )
+        ),
+        h('div', { className: 'border-t border-white/10' },
+          h('div', { className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4' },
+            h('p', { className: 'text-white/40 text-sm' }, '2024 Rise Together Foundation. All rights reserved. 501(c)(3) Nonprofit.'),
+            h('div', { className: 'flex items-center gap-4 text-white/40 text-xs' },
+              h('span', null, 'Privacy Policy'),
+              h('span', null, 'Terms of Service'),
+              h('span', null, 'Annual Report')
+            )
+          )
+        )
+      );
+    }
+
+    /* ========== HOME PAGE ========== */
+    function HomePage(props) {
+      return h('div', { className: 'page-enter', key: 'home' },
+        /* Hero */
+        h('section', { className: 'relative min-h-screen flex items-center overflow-hidden' },
+          h('div', { className: 'absolute inset-0' },
+            h('img', { src: 'https://picsum.photos/seed/hands-community-help/1920/1080', alt: 'Community helping each other', className: 'w-full h-full object-cover', loading: 'eager' }),
+            h('div', { className: 'absolute inset-0 bg-gradient-to-r from-fg/85 via-fg/60 to-fg/25' }),
+            h('div', { className: 'absolute inset-0 bg-gradient-to-t from-fg/40 to-transparent' })
+          ),
+          h('div', { className: 'absolute top-1/4 right-1/4 w-96 h-96 rounded-full opacity-20 blur-3xl pointer-events-none', style: { background: 'radial-gradient(circle,#C45D35,transparent)' } }),
+          h('div', { className: 'relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32' },
+            h('div', { className: 'max-w-2xl' },
+              h('div', { className: 'hero-fade inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 mb-8', style: { animationDelay: '0.2s' } },
+                h('span', { className: 'w-2 h-2 bg-accent rounded-full animate-pulse' }),
+                h('span', { className: 'text-white/90 text-sm font-medium' }, 'Serving 45+ communities worldwide')
+              ),
+              h('h1', { className: 'hero-fade font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6', style: { animationDelay: '0.4s' } },
+                'Every Life ', h('span', { className: 'text-transparent bg-clip-text bg-gradient-to-r from-accent to-primary-light' }, 'Deserves'), ' a Chance'
+              ),
+              h('p', { className: 'hero-fade text-lg sm:text-xl text-white/70 leading-relaxed mb-10 max-w-lg', style: { animationDelay: '0.6s' } },
+                'We partner with communities to create sustainable change — clean water, education, shelter, and hope for those who need it most.'
+              ),
+              h('div', { className: 'hero-fade flex flex-wrap gap-4', style: { animationDelay: '0.8s' } },
+                h('button', { onClick: function() { props.setPage('donate'); }, className: 'group px-8 py-4 bg-primary hover:bg-primary-dark text-white rounded-full font-semibold text-lg transition-all duration-300 shadow-lg shadow-primary/30 hover:shadow-xl hover:scale-105' },
+                  'Donate Now ', h('i', { className: 'fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform' })
+                ),
+                h('button', { onClick: function() { props.setPage('projects'); }, className: 'px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white rounded-full font-semibold text-lg transition-all duration-300 border border-white/20' }, 'Our Stories')
+              ),
+              h('div', { className: 'hero-fade flex flex-wrap items-center gap-6 mt-12 pt-8 border-t border-white/10', style: { animationDelay: '1s' } },
+                [['fa-shield-halved','100% Secure'],['fa-chart-pie','92% to Programs'],['fa-award','4-Star Rated']].map(function(item) {
+                  return h('div', { key: item[0], className: 'flex items-center gap-2' },
+                    h('i', { className: 'fa-solid ' + item[0] + ' text-accent' }),
+                    h('span', { className: 'text-white/50 text-sm' }, item[1])
+                  );
+                })
+              )
+            )
+          ),
+          h('div', { className: 'absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 hero-fade', style: { animationDelay: '1.2s' } },
+            h('span', { className: 'text-white/30 text-xs tracking-widest uppercase' }, 'Scroll'),
+            h('div', { className: 'w-6 h-10 border-2 border-white/25 rounded-full flex justify-center pt-2' },
+              h('div', { className: 'w-1.5 h-3 bg-white/40 rounded-full animate-bounce' })
+            )
+          )
+        ),
+
+        /* Impact Stats */
+        h('section', { className: 'relative py-24 bg-fg overflow-hidden' },
+          h('div', { className: 'absolute inset-0 opacity-10 pointer-events-none', style: { backgroundImage: 'radial-gradient(circle at 20% 50%, #C45D35 0%, transparent 50%), radial-gradient(circle at 80% 50%, #D4A853 0%, transparent 50%)' } }),
+          h('div', { className: 'relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8' },
+            h(ScrollReveal, null,
+              h('div', { className: 'grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12' },
+                impactStats.map(function(stat) {
+                  return h('div', { key: stat.label, className: 'sr text-center' },
+                    h('div', { className: 'w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/10 flex items-center justify-center' },
+                      h('i', { className: 'fa-solid ' + stat.icon + ' text-2xl text-accent' })
+                    ),
+                    h('div', { className: 'font-display text-4xl sm:text-5xl font-bold text-white mb-2' },
+                      h(AnimatedCounter, { end: stat.number, suffix: stat.suffix })
+                    ),
+                    h('p', { className: 'text-white/50 text-sm font-medium uppercase tracking-wide' }, stat.label)
+                  );
+                })
+              )
+            )
+          )
+        ),
+
+        /* Stories */
+        h('section', { className: 'py-24 bg-bg-warm relative overflow-hidden' },
+          h('div', { className: 'absolute -top-40 -right-40 w-80 h-80 rounded-full opacity-30 blur-3xl pointer-events-none', style: { background: 'radial-gradient(circle,#E8A080,transparent)' } }),
+          h('div', { className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8' },
+            h(ScrollReveal, null,
+              h(SectionHeading, { tag: 'Real Stories', title: 'Faces Behind the Numbers', subtitle: 'Every statistic represents a real person with real dreams. These are their stories of transformation.' })
+            ),
+            h('div', { className: 'grid grid-cols-1 lg:grid-cols-3 gap-8' },
+              stories.map(function(story, i) {
+                return h(ScrollReveal, { key: story.name },
+                  h('div', { className: 'sr d' + (i + 1) + ' bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500 group' },
+                    h('div', { className: 'h-56 overflow-hidden relative' },
+                      h('img', { src: story.img, alt: story.name, className: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-700' }),
+                      h('div', { className: 'absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-semibold text-primary' }, story.tag)
+                    ),
+                    h('div', { className: 'p-8 relative' },
+                      h('div', { className: 'quote-mark absolute -top-6 left-6 select-none pointer-events-none' }, '\u201C'),
+                      h('p', { className: 'text-text-muted leading-relaxed mb-6 relative z-10' }, story.quote),
+                      h('div', { className: 'flex items-center gap-3 pt-4 border-t border-border-warm' },
+                        h('img', { src: story.img, alt: story.name, className: 'w-10 h-10 rounded-full object-cover' }),
+                        h('div', null,
+                          h('p', { className: 'font-semibold text-fg text-sm' }, story.name),
+                          h('p', { className: 'text-text-muted text-xs' }, story.loc)
+                        )
+                      )
+                    )
+                  )
+                );
+              })
+            )
+          )
+        ),
+
+        /* CTA Banner */
+        h('section', { className: 'py-24 relative overflow-hidden' },
+          h('div', { className: 'absolute inset-0' },
+            h('img', { src: 'https://picsum.photos/seed/children-happy-play/1920/800', alt: '', className: 'w-full h-full object-cover' }),
+            h('div', { className: 'absolute inset-0 bg-fg/80' })
+          ),
+          h('div', { className: 'relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center' },
+            h(ScrollReveal, null,
+              h(Fragment, null,
+                h('h2', { className: 'sr font-display text-4xl sm:text-5xl font-bold text-white leading-tight mb-6' }, 'Your Generosity Can Rewrite a Family\'s Future'),
+                h('p', { className: 'sr d1 text-lg text-white/60 mb-10 max-w-2xl mx-auto' }, '92 cents of every dollar goes directly to programs that transform lives. Join the thousands who have already made a difference.'),
+                h('div', { className: 'sr d2 flex flex-wrap justify-center gap-4' },
+                  h('button', { onClick: function() { props.setPage('donate'); }, className: 'px-8 py-4 bg-primary hover:bg-primary-dark text-white rounded-full font-semibold text-lg transition-all hover:scale-105 shadow-lg shadow-primary/30' }, 'Make a Donation'),
+                  h('button', { onClick: function() { props.setPage('about'); }, className: 'px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-full font-semibold text-lg transition-all border border-white/20' }, 'Learn More About Us')
+                )
+              )
+            )
+          )
+        )
+      );
+    }
+
+    /* ========== ABOUT PAGE ========== */
+    function AboutPage(props) {
+      return h('div', { className: 'page-enter', key: 'about' },
+        /* Page Hero */
+        h('section', { className: 'relative pt-32 pb-20 bg-fg overflow-hidden' },
+          h('div', { className: 'absolute inset-0 opacity-20 pointer-events-none', style: { backgroundImage: 'radial-gradient(circle at 70% 30%, #C45D35 0%, transparent 60%)' } }),
+          h('div', { className: 'relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center' },
+            h('span', { className: 'hero-fade inline-block px-4 py-1.5 bg-white/10 rounded-full text-accent text-sm font-semibold tracking-wide uppercase mb-4' }, 'Our Story'),
+            h('h1', { className: 'hero-fade font-display text-5xl sm:text-6xl font-bold text-white mb-6', style: { animationDelay: '0.15s' } }, 'A Movement Born from a Single Moment'),
+            h('p', { className: 'hero-fade text-xl text-white/60 max-w-2xl mx-auto', style: { animationDelay: '0.3s' } }, 'What started as one person\'s response to injustice has grown into a global force for dignity and hope.')
+          )
+        ),
+
+        /* Origin Story */
+        h('section', { className: 'py-24 bg-bg-warm' },
+          h('div', { className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8' },
+            h(ScrollReveal, null,
+              h('div', { className: 'grid lg:grid-cols-2 gap-16 items-center' },
+                h('div', { className: 'sr relative' },
+                  h('div', { className: 'rounded-3xl overflow-hidden shadow-2xl' },
+                    h('img', { src: 'https://picsum.photos/seed/girl-drawing-hope/800/600', alt: 'A child drawing her dream', className: 'w-full h-[450px] object-cover' })
+                  ),
+                  h('div', { className: 'absolute -bottom-6 -right-6 bg-white rounded-2xl p-6 shadow-xl max-w-xs hidden sm:block' },
+                    h('p', { className: 'font-display italic text-fg text-lg leading-snug' }, '"I don\'t want things. I want a chance."'),
+                    h('p', { className: 'text-text-muted text-sm mt-2' }, '— Words that sparked a movement')
+                  )
+                ),
+                h('div', null,
+                  h('h2', { className: 'sr d1 font-display text-4xl font-bold text-fg mb-6' }, 'The Moment That Changed Everything'),
+                  h('div', { className: 'space-y-4 text-text-muted leading-relaxed' },
+                    h('p', { className: 'sr d2' }, 'In 2012, our founder Dr. Sarah Chen was distributing supplies after a devastating earthquake in Southeast Asia. Amid the chaos, a young girl approached her — not asking for food or blankets, but handing her a drawing.'),
+                    h('p', { className: 'sr d3' }, 'The drawing showed a house with a garden, a school with children laughing, and a stream of clean water. She looked up and said the words that would change thousands of lives: "I don\'t want things. I want a chance."'),
+                    h('p', { className: 'sr d4' }, 'That moment became the foundation of Rise Together. We don\'t give handouts — we build pathways. Every program we create is designed to give people the tools, education, and infrastructure to write their own futures.')
+                  )
+                )
+              )
+            )
+          )
+        ),
+
+        /* Values */
+        h('section', { className: 'py-24 bg-bg-alt' },
+          h('div', { className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8' },
+            h(ScrollReveal, null,
+              h(SectionHeading, { tag: 'Our Values', title: 'What We Stand For', subtitle: 'These aren\'t just words on a wall. They guide every decision we make and every program we build.' })
+            ),
+            h('div', { className: 'grid sm:grid-cols-2 lg:grid-cols-4 gap-8' },
+              values.map(function(v, i) {
+                return h(ScrollReveal, { key: v.title },
+                  h('div', { className: 'sr d' + (i + 1) + ' bg-white rounded-3xl p-8 text-center hover:shadow-xl transition-shadow duration-500 group' },
+                    h('div', { className: 'w-16 h-16 mx-auto mb-5 rounded-2xl bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors' },
+                      h('i', { className: 'fa-solid ' + v.icon + ' text-2xl text-primary' })
+                    ),
+                    h('h3', { className: 'font-display font-bold text-fg text-lg mb-3' }, v.title),
+                    h('p', { className: 'text-text-muted text-sm leading-relaxed' }, v.desc)
+                  )
+                );
+              })
+            )
+          )
+        ),
+
+        /* Timeline */
+        h('section', { className: 'py-24 bg-bg-warm' },
+          h('div', { className: 'max-w-4xl mx-auto px-4 sm:px-6 lg:px-8' },
+            h(ScrollReveal, null,
+              h(SectionHeading, { tag: 'Our Journey', title: 'Milestones Along the Way', subtitle: 'From a single moment of compassion to a global movement — every step matters.' })
+            ),
+            h('div', { className: 'relative' },
+              h('div', { className: 'absolute left-8 lg:left-1/2 top-0 bottom-0 w-px bg-border-warm lg:-translate-x-px' }),
+              timeline.map(function(item, i) {
+                var isLeft = i % 2 === 0;
+                return h(ScrollReveal, { key: item.year },
+                  h('div', { className: 'sr d' + (Math.min(i + 1, 5)) + ' relative flex items-start mb-12 last:mb-0 ' + (isLeft ? 'lg:flex-row' : 'lg:flex-row-reverse') },
+                    h('div', { className: 'absolute left-8 lg:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-primary border-4 border-bg-warm z-10 mt-1.5' }),
+                    h('div', { className: 'ml-16 lg:ml-0 lg:w-[calc(50%-2rem)] ' + (isLeft ? 'lg:pr-12 lg:text-right' : 'lg:pl-12') },
+                      h('span', { className: 'inline-block px-3 py-1 bg-primary/10 text-primary text-sm font-bold rounded-full mb-2' }, item.year),
+                      h('h3', { className: 'font-display font-bold text-fg text-lg mb-1' }, item.title),
+                      h('p', { className: 'text-text-muted text-sm leading-relaxed' }, item.desc)
+                    )
+                  )
+                );
+              })
+            )
+          )
+        ),
+
+        /* Team */
+        h('section', { className: 'py-24 bg-bg-alt' },
+          h('div', { className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8' },
+            h(ScrollReveal, null,
+              h(SectionHeading, { tag: 'Our People', title: 'The Hearts Behind the Mission', subtitle: 'A dedicated team of humanitarians, dreamers, and doers committed to lasting change.' })
+            ),
+            h('div', { className: 'grid sm:grid-cols-2 lg:grid-cols-4 gap-8' },
+              team.map(function(m, i) {
+                return h(ScrollReveal, { key: m.name },
+                  h('div', { className: 'sr d' + (i + 1) + ' bg-white rounded-3xl overflow-hidden group hover:shadow-xl transition-shadow duration-500' },
+                    h('div', { className: 'h-64 overflow-hidden' },
+                      h('img', { src: m.img, alt: m.name, className: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-700' })
+                    ),
+                    h('div', { className: 'p-6' },
+                      h('h3', { className: 'font-display font-bold text-fg text-lg' }, m.name),
+                      h('p', { className: 'text-primary text-sm font-semibold mb-2' }, m.role),
+                      h('p', { className: 'text-text-muted text-sm leading-relaxed' }, m.bio)
+                    )
+                  )
+                );
+              })
+            )
+          )
+        )
+      );
+    }
+
+    /* ========== PROJECTS PAGE ========== */
+    function ProjectsPage(props) {
+      var s = useState('all'); var filter = s[0]; var setFilter = s[1];
+      var cats = ['all','water','education','food','medical','shelter'];
+      var filtered = filter === 'all' ? campaigns : campaigns.filter(function(c) { return c.cat === filter; });
+      return h('div', { className: 'page-enter', key: 'projects' },
+        /* Page Hero */
+        h('section', { className: 'relative pt-32 pb-20 bg-fg overflow-hidden' },
+          h('div', { className: 'absolute inset-0 opacity-20 pointer-events-none', style: { backgroundImage: 'radial-gradient(circle at 30% 60%, #D4A853 0%, transparent 60%)' } }),
+          h('div', { className: 'relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center' },
+            h('span', { className: 'hero-fade inline-block px-4 py-1.5 bg-white/10 rounded-full text-accent text-sm font-semibold tracking-wide uppercase mb-4' }, 'Our Campaigns'),
+            h('h1', { className: 'hero-fade font-display text-5xl sm:text-6xl font-bold text-white mb-6', style: { animationDelay: '0.15s' } }, 'Active Campaigns'),
+            h('p', { className: 'hero-fade text-xl text-white/60 max-w-2xl mx-auto', style: { animationDelay: '0.3s' } }, 'Every campaign is a promise to a community. See where your support goes and choose the cause that moves you.')
+          )
+        ),
+
+        /* Filter + Grid */
+        h('section', { className: 'py-20 bg-bg-warm' },
+          h('div', { className: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8' },
+            /* Filter tabs */
+            h(ScrollReveal, null,
+              h('div', { className: 'sr flex flex-wrap justify-center gap-2 mb-14' },
+                cats.map(function(cat) {
+                  var label = cat.charAt(0).toUpperCase() + cat.slice(1);
+                  return h('button', {
+                    key: cat,
+                    onClick: function() { setFilter(cat); },
+                    className: 'px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ' + (filter === cat ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-white text-text-muted hover:bg-bg-alt border border-border-warm')
+                  }, label);
+                })
+              )
+            ),
+
+            /* Campaign Grid */
+            h('div', { className: 'grid sm:grid-cols-2 lg:grid-cols-3 gap-8' },
+              filtered.map(function(c, i) {
+                var pct = Math.round((c.raised / c.goal) * 100);
+                return h(ScrollReveal, { key: c.id },
+                  h('div', { className: 'sr d' + (Math.min(i + 1, 5)) + ' campaign-card bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 group' },
+                    h('div', { className: 'h-52 overflow-hidden relative' },
+                      h('img', { src: c.img, alt: c.title, className: 'campaign-img w-full h-full object-cover transition-transform duration-700' }),
+                      c.days <= 10 && h('div', { className: 'absolute top-4 right-4 px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse' }, 'Urgent')
+                    ),
+                    h('div', { className: 'p-6' },
+                      h('h3', { className: 'font-display font-bold text-fg text-xl mb-2 group-hover:text-primary transition-colors' }, c.title),
+                      h('p', { className: 'text-text-muted text-sm leading-relaxed mb-5' }, c.desc),
+                      h(ProgressBar, { current: c.raised, goal: c.goal }),
+                      h('div', { className: 'flex items-center justify-between mt-3 mb-5 text-sm' },
+                        h('span', { className: 'font-bold text-fg' }, '$' + c.raised.toLocaleString()),
+                        h('span', { className: 'text-text-muted' }, pct + '% of $' + c.goal.toLocaleString())
+                      ),
+                      h('div', { className: 'flex items-center justify-between' },
+                        h('span', { className: 'text-xs text-text-muted flex items-center gap-1.5' },
+                          h('i', { className: 'fa-regular fa-clock' }),
+                          c.days + ' days left'
+                        ),
+                        h('button', { onClick: function() { props.setPage('donate'); }, className: 'px-5 py-2 bg-primary hover:bg-primary-dark text-white rounded-full text-sm font-semibold transition-all hover:scale-105' }, 'Donate')
+                      )
+                    )
+                  )
+                );
+              })
+            )
+          )
+        ),
+
+        /* Bottom CTA */
+        h('section', { className: 'py-20 bg-primary relative overflow-hidden' },
+          h('div', { className: 'absolute inset-0 opacity-20 pointer-events-none', style: { backgroundImage: 'radial-gradient(circle at 80% 20%, #D4A853 0%, transparent 50%)' } }),
+          h('div', { className: 'relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center' },
+            h(ScrollReveal, null,
+              h(Fragment, null,
+                h('h2', { className: 'sr font-display text-4xl font-bold text-white mb-4' }, 'Can\'t Decide? Support Where It\'s Needed Most'),
+                h('p', { className: 'sr d1 text-white/80 mb-8 text-lg' }, 'Your unrestricted gift allows us to direct funds to the campaign with the greatest immediate need.'),
+                h('button', { onClick: function() { props.setPage('donate'); }, className: 'sr d2 px-8 py-4 bg-white text-primary rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-xl' }, 'Give Now')
+              )
+            )
+          )
+        )
+      );
+    }
+
+    /* ========== DONATION PAGE ========== */
+    function DonationPage(props) {
+      var s1 = useState(50); var amount = s1[0]; var setAmount = s1[1];
+      var s2 = useState('once'); var freq = s2[0]; var setFreq = s2[1];
+      var s3 = useState(''); var customVal = s3[0]; var setCustomVal = s3[1];
+      var s4 = useState({ name:'', email:'', card:'', exp:'', cvv:'' }); var form = s4[0]; var setForm = s4[1];
+      var s5 = useState(false); var processing = s5[0]; var setProcessing = s5[1];
+      var s6 = useState(false); var success = s6[0]; var setSuccess = s6[1];
+      var s7 = useState({ visible:false, msg:'' }); var toast = s7[0]; var setToast = s7[1];
+
+      function showToast(msg) {
+        setToast({ visible: true, msg: msg });
+        setTimeout(function() { setToast({ visible: false, msg: '' }); }, 3500);
+      }
+
+      function selectAmount(val) {
+        setAmount(val);
+        setCustomVal('');
+      }
+
+      function handleCustom(e) {
+        var v = e.target.value.replace(/[^0-9]/g, '');
+        setCustomVal(v);
+        if (v && parseInt(v) > 0) setAmount(parseInt(v));
+      }
+
+      function updateField(field, val) {
+        var next = Object.assign({}, form);
+        next[field] = val;
+        setForm(next);
+      }
+
+      function formatCard(val) {
+        var clean = val.replace(/\D/g, '').slice(0, 16);
+        var parts = clean.match(/.{1,4}/g);
+        return parts ? parts.join(' ') : '';
+      }
+
+      function formatExp(val) {
+        var clean = val.replace(/\D/g, '').slice(0, 4);
+        if (clean.length > 2) return clean.slice(0, 2) + '/' + clean.slice(2);
+        return clean;
+      }
+
+      function handleSubmit(e) {
+        e.preventDefault();
+        if (!form.name || !form.email || !form.card || !form.exp || !form.cvv) {
+          showToast('Please fill in all fields to continue.');
+          return;
+        }
+        if (amount < 1) {
+          showToast('Please select or enter a donation amount.');
+          return;
+        }
+        setProcessing(true);
+        setTimeout(function() {
+          setProcessing(false);
+          setSuccess(true);
+        }, 2200);
+      }
+
+      if (success) {
+        return h('div', { className: 'page-enter min-h-screen flex items-center justify-center pt-20 pb-16 px-4', key: 'donate-success' },
+          h(Toast, { visible: toast.visible, message: toast.msg }),
+          h('div', { className: 'text-center max-w-md' },
+            h('div', { className: 'w-28 h-28 mx-auto mb-8 relative', style: { animation: 'subtleFloat 3s ease-in-out infinite' } },
+              h('svg', { viewBox: '0 0 100 100', className: 'w-full h-full' },
+                h('circle', { cx: 50, cy: 50, r: 45, fill: 'none', stroke: '#E8A080', strokeWidth: 3, strokeDasharray: 283, strokeDashoffset: 283, style: { animation: 'circleDraw .8s ease forwards' } }),
+                h('path', { d: 'M30 52 L44 66 L70 36', fill: 'none', stroke: '#C45D35', strokeWidth: 4, strokeLinecap: 'round', strokeLinejoin: 'round', strokeDasharray: 60, strokeDashoffset: 60, style: { animation: 'checkDraw .6s ease .4s forwards' } })
+              )
+            ),
+            h('h2', { className: 'font-display text-4xl font-bold text-fg mb-4' }, 'Thank You'),
+            h('p', { className: 'text-text-muted text-lg mb-2' }, 'Your generous ' + (freq === 'monthly' ? 'monthly ' : '') + 'donation of'),
+            h('p', { className: 'font-display text-5xl font-bold text-primary mb-6' }, '$' + amount.toLocaleString()),
+            h('p', { className: 'text-text-muted mb-8' }, 'will make a real difference in someone\'s life. A receipt has been sent to ' + (form.email || 'your email') + '.'),
+            h('div', { className: 'flex flex-col sm:flex-row gap-3 justify-center' },
+              h('button', { onClick: function() { props.setPage('projects'); }, className: 'px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-full font-semibold transition-all hover:scale-105' }, 'See Our Campaigns'),
+              h('button', { onClick: function() { props.setPage('home'); }, className: 'px-6 py-3 bg-bg-alt hover:bg-border-warm text-fg rounded-full font-semibold transition-all' }, 'Back Home')
+            )
+          )
+        );
+      }
+
+      var presetAmounts = [10, 25, 50, 100, 250, 500];
+
+      return h('div', { className: 'page-enter', key: 'donate' },
+        h(Toast, { visible: toast.visible, message: toast.msg }),
+
+        /* Page Hero */
+        h('section', { className: 'relative pt-32 pb-16 bg-fg overflow-hidden' },
+          h('div', { className: 'absolute inset-0 opacity-20 pointer-events-none', style: { backgroundImage: 'radial-gradient(circle at 50% 80%, #C45D35 0%, transparent 60%)' } }),
+          h('div', { className: 'relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center' },
+            h('span', { className: 'hero-fade inline-block px-4 py-1.5 bg-white/10 rounded-full text-accent text-sm font-semibold tracking-wide uppercase mb-4' }, 'Make a Difference'),
+            h('h1', { className: 'hero-fade font-display text-5xl sm:text-6xl font-bold text-white mb-4', style: { animationDelay: '0.15s' } }, 'Your Gift Changes Lives'),
+            h('p', { className: 'hero-fade text-xl text-white/60 max-w-2xl mx-auto', style: { animationDelay: '0.3s' } }, 'Every dollar you give goes directly to programs that feed, educate, shelter, and heal.')
+          )
+        ),
+
+        /* How it helps */
+        h('section', { className: 'py-16 bg-bg-warm' },
+          h('div', { className: 'max-w-5xl mx-auto px-4 sm:px-6 lg:px-8' },
+            h(ScrollReveal, null,
+              h('div', { className: 'grid sm:grid-cols-2 lg:grid-cols-4 gap-6' },
+                donationHelp.map(function(item, i) {
+                  return h('div', { key: item.amount, className: 'sr d' + (i + 1) + ' bg-white rounded-2xl p-6 text-center hover:shadow-lg transition-shadow cursor-pointer border-2 ' + (amount === item.amount ? 'border-primary shadow-lg' : 'border-transparent'), onClick: function() { selectAmount(item.amount); } },
+                    h('div', { className: 'w-12 h-12 mx-auto mb-3 rounded-xl bg-primary/10 flex items-center justify-center' },
+                      h('i', { className: 'fa-solid ' + item.icon + ' text-primary text-xl' })
+                    ),
+                    h('p', { className: 'font-display font-bold text-primary text-2xl mb-1' }, '$' + item.amount),
+                    h('p', { className: 'text-text-muted text-sm leading-relaxed' }, item.desc)
+                  );
+                })
+              )
+            )
+          )
+        ),
+
+        /* Donation Form */
+        h('section', { className: 'py-16 bg-bg-alt' },
+          h('div', { className: 'max-w-2xl mx-auto px-4 sm:px-6 lg:px-8' },
+            h(ScrollReveal, null,
+              h('div', { className: 'sr bg-white rounded-3xl shadow-xl p-8 sm:p-10' },
+                /* Frequency toggle */
+                h('div', { className: 'flex bg-bg-alt rounded-xl p-1 mb-8' },
+                  [['once','One-Time'],['monthly','Monthly']].map(function(f) {
+                    return h('button', {
+                      key: f[0],
+                      onClick: function() { setFreq(f[0]); },
+                      className: 'flex-1 py-3 rounded-lg text-sm font-semibold transition-all duration-300 ' + (freq === f[0] ? 'bg-white text-fg shadow-md' : 'text-text-muted hover:text-text-main')
+                    }, f[1] + (f[0] === 'monthly' ? ' (Best Impact)' : ''));
+                  })
+                ),
+
+                /* Amount selection */
+                h('h3', { className: 'font-display font-bold text-fg text-lg mb-4' }, 'Choose an Amount'),
+                h('div', { className: 'grid grid-cols-3 gap-3 mb-4' },
+                  presetAmounts.map(function(a) {
+                    return h('button', {
+                      key: a,
+                      onClick: function() { selectAmount(a); },
+                      className: 'py-3 rounded-xl font-bold text-lg transition-all duration-300 border-2 ' + (amount === a && !customVal ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-white text-fg border-border-warm hover:border-primary-light')
+                    }, '$' + a);
+                  })
+                ),
+                h('div', { className: 'relative mb-8' },
+                  h('span', { className: 'absolute left-4 top-1/2 -translate-y-1/2 text-text-muted font-bold text-lg' }, '$'),
+                  h('input', {
+                    type: 'number',
+                    placeholder: 'Custom amount',
+                    value: customVal,
+                    onChange: handleCustom,
+                    className: 'w-full pl-10 pr-4 py-3 rounded-xl border-2 border-border-warm focus:border-primary text-fg text-lg font-medium bg-bg-warm transition-colors outline-none',
+                    min: 1
+                  })
+                ),
+
+                /* Form */
+                h('form', { onSubmit: handleSubmit },
+                  h('div', { className: 'space-y-4 mb-8' },
+                    h('div', null,
+                      h('label', { className: 'block text-sm font-semibold text-fg mb-1.5' }, 'Full Name'),
+                      h('input', { type: 'text', placeholder: 'John Doe', value: form.name, onChange: function(e) { updateField('name', e.target.value); }, className: 'w-full px-4 py-3 rounded-xl border-2 border-border-warm focus:border-primary text-fg bg-bg-warm transition-colors outline-none' })
+                    ),
+                    h('div', null,
+                      h('label', { className: 'block text-sm font-semibold text-fg mb-1.5' }, 'Email Address'),
+                      h('input', { type: 'email', placeholder: 'john@example.com', value: form.email, onChange: function(e) { updateField('email', e.target.value); }, className: 'w-full px-4 py-3 rounded-xl border-2 border-border-warm focus:border-primary text-fg bg-bg-warm transition-colors outline-none' })
+                    ),
+                    h('div', { className: 'warm-divider my-6' }),
+                    h('div', null,
+                      h('label', { className: 'block text-sm font-semibold text-fg mb-1.5' }, 'Card Number'),
+                      h('div', { className: 'relative' },
+                        h('input', { type: 'text', placeholder: '4242 4242 4242 4242', value: form.card, onChange: function(e) { updateField('card', formatCard(e.target.value)); }, maxLength: 19, className: 'w-full px-4 py-3 rounded-xl border-2 border-border-warm focus:border-primary text-fg bg-bg-warm transition-colors outline-none pr-14' }),
+                        h('div', { className: 'absolute right-4 top-1/2 -translate-y-1/2 flex gap-1.5 text-text-muted' },
+                          h('i', { className: 'fa-brands fa-cc-visa text-xl' }),
+                          h('i', { className: 'fa-brands fa-cc-mastercard text-xl' })
+                        )
+                      )
+                    ),
+                    h('div', { className: 'grid grid-cols-2 gap-4' },
+                      h('div', null,
+                        h('label', { className: 'block text-sm font-semibold text-fg mb-1.5' }, 'Expiry'),
+                        h('input', { type: 'text', placeholder: 'MM/YY', value: form.exp, onChange: function(e) { updateField('exp', formatExp(e.target.value)); }, maxLength: 5, className: 'w-full px-4 py-3 rounded-xl border-2 border-border-warm focus:border-primary text-fg bg-bg-warm transition-colors outline-none' })
+                      ),
+                      h('div', null,
+                        h('label', { className: 'block text-sm font-semibold text-fg mb-1.5' }, 'CVV'),
+                        h('input', { type: 'text', placeholder: '123', value: form.cvv, onChange: function(e) { updateField('cvv', e.target.value.replace(/\D/g, '').slice(0, 4)); }, maxLength: 4, className: 'w-full px-4 py-3 rounded-xl border-2 border-border-warm focus:border-primary text-fg bg-bg-warm transition-colors outline-none' })
+                      )
+                    )
+                  ),
+
+                  /* Summary */
+                  h('div', { className: 'bg-bg-warm rounded-2xl p-6 mb-6' },
+                    h('div', { className: 'flex justify-between items-center mb-2' },
+                      h('span', { className: 'text-text-muted' }, 'Donation'),
+                      h('span', { className: 'font-semibold text-fg' }, '$' + amount.toLocaleString() + (freq === 'monthly' ? '/mo' : ''))
+                    ),
+                    h('div', { className: 'flex justify-between items-center mb-2' },
+                      h('span', { className: 'text-text-muted' }, 'Processing fee'),
+                      h('span', { className: 'text-text-muted text-sm' }, 'Covered by us')
+                    ),
+                    h('div', { className: 'warm-divider my-3' }),
+                    h('div', { className: 'flex justify-between items-center' },
+                      h('span', { className: 'font-bold text-fg' }, 'Total'),
+                      h('span', { className: 'font-display font-bold text-primary text-2xl' }, '$' + amount.toLocaleString() + (freq === 'monthly' ? '/mo' : ''))
+                    )
+                  ),
+
+                  /* Submit */
+                  h('button', {
+                    type: 'submit',
+                    disabled: processing,
+                    className: 'w-full py-4 bg-primary hover:bg-primary-dark text-white rounded-2xl font-bold text-lg transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-xl hover:scale-[1.02] disabled:opacity-70 disabled:hover:scale-100 flex items-center justify-center gap-3'
+                  },
+                    processing
+                      ? h(Fragment, null,
+                          h('i', { className: 'fa-solid fa-spinner animate-spin text-xl' }),
+                          'Processing...'
+                        )
+                      : h(Fragment, null,
+                          h('i', { className: 'fa-solid fa-lock text-sm' }),
+                          'Donate $' + amount.toLocaleString() + (freq === 'monthly' ? ' Monthly' : '')
+                        )
+                  )
+                ),
+
+                /* Trust badges */
+                h('div', { className: 'flex flex-wrap justify-center gap-6 mt-8 pt-6 border-t border-border-warm' },
+                  [['fa-shield-halved','SSL Encrypted'],['fa-lock','PCI Compliant'],['fa-rotate-left','30-Day Refund']].map(function(b) {
+                    return h('div', { key: b[0], className: 'flex items-center gap-1.5 text-text-muted text-xs' },
+                      h('i', { className: 'fa-solid ' + b[0] + ' text-primary-light' }),
+                      b[1]
+                    );
+                  })
+                )
+              )
+            )
+          )
+        )
+      );
+    }
+
+    /* ========== APP ========== */
+    function App() {
+      var s1 = useState('home'); var page = s1[0]; var setPage = s1[1];
+
+      useEffect(function() {
+        function handleHash() {
+          var hash = window.location.hash.slice(1) || 'home';
+          if (['home','about','projects','donate'].indexOf(hash) !== -1) {
+            setPage(hash);
+          }
+        }
+        window.addEventListener('hashchange', handleHash);
+        handleHash();
+        return function() { window.removeEventListener('hashchange', handleHash); };
+      }, []);
+
+      function navigate(p) {
+        window.location.hash = p;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      var content;
+      switch (page) {
+        case 'home': content = h(HomePage, { setPage: navigate }); break;
+        case 'about': content = h(AboutPage, { setPage: navigate }); break;
+        case 'projects': content = h(ProjectsPage, { setPage: navigate }); break;
+        case 'donate': content = h(DonationPage, { setPage: navigate }); break;
+        default: content = h(HomePage, { setPage: navigate });
+      }
+
+      return h('div', { className: 'min-h-screen' },
+        h(Navbar, { page: page, setPage: navigate }),
+        h(FloatingDonate, { setPage: navigate }),
+        content,
+        h(Footer, { setPage: navigate })
+      );
+    }
+
+    /* ========== RENDER ========== */
+    var root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(h(App));
+  </script>
+</body>
+</html>

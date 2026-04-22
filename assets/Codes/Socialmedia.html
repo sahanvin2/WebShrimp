@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lakpin | Modern Social Experience</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #6366f1;
+    --accent2: #8b5cf6;
+    --glass: rgba(255,255,255,0.75);
+    --glass-border: rgba(255,255,255,0.3);
+  }
+  * { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+  body { background: #f1f5f9; color: #1e293b; overflow-x: hidden; }
+
+  .glass-card {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 24px rgba(99,102,241,0.06);
+  }
+
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pop {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+  }
+  @keyframes fadein { from { opacity:0; } to { opacity:1; } }
+
+  .screen { display: none; min-height: calc(100vh - 80px); }
+  .screen.active { display: block; animation: slideUp 0.35s ease-out; }
+
+  .anim-delay-1 { animation-delay: 0.06s; animation-fill-mode: both; }
+  .anim-delay-2 { animation-delay: 0.12s; animation-fill-mode: both; }
+  .anim-delay-3 { animation-delay: 0.18s; animation-fill-mode: both; }
+  .anim-delay-4 { animation-delay: 0.24s; animation-fill-mode: both; }
+
+  .slide-up { animation: slideUp 0.4s ease-out both; }
+
+  .story-ring { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); padding: 2.5px; border-radius: 9999px; }
+  .story-ring img { border: 2.5px solid white; }
+
+  .nav-active { color: #6366f1 !important; }
+  .sidebar-active { color: #6366f1 !important; background: #eef2ff !important; }
+
+  .post-textarea:focus { outline: none; }
+
+  .notif-dot { width:9px; height:9px; background:#ef4444; border-radius:50%; border:2px solid white; position:absolute; top:-1px; right:-1px; }
+
+  /* Like pop */
+  .like-popped { animation: pop 0.35s ease; }
+
+  /* Modal */
+  #modal-overlay { transition: opacity 0.25s; }
+  #modal-box { transition: transform 0.28s cubic-bezier(.34,1.56,.64,1), opacity 0.25s; }
+  #modal-overlay.hidden #modal-box { transform: scale(0.85); opacity:0; }
+
+  /* Search highlight */
+  .search-result { transition: background 0.15s; }
+  .search-result:hover { background: #f8faff; }
+
+  /* Tab underline */
+  .tab-btn.tab-active { color: #6366f1; border-bottom: 2.5px solid #6366f1; }
+  .tab-btn { border-bottom: 2.5px solid transparent; }
+
+  /* Bottom nav safe area */
+  .bottom-nav { box-shadow: 0 -4px 20px rgba(0,0,0,0.04); padding-bottom: env(safe-area-inset-bottom, 8px); }
+
+  /* Settings toggle */
+  .toggle-track { width:44px; height:24px; background:#e2e8f0; border-radius:12px; position:relative; cursor:pointer; transition:background 0.2s; }
+  .toggle-track.on { background:#6366f1; }
+  .toggle-thumb { width:18px; height:18px; background:white; border-radius:50%; position:absolute; top:3px; left:3px; transition:left 0.2s; box-shadow:0 1px 4px rgba(0,0,0,0.2); }
+  .toggle-track.on .toggle-thumb { left:23px; }
+
+  .mention { color:#6366f1; font-weight:600; }
+  .hashtag { color:#6366f1; font-weight:600; }
+</style>
+</head>
+<body>
+
+<!-- ===== TOP NAVBAR ===== -->
+<nav class="sticky top-0 z-50 glass-card px-4 py-3 md:px-8 border-b flex items-center justify-between">
+  <div class="flex items-center gap-2 cursor-pointer" onclick="showScreen('feed')">
+    <div class="w-9 h-9 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+      <i class="fas fa-bolt text-base"></i>
+    </div>
+    <span class="text-xl font-extrabold tracking-tight text-slate-800">lakpin</span>
+  </div>
+
+  <div class="hidden md:flex flex-1 max-w-sm mx-8">
+    <div class="relative w-full" onclick="showScreen('search')">
+      <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+      <input id="nav-search" type="text" placeholder="Search Lakpin…" class="w-full pl-10 pr-4 py-2 bg-slate-100 border border-transparent rounded-full focus:bg-white focus:ring-2 focus:ring-indigo-100 transition-all text-sm cursor-pointer" readonly onclick="showScreen('search')">
+    </div>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <button onclick="showScreen('notifications')" class="relative p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+      <i class="far fa-bell text-lg"></i>
+      <span class="notif-dot" id="notif-badge"></span>
+    </button>
+    <button onclick="showScreen('messages')" class="relative p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+      <i class="far fa-paper-plane text-lg"></i>
+      <span class="notif-dot" id="msg-badge"></span>
+    </button>
+    <img src="https://i.pravatar.cc/150?u=me" onclick="showScreen('profile')" class="w-9 h-9 rounded-full object-cover cursor-pointer ring-2 ring-transparent hover:ring-indigo-400 transition-all" alt="Profile">
+  </div>
+</nav>
+
+<!-- ===== MAIN LAYOUT ===== -->
+<main class="max-w-6xl mx-auto px-3 py-5 mb-20 md:mb-6 flex gap-7">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="hidden lg:flex flex-col w-60 space-y-1 sticky top-20 self-start shrink-0">
+    <button onclick="showScreen('feed')" data-sidebar="feed" class="sidebar-btn sidebar-active w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-semibold text-sm transition-all">
+      <i class="fas fa-home w-4 text-center"></i> Home
+    </button>
+    <button onclick="showScreen('explore')" data-sidebar="explore" class="sidebar-btn w-full flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-2xl font-semibold text-sm transition-all">
+      <i class="far fa-compass w-4 text-center"></i> Explore
+    </button>
+    <button onclick="showScreen('search')" data-sidebar="search" class="sidebar-btn w-full flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-2xl font-semibold text-sm transition-all">
+      <i class="fas fa-search w-4 text-center"></i> Search
+    </button>
+    <button onclick="showScreen('messages')" data-sidebar="messages" class="sidebar-btn w-full flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-2xl font-semibold text-sm transition-all">
+      <i class="far fa-comment w-4 text-center"></i> Messages
+    </button>
+    <button onclick="showScreen('notifications')" data-sidebar="notifications" class="sidebar-btn w-full flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-2xl font-semibold text-sm transition-all">
+      <i class="far fa-heart w-4 text-center"></i> Notifications
+    </button>
+    <button onclick="showScreen('bookmarks')" data-sidebar="bookmarks" class="sidebar-btn w-full flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-2xl font-semibold text-sm transition-all">
+      <i class="far fa-bookmark w-4 text-center"></i> Bookmarks
+    </button>
+    <button onclick="showScreen('profile')" data-sidebar="profile" class="sidebar-btn w-full flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-2xl font-semibold text-sm transition-all">
+      <i class="far fa-user w-4 text-center"></i> Profile
+    </button>
+    <button onclick="showScreen('settings')" data-sidebar="settings" class="sidebar-btn w-full flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-2xl font-semibold text-sm transition-all">
+      <i class="fas fa-cog w-4 text-center"></i> Settings
+    </button>
+    <div class="pt-3 border-t mt-3">
+      <button onclick="openPostModal()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-3 rounded-2xl font-bold hover:opacity-90 transition-all shadow-lg shadow-indigo-200 text-sm">
+        <i class="fas fa-plus mr-2"></i>Create Post
+      </button>
+    </div>
+    <div class="pt-4 border-t mt-2 px-1">
+      <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Trending</p>
+      <div class="space-y-2 px-3">
+        <div class="flex justify-between items-center cursor-pointer group" onclick="showHashtag('#LakpinUI')">
+          <span class="text-xs font-semibold text-slate-600 group-hover:text-indigo-600 transition-colors">#LakpinUI</span>
+          <span class="text-[10px] text-slate-400 font-medium">12.5k</span>
+        </div>
+        <div class="flex justify-between items-center cursor-pointer group" onclick="showHashtag('#DesignTrends')">
+          <span class="text-xs font-semibold text-slate-600 group-hover:text-indigo-600 transition-colors">#DesignTrends</span>
+          <span class="text-[10px] text-slate-400 font-medium">8.2k</span>
+        </div>
+        <div class="flex justify-between items-center cursor-pointer group" onclick="showHashtag('#WebDev')">
+          <span class="text-xs font-semibold text-slate-600 group-hover:text-indigo-600 transition-colors">#WebDev</span>
+          <span class="text-[10px] text-slate-400 font-medium">5.7k</span>
+        </div>
+        <div class="flex justify-between items-center cursor-pointer group" onclick="showHashtag('#OpenSource')">
+          <span class="text-xs font-semibold text-slate-600 group-hover:text-indigo-600 transition-colors">#OpenSource</span>
+          <span class="text-[10px] text-slate-400 font-medium">3.1k</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- SCREEN AREA -->
+  <div class="flex-1 min-w-0 max-w-2xl mx-auto w-full space-y-0">
+
+    <!-- =================== FEED =================== -->
+    <section id="feed" class="screen active space-y-5">
+      <!-- Stories -->
+      <div class="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
+        <div class="flex-shrink-0 flex flex-col items-center gap-1 cursor-pointer" onclick="openPostModal()">
+          <div class="w-15 h-15 w-[60px] h-[60px] rounded-full border-2 border-dashed border-indigo-400 flex items-center justify-center bg-white">
+            <i class="fas fa-plus text-indigo-500"></i>
+          </div>
+          <span class="text-[10px] font-bold text-slate-500">Your Story</span>
+        </div>
+        <div class="flex-shrink-0 flex flex-col items-center gap-1 cursor-pointer" onclick="showToast('Viewing Alex story…')">
+          <div class="story-ring w-[60px] h-[60px]"><img src="https://i.pravatar.cc/150?u=1" class="w-full h-full rounded-full object-cover"></div>
+          <span class="text-[10px] font-bold text-slate-500">Alex</span>
+        </div>
+        <div class="flex-shrink-0 flex flex-col items-center gap-1 cursor-pointer" onclick="showToast('Viewing Sarah story…')">
+          <div class="story-ring w-[60px] h-[60px]"><img src="https://i.pravatar.cc/150?u=2" class="w-full h-full rounded-full object-cover"></div>
+          <span class="text-[10px] font-bold text-slate-500">Sarah</span>
+        </div>
+        <div class="flex-shrink-0 flex flex-col items-center gap-1 cursor-pointer" onclick="showToast('Viewing Mike story…')">
+          <div class="story-ring w-[60px] h-[60px]"><img src="https://i.pravatar.cc/150?u=3" class="w-full h-full rounded-full object-cover"></div>
+          <span class="text-[10px] font-bold text-slate-500">Mike</span>
+        </div>
+        <div class="flex-shrink-0 flex flex-col items-center gap-1 cursor-pointer" onclick="showToast('Viewing Elena story…')">
+          <div class="story-ring w-[60px] h-[60px]"><img src="https://i.pravatar.cc/150?u=4" class="w-full h-full rounded-full object-cover"></div>
+          <span class="text-[10px] font-bold text-slate-500">Elena</span>
+        </div>
+        <div class="flex-shrink-0 flex flex-col items-center gap-1 cursor-pointer" onclick="showToast('Viewing Juno story…')">
+          <div class="story-ring w-[60px] h-[60px]"><img src="https://i.pravatar.cc/150?u=8" class="w-full h-full rounded-full object-cover"></div>
+          <span class="text-[10px] font-bold text-slate-500">Juno</span>
+        </div>
+        <div class="flex-shrink-0 flex flex-col items-center gap-1 cursor-pointer" onclick="showToast('Viewing Chris story…')">
+          <div class="story-ring w-[60px] h-[60px]"><img src="https://i.pravatar.cc/150?u=22" class="w-full h-full rounded-full object-cover"></div>
+          <span class="text-[10px] font-bold text-slate-500">Chris</span>
+        </div>
+      </div>
+
+      <!-- Post Creator (inline) -->
+      <div id="post-creator" class="glass-card rounded-2xl p-4 border border-slate-100 scroll-mt-24">
+        <div class="flex gap-3">
+          <img src="https://i.pravatar.cc/150?u=me" class="w-10 h-10 rounded-xl object-cover shrink-0">
+          <textarea id="main-post-input" placeholder="What's happening on Lakpin?" class="post-textarea w-full bg-transparent resize-none pt-2 text-base font-medium placeholder-slate-400 min-h-[48px]" rows="2"></textarea>
+        </div>
+        <div class="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+          <div class="flex gap-1">
+            <button class="p-2 text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors text-sm"><i class="far fa-image"></i></button>
+            <button class="p-2 text-emerald-500 hover:bg-emerald-50 rounded-lg transition-colors text-sm"><i class="far fa-chart-bar"></i></button>
+            <button class="p-2 text-amber-500 hover:bg-amber-50 rounded-lg transition-colors text-sm"><i class="far fa-smile"></i></button>
+            <button class="p-2 text-sky-500 hover:bg-sky-50 rounded-lg transition-colors text-sm"><i class="fas fa-map-marker-alt"></i></button>
+          </div>
+          <button onclick="submitPost()" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 py-2 rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-indigo-200 active:scale-95 text-sm">Post</button>
+        </div>
+      </div>
+
+      <!-- Feed tabs -->
+      <div class="flex border-b border-slate-200 bg-white/60 rounded-t-xl overflow-hidden">
+        <button class="tab-btn tab-active flex-1 py-3 text-sm font-bold transition-all" onclick="switchFeedTab(this, 'tab-all')">For You</button>
+        <button class="tab-btn flex-1 py-3 text-sm font-bold text-slate-400 transition-all" onclick="switchFeedTab(this, 'tab-following')">Following</button>
+        <button class="tab-btn flex-1 py-3 text-sm font-bold text-slate-400 transition-all" onclick="switchFeedTab(this, 'tab-trending')">Trending</button>
+      </div>
+
+      <!-- Feed posts container -->
+      <div id="feed-container" class="space-y-5"></div>
+    </section>
+
+    <!-- =================== EXPLORE =================== -->
+    <section id="explore" class="screen space-y-5">
+      <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-extrabold">Explore</h2>
+        <div class="flex gap-2">
+          <button class="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-bold">All</button>
+          <button class="px-3 py-1.5 bg-white text-slate-600 rounded-xl text-xs font-bold border border-slate-200 hover:border-indigo-400 transition-colors">Photos</button>
+          <button class="px-3 py-1.5 bg-white text-slate-600 rounded-xl text-xs font-bold border border-slate-200 hover:border-indigo-400 transition-colors">Design</button>
+          <button class="px-3 py-1.5 bg-white text-slate-600 rounded-xl text-xs font-bold border border-slate-200 hover:border-indigo-400 transition-colors">Tech</button>
+        </div>
+      </div>
+
+      <!-- Explore grid -->
+      <div class="columns-2 md:columns-3 gap-3 space-y-3">
+        <div class="break-inside-avoid rounded-2xl overflow-hidden group relative cursor-pointer mb-3" onclick="openPost(1)">
+          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=500" class="w-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
+            <span class="text-white text-xs font-bold flex items-center gap-2"><i class="fas fa-heart"></i> 4.5k</span>
+          </div>
+        </div>
+        <div class="break-inside-avoid rounded-2xl overflow-hidden group relative cursor-pointer mb-3" onclick="openPost(2)">
+          <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&q=80&w=500" class="w-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
+            <span class="text-white text-xs font-bold flex items-center gap-2"><i class="fas fa-heart"></i> 3.3k</span>
+          </div>
+        </div>
+        <div class="break-inside-avoid rounded-2xl overflow-hidden group relative cursor-pointer mb-3" onclick="openPost(3)">
+          <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=500" class="w-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
+            <span class="text-white text-xs font-bold flex items-center gap-2"><i class="fas fa-heart"></i> 6.1k</span>
+          </div>
+        </div>
+        <div class="break-inside-avoid rounded-2xl overflow-hidden group relative cursor-pointer mb-3" onclick="openPost(4)">
+          <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=500" class="w-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
+            <span class="text-white text-xs font-bold flex items-center gap-2"><i class="fas fa-heart"></i> 2.1k</span>
+          </div>
+        </div>
+        <div class="break-inside-avoid rounded-2xl overflow-hidden group relative cursor-pointer mb-3" onclick="openPost(5)">
+          <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=500" class="w-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
+            <span class="text-white text-xs font-bold flex items-center gap-2"><i class="fas fa-heart"></i> 5.6k</span>
+          </div>
+        </div>
+        <div class="break-inside-avoid rounded-2xl overflow-hidden group relative cursor-pointer mb-3" onclick="openPost(6)">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=500" class="w-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
+            <span class="text-white text-xs font-bold flex items-center gap-2"><i class="fas fa-heart"></i> 8.2k</span>
+          </div>
+        </div>
+        <div class="break-inside-avoid rounded-2xl overflow-hidden group relative cursor-pointer mb-3" onclick="openPost(7)">
+          <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=500" class="w-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
+            <span class="text-white text-xs font-bold flex items-center gap-2"><i class="fas fa-heart"></i> 1.8k</span>
+          </div>
+        </div>
+        <div class="break-inside-avoid rounded-2xl overflow-hidden group relative cursor-pointer mb-3" onclick="openPost(8)">
+          <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=500" class="w-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
+            <span class="text-white text-xs font-bold flex items-center gap-2"><i class="fas fa-heart"></i> 7.4k</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== SEARCH =================== -->
+    <section id="search" class="screen space-y-5">
+      <div class="relative">
+        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <input id="search-input" type="text" placeholder="Search people, posts, hashtags…" class="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-200 focus:border-indigo-300 transition-all text-sm font-medium" oninput="runSearch(this.value)">
+      </div>
+
+      <!-- Recent searches -->
+      <div id="recent-searches">
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Recent Searches</p>
+        <div class="space-y-2" id="recent-list">
+          <div class="search-result flex items-center gap-3 p-3 rounded-xl cursor-pointer" onclick="fillSearch('#LakpinUI')">
+            <div class="w-9 h-9 bg-indigo-100 text-indigo-500 rounded-xl flex items-center justify-center text-sm"><i class="fas fa-hashtag"></i></div>
+            <div><p class="text-sm font-bold">#LakpinUI</p><p class="text-xs text-slate-400">12.5k posts</p></div>
+            <i class="fas fa-times ml-auto text-slate-300 hover:text-slate-500 text-xs"></i>
+          </div>
+          <div class="search-result flex items-center gap-3 p-3 rounded-xl cursor-pointer" onclick="fillSearch('Sarah Jenkins')">
+            <img src="https://i.pravatar.cc/150?u=2" class="w-9 h-9 rounded-xl object-cover">
+            <div><p class="text-sm font-bold">Sarah Jenkins</p><p class="text-xs text-slate-400">@sarahdesign</p></div>
+            <i class="fas fa-times ml-auto text-slate-300 hover:text-slate-500 text-xs"></i>
+          </div>
+          <div class="search-result flex items-center gap-3 p-3 rounded-xl cursor-pointer" onclick="fillSearch('#WebDev')">
+            <div class="w-9 h-9 bg-sky-100 text-sky-500 rounded-xl flex items-center justify-center text-sm"><i class="fas fa-hashtag"></i></div>
+            <div><p class="text-sm font-bold">#WebDev</p><p class="text-xs text-slate-400">5.7k posts</p></div>
+            <i class="fas fa-times ml-auto text-slate-300 hover:text-slate-500 text-xs"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search results (shown when typing) -->
+      <div id="search-results" class="hidden space-y-3">
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">People</p>
+        <div id="people-results" class="space-y-2 glass-card rounded-2xl p-2 border border-slate-100"></div>
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-4 mb-2">Hashtags</p>
+        <div id="hashtag-results" class="space-y-2 glass-card rounded-2xl p-2 border border-slate-100"></div>
+      </div>
+
+      <!-- Suggested People (when no search) -->
+      <div id="suggested-people">
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">People you may know</p>
+        <div class="space-y-3" id="people-list"></div>
+      </div>
+    </section>
+
+    <!-- =================== MESSAGES =================== -->
+    <section id="messages" class="screen space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-extrabold">Messages</h2>
+        <button onclick="showToast('New conversation feature coming soon!')" class="p-2 bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-xl shadow-lg shadow-indigo-200 hover:opacity-90 transition-opacity">
+          <i class="fas fa-edit text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Search bar -->
+      <div class="relative">
+        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+        <input type="text" placeholder="Search messages…" class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-100 transition-all">
+      </div>
+
+      <div class="glass-card rounded-2xl border border-slate-100 overflow-hidden divide-y divide-slate-100" id="message-list"></div>
+    </section>
+
+    <!-- =================== NOTIFICATIONS =================== -->
+    <section id="notifications" class="screen space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-extrabold">Notifications</h2>
+        <button onclick="markAllRead()" class="text-sm font-bold text-indigo-600 hover:text-indigo-800">Mark all read</button>
+      </div>
+
+      <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+        <button class="notif-tab shrink-0 px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold" data-tab="all" onclick="filterNotifs('all', this)">All</button>
+        <button class="notif-tab shrink-0 px-4 py-2 bg-white text-slate-500 border border-slate-200 rounded-xl text-xs font-bold" data-tab="likes" onclick="filterNotifs('likes', this)">Likes</button>
+        <button class="notif-tab shrink-0 px-4 py-2 bg-white text-slate-500 border border-slate-200 rounded-xl text-xs font-bold" data-tab="comments" onclick="filterNotifs('comments', this)">Comments</button>
+        <button class="notif-tab shrink-0 px-4 py-2 bg-white text-slate-500 border border-slate-200 rounded-xl text-xs font-bold" data-tab="follows" onclick="filterNotifs('follows', this)">Follows</button>
+        <button class="notif-tab shrink-0 px-4 py-2 bg-white text-slate-500 border border-slate-200 rounded-xl text-xs font-bold" data-tab="mentions" onclick="filterNotifs('mentions', this)">Mentions</button>
+      </div>
+
+      <div id="notif-list" class="space-y-2"></div>
+    </section>
+
+    <!-- =================== BOOKMARKS =================== -->
+    <section id="bookmarks" class="screen space-y-5">
+      <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-extrabold">Bookmarks</h2>
+        <button onclick="showToast('Bookmarks cleared!')" class="text-sm font-bold text-rose-500 hover:text-rose-700">Clear all</button>
+      </div>
+      <div id="bookmark-list" class="space-y-5"></div>
+      <div id="bookmark-empty" class="hidden text-center py-16">
+        <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-2xl">
+          <i class="far fa-bookmark"></i>
+        </div>
+        <h3 class="font-bold text-slate-700">No bookmarks yet</h3>
+        <p class="text-sm text-slate-400 mt-1">Tap the bookmark icon on any post to save it here.</p>
+      </div>
+    </section>
+
+    <!-- =================== PROFILE =================== -->
+    <section id="profile" class="screen space-y-5">
+      <div class="glass-card rounded-3xl overflow-hidden border border-slate-100">
+        <div class="h-44 bg-gradient-to-br from-indigo-400 via-purple-500 to-pink-500 relative">
+          <button onclick="showToast('Change cover photo coming soon!')" class="absolute bottom-3 right-3 bg-black/40 text-white px-3 py-1.5 rounded-xl text-xs font-bold backdrop-blur-sm hover:bg-black/60 transition-colors">
+            <i class="fas fa-camera mr-1"></i> Edit Cover
+          </button>
+        </div>
+        <div class="px-6 pb-5">
+          <div class="flex justify-between items-end -mt-14 mb-4">
+            <div class="relative">
+              <img src="https://i.pravatar.cc/150?u=me" class="w-24 h-24 rounded-3xl border-4 border-white shadow-xl object-cover bg-white">
+              <div class="absolute bottom-1 right-1 w-5 h-5 bg-emerald-400 border-2 border-white rounded-full"></div>
+            </div>
+            <div class="flex gap-2 mt-14">
+              <button onclick="showToast('Edit profile coming soon!')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-sm transition-all">Edit Profile</button>
+              <button onclick="showToast('Share profile link copied!')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-sm transition-all"><i class="fas fa-share-alt"></i></button>
+            </div>
+          </div>
+          <h2 class="text-xl font-extrabold">Sarah Jenkins</h2>
+          <p class="text-slate-500 text-sm">@sarahdesign</p>
+          <p class="text-indigo-500 text-sm font-semibold">UI/UX Designer & Explorer ✨</p>
+          <p class="mt-3 text-slate-600 text-sm leading-relaxed">Building the future of social interfaces on Lakpin. Coffee lover, traveler, and occasional pixel pusher. ☕️ Amsterdam 🇳🇱</p>
+          <div class="flex gap-4 mt-2 text-sm text-slate-500">
+            <span><i class="fas fa-map-marker-alt mr-1 text-indigo-400"></i> Amsterdam</span>
+            <span><i class="fas fa-link mr-1 text-indigo-400"></i> <a class="text-indigo-600 hover:underline" href="#">sarahjenkins.design</a></span>
+          </div>
+          <div class="flex gap-6 mt-5">
+            <div class="text-center cursor-pointer hover:opacity-70" onclick="showToast('Followers list')">
+              <span class="block font-extrabold text-lg">12.5k</span>
+              <span class="text-[11px] text-slate-400 font-bold uppercase tracking-tight">Followers</span>
+            </div>
+            <div class="text-center cursor-pointer hover:opacity-70" onclick="showToast('Following list')">
+              <span class="block font-extrabold text-lg">842</span>
+              <span class="text-[11px] text-slate-400 font-bold uppercase tracking-tight">Following</span>
+            </div>
+            <div class="text-center">
+              <span class="block font-extrabold text-lg" id="profile-post-count">142</span>
+              <span class="text-[11px] text-slate-400 font-bold uppercase tracking-tight">Posts</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex border-t border-slate-100">
+          <button class="tab-btn tab-active flex-1 py-3.5 text-sm font-bold transition-all" onclick="switchProfileTab(this, 'profile-posts')">Posts</button>
+          <button class="tab-btn flex-1 py-3.5 text-sm font-bold text-slate-400 transition-all" onclick="switchProfileTab(this, 'profile-media')">Media</button>
+          <button class="tab-btn flex-1 py-3.5 text-sm font-bold text-slate-400 transition-all" onclick="switchProfileTab(this, 'profile-likes')">Likes</button>
+        </div>
+      </div>
+
+      <div id="profile-posts" class="space-y-4">
+        <div class="glass-card rounded-2xl p-5 border border-slate-100 text-center py-12">
+          <div class="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400 text-2xl"><i class="far fa-image"></i></div>
+          <h3 class="font-bold text-slate-700">No posts yet</h3>
+          <p class="text-sm text-slate-400 mt-1">Share your first post with the Lakpin community!</p>
+          <button onclick="openPostModal()" class="mt-4 bg-indigo-600 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 transition-colors">Create Post</button>
+        </div>
+      </div>
+      <div id="profile-media" class="hidden grid grid-cols-3 gap-2">
+        <div class="aspect-square rounded-xl overflow-hidden"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=200" class="w-full h-full object-cover hover:scale-110 transition-transform cursor-pointer"></div>
+        <div class="aspect-square rounded-xl overflow-hidden"><img src="https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&q=80&w=200" class="w-full h-full object-cover hover:scale-110 transition-transform cursor-pointer"></div>
+        <div class="aspect-square rounded-xl overflow-hidden"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=200" class="w-full h-full object-cover hover:scale-110 transition-transform cursor-pointer"></div>
+        <div class="aspect-square rounded-xl overflow-hidden"><img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=200" class="w-full h-full object-cover hover:scale-110 transition-transform cursor-pointer"></div>
+        <div class="aspect-square rounded-xl overflow-hidden"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=200" class="w-full h-full object-cover hover:scale-110 transition-transform cursor-pointer"></div>
+      </div>
+      <div id="profile-likes" class="hidden glass-card rounded-2xl border border-slate-100 p-5 text-center py-12">
+        <div class="w-14 h-14 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-3 text-rose-300 text-2xl"><i class="far fa-heart"></i></div>
+        <h3 class="font-bold text-slate-700">No liked posts yet</h3>
+        <p class="text-sm text-slate-400 mt-1">Posts you like will appear here.</p>
+      </div>
+    </section>
+
+    <!-- =================== SETTINGS =================== -->
+    <section id="settings" class="screen space-y-5">
+      <h2 class="text-2xl font-extrabold">Settings</h2>
+
+      <!-- Account -->
+      <div class="glass-card rounded-2xl border border-slate-100 overflow-hidden">
+        <div class="px-5 py-3 bg-slate-50/80 border-b border-slate-100">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Account</p>
+        </div>
+        <div class="divide-y divide-slate-100">
+          <div class="flex items-center justify-between px-5 py-4 hover:bg-slate-50 cursor-pointer transition-colors" onclick="showToast('Edit profile details')">
+            <div class="flex items-center gap-3"><div class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-sm"><i class="far fa-user"></i></div><span class="text-sm font-semibold">Edit Profile</span></div>
+            <i class="fas fa-chevron-right text-slate-300 text-sm"></i>
+          </div>
+          <div class="flex items-center justify-between px-5 py-4 hover:bg-slate-50 cursor-pointer transition-colors" onclick="showToast('Change password')">
+            <div class="flex items-center gap-3"><div class="w-8 h-8 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-sm"><i class="fas fa-lock"></i></div><span class="text-sm font-semibold">Password & Security</span></div>
+            <i class="fas fa-chevron-right text-slate-300 text-sm"></i>
+          </div>
+          <div class="flex items-center justify-between px-5 py-4 hover:bg-slate-50 cursor-pointer transition-colors" onclick="showToast('Connected accounts')">
+            <div class="flex items-center gap-3"><div class="w-8 h-8 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center text-sm"><i class="fas fa-link"></i></div><span class="text-sm font-semibold">Connected Accounts</span></div>
+            <i class="fas fa-chevron-right text-slate-300 text-sm"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Privacy -->
+      <div class="glass-card rounded-2xl border border-slate-100 overflow-hidden">
+        <div class="px-5 py-3 bg-slate-50/80 border-b border-slate-100">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Privacy</p>
+        </div>
+        <div class="divide-y divide-slate-100">
+          <div class="flex items-center justify-between px-5 py-4">
+            <div class="flex items-center gap-3"><div class="w-8 h-8 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-sm"><i class="fas fa-user-lock"></i></div><span class="text-sm font-semibold">Private Account</span></div>
+            <div class="toggle-track" onclick="toggleSetting(this)"><div class="toggle-thumb"></div></div>
+          </div>
+          <div class="flex items-center justify-between px-5 py-4">
+            <div class="flex items-center gap-3"><div class="w-8 h-8 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-sm"><i class="fas fa-eye"></i></div><span class="text-sm font-semibold">Show Online Status</span></div>
+            <div class="toggle-track on" onclick="toggleSetting(this)"><div class="toggle-thumb"></div></div>
+          </div>
+          <div class="flex items-center justify-between px-5 py-4">
+            <div class="flex items-center gap-3"><div class="w-8 h-8 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center text-sm"><i class="fas fa-map-marker-alt"></i></div><span class="text-sm font-semibold">Share Location</span></div>
+            <div class="toggle-track" onclick="toggleSetting(this)"><div class="toggle-thumb"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="glass-card rounded-2xl border border-slate-100 overflow-hidden">
+        <div class="px-5 py-3 bg-slate-50/80 border-b border-slate-100">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Notifications</p>
+        </div>
+        <div class="divide-y divide-slate-100">
+          <div class="flex items-center justify-between px-5 py-4">
+            <div class="flex items-center gap-3"><div class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-sm"><i class="fas fa-bell"></i></div><span class="text-sm font-semibold">Push Notifications</span></div>
+            <div class="toggle-track on" onclick="toggleSetting(this)"><div class="toggle-thumb"></div></div>
+          </div>
+          <div class="flex items-center justify-between px-5 py-4">
+            <div class="flex items-center gap-3"><div class="w-8 h-8 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center text-sm"><i class="fas fa-at"></i></div><span class="text-sm font-semibold">Mentions</span></div>
+            <div class="toggle-track on" onclick="toggleSetting(this)"><div class="toggle-thumb"></div></div>
+          </div>
+          <div class="flex items-center justify-between px-5 py-4">
+            <div class="flex items-center gap-3"><div class="w-8 h-8 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-sm"><i class="far fa-comment"></i></div><span class="text-sm font-semibold">Comments</span></div>
+            <div class="toggle-track on" onclick="toggleSetting(this)"><div class="toggle-thumb"></div></div>
+          </div>
+          <div class="flex items-center justify-between px-5 py-4">
+            <div class="flex items-center gap-3"><div class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-sm"><i class="fas fa-envelope"></i></div><span class="text-sm font-semibold">Email Digest</span></div>
+            <div class="toggle-track" onclick="toggleSetting(this)"><div class="toggle-thumb"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appearance -->
+      <div class="glass-card rounded-2xl border border-slate-100 overflow-hidden">
+        <div class="px-5 py-3 bg-slate-50/80 border-b border-slate-100">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Appearance</p>
+        </div>
+        <div class="divide-y divide-slate-100">
+          <div class="flex items-center justify-between px-5 py-4 hover:bg-slate-50 cursor-pointer" onclick="showToast('Dark mode coming soon!')">
+            <div class="flex items-center gap-3"><div class="w-8 h-8 bg-slate-200 text-slate-600 rounded-xl flex items-center justify-center text-sm"><i class="fas fa-moon"></i></div><span class="text-sm font-semibold">Dark Mode</span></div>
+            <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-lg font-bold">Soon</span>
+          </div>
+          <div class="flex items-center justify-between px-5 py-4 hover:bg-slate-50 cursor-pointer" onclick="showToast('Language settings')">
+            <div class="flex items-center gap-3"><div class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-sm"><i class="fas fa-globe"></i></div><span class="text-sm font-semibold">Language</span></div>
+            <span class="text-xs text-slate-400 font-medium">English <i class="fas fa-chevron-right text-slate-300 text-[10px] ml-1"></i></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Danger -->
+      <div class="glass-card rounded-2xl border border-red-100 overflow-hidden">
+        <div class="divide-y divide-red-50">
+          <div class="flex items-center gap-3 px-5 py-4 hover:bg-red-50 cursor-pointer transition-colors" onclick="showToast('Logged out successfully!')">
+            <div class="w-8 h-8 bg-red-100 text-red-500 rounded-xl flex items-center justify-center text-sm"><i class="fas fa-sign-out-alt"></i></div>
+            <span class="text-sm font-bold text-red-500">Log Out</span>
+          </div>
+          <div class="flex items-center gap-3 px-5 py-4 hover:bg-red-50 cursor-pointer transition-colors" onclick="showToast('Delete account request sent to support.')">
+            <div class="w-8 h-8 bg-red-100 text-red-500 rounded-xl flex items-center justify-center text-sm"><i class="fas fa-trash"></i></div>
+            <span class="text-sm font-bold text-red-500">Delete Account</span>
+          </div>
+        </div>
+      </div>
+      <p class="text-center text-xs text-slate-400">Lakpin v2.0 © 2026 · <a href="#" class="hover:text-indigo-500">Privacy</a> · <a href="#" class="hover:text-indigo-500">Terms</a></p>
+    </section>
+
+  </div><!-- end screen area -->
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="hidden lg:flex flex-col w-68 w-[270px] space-y-5 sticky top-20 self-start shrink-0">
+    <div class="glass-card rounded-2xl p-5 border border-slate-100">
+      <h3 class="font-bold text-slate-800 mb-4 text-sm">Suggested for you</h3>
+      <div class="space-y-4" id="suggested-sidebar"></div>
+    </div>
+    <div class="glass-card rounded-2xl p-5 border border-slate-100">
+      <h3 class="font-bold text-slate-800 mb-4 text-sm">Trending Topics</h3>
+      <div class="space-y-3">
+        <div class="cursor-pointer group" onclick="showHashtag('#LakpinUI')">
+          <p class="text-xs text-slate-400">Technology · Trending</p>
+          <p class="text-sm font-bold group-hover:text-indigo-600 transition-colors">#LakpinUI</p>
+          <p class="text-xs text-slate-400">12,500 posts</p>
+        </div>
+        <div class="cursor-pointer group" onclick="showHashtag('#DesignTrends')">
+          <p class="text-xs text-slate-400">Design · Trending</p>
+          <p class="text-sm font-bold group-hover:text-indigo-600 transition-colors">#DesignTrends</p>
+          <p class="text-xs text-slate-400">8,200 posts</p>
+        </div>
+        <div class="cursor-pointer group" onclick="showHashtag('#WebDev')">
+          <p class="text-xs text-slate-400">Tech · Trending</p>
+          <p class="text-sm font-bold group-hover:text-indigo-600 transition-colors">#WebDev</p>
+          <p class="text-xs text-slate-400">5,700 posts</p>
+        </div>
+        <div class="cursor-pointer group" onclick="showHashtag('#OpenSource')">
+          <p class="text-xs text-slate-400">Dev · Trending</p>
+          <p class="text-sm font-bold group-hover:text-indigo-600 transition-colors">#OpenSource</p>
+          <p class="text-xs text-slate-400">3,100 posts</p>
+        </div>
+      </div>
+    </div>
+    <p class="text-[10px] text-slate-400 leading-relaxed px-1">
+      <a href="#" class="hover:underline">About</a> · <a href="#" class="hover:underline">Privacy</a> · <a href="#" class="hover:underline">Terms</a> · <a href="#" class="hover:underline">Ads</a> · Lakpin © 2026
+    </p>
+  </aside>
+
+</main>
+
+<!-- ===== BOTTOM NAV (Mobile) ===== -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 glass-card bottom-nav border-t px-4 py-2 flex justify-between items-center z-50">
+  <button onclick="showScreen('feed')" data-mobile="feed" class="mob-nav flex flex-col items-center gap-0.5 text-indigo-600 transition-colors px-2">
+    <i class="fas fa-home text-xl"></i><span class="text-[9px] font-bold">Home</span>
+  </button>
+  <button onclick="showScreen('explore')" data-mobile="explore" class="mob-nav flex flex-col items-center gap-0.5 text-slate-400 transition-colors px-2">
+    <i class="fas fa-compass text-xl"></i><span class="text-[9px] font-bold">Explore</span>
+  </button>
+  <button onclick="openPostModal()" class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white w-12 h-12 rounded-2xl flex items-center justify-center -mt-6 shadow-xl shadow-indigo-300 hover:scale-105 transition-transform active:scale-95">
+    <i class="fas fa-plus text-lg"></i>
+  </button>
+  <button onclick="showScreen('notifications')" data-mobile="notifications" class="mob-nav flex flex-col items-center gap-0.5 text-slate-400 transition-colors px-2 relative">
+    <i class="far fa-bell text-xl"></i><span class="text-[9px] font-bold">Alerts</span>
+    <span class="notif-dot" style="top:-4px; right:4px;"></span>
+  </button>
+  <button onclick="showScreen('profile')" data-mobile="profile" class="mob-nav flex flex-col items-center gap-0.5 text-slate-400 transition-colors px-2">
+    <i class="far fa-user text-xl"></i><span class="text-[9px] font-bold">Profile</span>
+  </button>
+</nav>
+
+<!-- ===== POST CREATION MODAL ===== -->
+<div id="modal-overlay" class="fixed inset-0 z-[80] flex items-end md:items-center justify-center hidden" onclick="closePostModal(event)">
+  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+  <div id="modal-box" class="relative w-full max-w-lg bg-white rounded-t-3xl md:rounded-3xl p-5 shadow-2xl mx-0 md:mx-4" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-extrabold">Create Post</h3>
+      <button onclick="closePostModal()" class="p-2 hover:bg-slate-100 rounded-xl transition-colors text-slate-400"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="flex gap-3">
+      <img src="https://i.pravatar.cc/150?u=me" class="w-10 h-10 rounded-xl object-cover shrink-0">
+      <div class="flex-1">
+        <textarea id="modal-post-input" placeholder="What's on your mind?" class="post-textarea w-full bg-transparent resize-none text-base font-medium placeholder-slate-400 min-h-[100px]" rows="4"></textarea>
+        <div id="modal-image-preview" class="hidden mt-2 rounded-xl overflow-hidden"><img id="modal-preview-img" src="" class="w-full max-h-48 object-cover rounded-xl"></div>
+      </div>
+    </div>
+
+    <!-- Audience selector -->
+    <div class="flex items-center gap-2 mt-3 mb-3">
+      <button class="flex items-center gap-1.5 bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-xl text-xs font-bold">
+        <i class="fas fa-globe-americas"></i> Everyone <i class="fas fa-chevron-down text-[9px]"></i>
+      </button>
+    </div>
+
+    <div class="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+      <div class="flex gap-2">
+        <button onclick="attachModalImage()" class="p-2 text-indigo-500 hover:bg-indigo-50 rounded-xl transition-colors text-sm" title="Image"><i class="far fa-image text-lg"></i></button>
+        <button class="p-2 text-emerald-500 hover:bg-emerald-50 rounded-xl transition-colors text-sm" title="Poll"><i class="far fa-chart-bar text-lg"></i></button>
+        <button class="p-2 text-amber-500 hover:bg-amber-50 rounded-xl transition-colors text-sm" title="Emoji"><i class="far fa-smile text-lg"></i></button>
+        <button class="p-2 text-sky-500 hover:bg-sky-50 rounded-xl transition-colors text-sm" title="Location"><i class="fas fa-map-marker-alt text-lg"></i></button>
+        <button class="p-2 text-pink-500 hover:bg-pink-50 rounded-xl transition-colors text-sm" title="GIF"><i class="fas fa-film text-lg"></i></button>
+      </div>
+      <button onclick="submitModalPost()" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2.5 rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-indigo-200 active:scale-95 text-sm">Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== POST VIEW MODAL ===== -->
+<div id="post-modal-overlay" class="fixed inset-0 z-[80] flex items-center justify-center hidden" onclick="closePostViewModal(event)">
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+  <div class="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl mx-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+    <div class="sticky top-0 bg-white/90 backdrop-blur-sm px-5 py-3 flex items-center gap-3 border-b border-slate-100">
+      <button onclick="closePostViewModal()" class="p-2 hover:bg-slate-100 rounded-xl transition-colors text-slate-400"><i class="fas fa-arrow-left"></i></button>
+      <h3 class="font-extrabold">Post</h3>
+    </div>
+    <div id="post-modal-content" class="p-5"></div>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div id="toast" class="fixed top-20 right-4 md:right-8 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl transition-all duration-300 opacity-0 translate-y-8 pointer-events-none z-[90] flex items-center gap-3 max-w-xs">
+  <i id="toast-icon" class="fas fa-check-circle text-emerald-400"></i>
+  <span id="toast-message" class="text-sm font-semibold">Action successful</span>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const USERS = [
+  { id:1,  name:'Julian Casablancas', handle:'@julian_c',   avatar:'https://i.pravatar.cc/150?u=9',  bio:'Musician & designer. NYC 🎸', followers:'24.2k' },
+  { id:2,  name:'Alex Rivera',        handle:'@alex_r',     avatar:'https://i.pravatar.cc/150?u=1',  bio:'Full-stack dev & coffee addict', followers:'8.6k' },
+  { id:3,  name:'Sarah Jenkins',      handle:'@sarahdesign',avatar:'https://i.pravatar.cc/150?u=me', bio:'UI/UX Designer & Explorer ✨',   followers:'12.5k' },
+  { id:4,  name:'Elena Joy',          handle:'@elenajoy',   avatar:'https://i.pravatar.cc/150?u=4',  bio:'Travel photographer 📷',         followers:'31.4k' },
+  { id:5,  name:'Design Master',      handle:'@designmaster',avatar:'https://i.pravatar.cc/150?u=12',bio:'Design educator & speaker',      followers:'19.1k' },
+  { id:6,  name:'Marcus Thorne',      handle:'@marcusth',   avatar:'https://i.pravatar.cc/150?u=20', bio:'Startup founder | Builder',       followers:'5.3k'  },
+  { id:7,  name:'Juno Park',          handle:'@junopark',   avatar:'https://i.pravatar.cc/150?u=8',  bio:'3D artist & motion designer',    followers:'9.8k'  },
+  { id:8,  name:'Chris Wiles',        handle:'@chriswiles', avatar:'https://i.pravatar.cc/150?u=22', bio:'Open source contributor 💻',     followers:'4.2k'  },
+  { id:9,  name:'Aria Stark',         handle:'@ariastark',  avatar:'https://i.pravatar.cc/150?u=16', bio:'Product designer at Lakpin',     followers:'7.0k'  },
+  { id:10, name:'David Chen',         handle:'@davidchen',  avatar:'https://i.pravatar.cc/150?u=15', bio:'Data scientist & ML enthusiast', followers:'11.3k' },
+];
+
+const POSTS_DATA = [
+  {
+    id:1, userId:1, time:'2 hours ago', public:true,
+    text:'Just launched the new Lakpin design system. Glassmorphism + tight spacing = chef\'s kiss 🚀 <span class="hashtag">#LakpinUI</span> <span class="hashtag">#WebDev</span>',
+    image:'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=800',
+    likes:1243, comments:48, bookmarked:false, liked:false, tab:'all'
+  },
+  {
+    id:2, userId:5, time:'5 hours ago', public:true,
+    text:'"Design is not just what it looks like and feels like. Design is how it works." — Steve Jobs\n\nAlways a reminder to stay user-focused. <span class="hashtag">#DesignTrends</span>',
+    image:null,
+    likes:256, comments:12, bookmarked:false, liked:false, tab:'all'
+  },
+  {
+    id:3, userId:4, time:'7 hours ago', public:true,
+    text:'Golden hour at the canal 🌅 Amsterdam never gets old. 📍 Prinsengracht <span class="mention">@sarahdesign</span> you need to come here!',
+    image:'https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&q=80&w=800',
+    likes:891, comments:34, bookmarked:false, liked:false, tab:'all'
+  },
+  {
+    id:4, userId:7, time:'Yesterday', public:true,
+    text:'Finished this 3D motion loop after 3 weeks of iteration. The depth of field and lighting finally clicked. Worth every late night. <span class="hashtag">#3D</span> <span class="hashtag">#DesignTrends</span>',
+    image:'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=800',
+    likes:2103, comments:87, bookmarked:true, liked:false, tab:'all'
+  },
+  {
+    id:5, userId:2, time:'Yesterday', public:true,
+    text:'New blog post: "10 things I learned building a real-time app with WebSockets". Link in bio 🔗 <span class="hashtag">#WebDev</span> <span class="hashtag">#OpenSource</span>',
+    image:'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=800',
+    likes:447, comments:22, bookmarked:false, liked:false, tab:'following'
+  },
+  {
+    id:6, userId:6, time:'2 days ago', public:true,
+    text:'We hit 1,000 paying customers 🎉 To everyone who believed in us from day one — this is for you. Building in public is the best decision we ever made.',
+    image:null,
+    likes:3201, comments:143, bookmarked:false, liked:false, tab:'trending'
+  },
+  {
+    id:7, userId:10, time:'2 days ago', public:true,
+    text:'Interesting pattern I found in our user engagement data: posts with images get 3x more interaction, but text-only posts get 5x more comments. Quality > quantity. <span class="hashtag">#DataScience</span>',
+    image:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800',
+    likes:678, comments:56, bookmarked:false, liked:false, tab:'following'
+  },
+  {
+    id:8, userId:9, time:'3 days ago', public:true,
+    text:'Working on a redesign of the Lakpin mobile app. Here\'s an early sneak peek 👀 Dark mode is finally happening! <span class="hashtag">#LakpinUI</span> <span class="mention">@julian_c</span>',
+    image:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800',
+    likes:1567, comments:92, bookmarked:false, liked:false, tab:'trending'
+  },
+  {
+    id:9, userId:8, time:'4 days ago', public:true,
+    text:'Just merged my 200th PR on GitHub 💚 Open source is one of the most meaningful things I do. If you\'re hesitating to contribute — just start with documentation. <span class="hashtag">#OpenSource</span>',
+    image:null,
+    likes:342, comments:18, bookmarked:false, liked:false, tab:'following'
+  },
+  {
+    id:10, userId:4, time:'5 days ago', public:true,
+    text:'Photography tip of the week: shoot into the sun at golden hour. Yes it\'s "wrong". That\'s the point. The silhouettes and lens flares are worth it every single time. 📸',
+    image:'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800',
+    likes:1892, comments:63, bookmarked:true, liked:false, tab:'trending'
+  },
+];
+
+const MESSAGES_DATA = [
+  { userId:2,  preview:'Hey! The new prototypes are looking amazing. Let\'s discuss tomorrow.', time:'12:45 PM', unread:2, online:true },
+  { userId:4,  preview:'Reacted with 🔥 to your photo',     time:'Yesterday', unread:0, online:false },
+  { userId:6,  preview:'Can we hop on a quick call today?',  time:'Yesterday', unread:1, online:true },
+  { userId:7,  preview:'Check out this new animation library!', time:'Mon',  unread:0, online:false },
+  { userId:10, preview:'The data looks great, see you Tuesday', time:'Sun',  unread:0, online:false },
+  { userId:9,  preview:'Loved your last post 💙',            time:'Sat',     unread:0, online:true },
+];
+
+const NOTIFS_DATA = [
+  { type:'like',    userId:1,  text:'liked your post about design systems.',   time:'2m',  read:false },
+  { type:'follow',  userId:6,  text:'started following you.',                  time:'8m',  read:false },
+  { type:'comment', userId:4,  text:'commented: "Absolutely beautiful shot!"', time:'15m', read:false },
+  { type:'mention', userId:7,  text:'mentioned you in a post.',                time:'1h',  read:true  },
+  { type:'like',    userId:9,  text:'liked your comment.',                     time:'2h',  read:true  },
+  { type:'comment', userId:2,  text:'replied to your post: "This is gold 🔥"', time:'3h',  read:true  },
+  { type:'follow',  userId:10, text:'started following you.',                  time:'5h',  read:true  },
+  { type:'mention', userId:5,  text:'mentioned you: "Great insight from @sarahdesign!"', time:'1d', read:true },
+  { type:'like',    userId:8,  text:'and 127 others liked your post.',         time:'2d',  read:true  },
+];
+
+const SUGGESTED_USERS = [15, 16, 18, 20].map((seed, i) => ({
+  avatar:`https://i.pravatar.cc/150?u=${seed}`,
+  name:['David Chen','Aria Stark','Noah Blake','Zoe Marsh'][i],
+  sub:['Followed by Alex','New on Lakpin','3 mutual friends','Trending creator'][i],
+  following:false
+}));
+
+let currentTab = 'all';
+let bookmarkedPosts = new Set(POSTS_DATA.filter(p=>p.bookmarked).map(p=>p.id));
+let likedPosts = new Set();
+
+// ============================================================
+// INIT
+// ============================================================
+window.onload = () => {
+  renderFeed('all');
+  renderMessages();
+  renderNotifications('all');
+  renderSuggestedSidebar();
+  renderSearchPeople();
+  renderBookmarks();
+};
+
+// ============================================================
+// SCREEN NAV
+// ============================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+
+  // sidebar
+  document.querySelectorAll('.sidebar-btn').forEach(b => {
+    b.classList.remove('sidebar-active');
+    b.classList.add('text-slate-600');
+    b.classList.remove('text-indigo-600');
+  });
+  const sb = document.querySelector(`.sidebar-btn[data-sidebar="${id}"]`);
+  if (sb) { sb.classList.add('sidebar-active'); sb.classList.remove('text-slate-600'); }
+
+  // mobile nav
+  document.querySelectorAll('.mob-nav').forEach(b => {
+    b.classList.remove('text-indigo-600'); b.classList.add('text-slate-400');
+  });
+  const mb = document.querySelector(`.mob-nav[data-mobile="${id}"]`);
+  if (mb) { mb.classList.add('text-indigo-600'); mb.classList.remove('text-slate-400'); }
+
+  window.scrollTo({top:0, behavior:'smooth'});
+
+  if (id === 'bookmarks') renderBookmarks();
+}
+
+// ============================================================
+// RENDER FEED
+// ============================================================
+function renderFeed(tab) {
+  currentTab = tab;
+  const container = document.getElementById('feed-container');
+  const posts = tab === 'all' ? POSTS_DATA : POSTS_DATA.filter(p => p.tab === tab || p.tab === 'all');
+  container.innerHTML = '';
+  posts.forEach((post, i) => {
+    const user = USERS.find(u => u.id === post.userId);
+    const isLiked = likedPosts.has(post.id);
+    const isBookmarked = bookmarkedPosts.has(post.id);
+    const div = document.createElement('div');
+    div.className = 'glass-card rounded-3xl overflow-hidden border border-slate-100 slide-up';
+    div.style.animationDelay = `${i * 0.07}s`;
+    div.innerHTML = `
+      <div class="p-4 flex items-start justify-between">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="showUserProfile(${user.id})">
+          <img src="${user.avatar}" class="w-10 h-10 rounded-full object-cover">
+          <div>
+            <h4 class="font-bold text-sm leading-tight">${user.name}</h4>
+            <p class="text-xs text-slate-400">${user.handle} · ${post.time} ${post.public ? '<i class="fas fa-globe-americas"></i>' : ''}</p>
+          </div>
+        </div>
+        <button onclick="showPostMenu(${post.id}, this)" class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+          <i class="fas fa-ellipsis-h"></i>
+        </button>
+      </div>
+      <div class="px-4 pb-3 cursor-pointer" onclick="openPost(${post.id})">
+        <p class="text-slate-700 leading-relaxed text-sm">${post.text.replace(/\n/g,'<br>')}</p>
+      </div>
+      ${post.image ? `<div class="px-4 pb-3 cursor-pointer" onclick="openPost(${post.id})"><div class="rounded-2xl overflow-hidden aspect-video bg-slate-100"><img src="${post.image}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy"></div></div>` : ''}
+      <div class="px-5 py-3 flex items-center justify-between border-t border-slate-100 bg-slate-50/40">
+        <div class="flex gap-5">
+          <button onclick="toggleLike(this, ${post.id})" class="flex items-center gap-1.5 transition-colors ${isLiked ? 'text-rose-500' : 'text-slate-500 hover:text-rose-500'}">
+            <i class="${isLiked ? 'fas' : 'far'} fa-heart text-base"></i>
+            <span class="text-xs font-bold" id="like-count-${post.id}">${formatCount(post.likes + (isLiked?1:0))}</span>
+          </button>
+          <button onclick="openPost(${post.id})" class="flex items-center gap-1.5 text-slate-500 hover:text-indigo-500 transition-colors">
+            <i class="far fa-comment text-base"></i>
+            <span class="text-xs font-bold">${formatCount(post.comments)}</span>
+          </button>
+          <button onclick="sharePost(${post.id})" class="flex items-center gap-1.5 text-slate-500 hover:text-sky-500 transition-colors">
+            <i class="far fa-paper-plane text-base"></i>
+          </button>
+        </div>
+        <button onclick="toggleBookmark(this, ${post.id})" class="transition-colors ${isBookmarked ? 'text-indigo-600' : 'text-slate-400 hover:text-indigo-500'}">
+          <i class="${isBookmarked ? 'fas' : 'far'} fa-bookmark text-base"></i>
+        </button>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function switchFeedTab(btn, tabId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
+  btn.classList.add('tab-active');
+  const tabMap = {'tab-all':'all','tab-following':'following','tab-trending':'trending'};
+  renderFeed(tabMap[tabId] || 'all');
+}
+
+// ============================================================
+// MESSAGES
+// ============================================================
+function renderMessages() {
+  const list = document.getElementById('message-list');
+  list.innerHTML = '';
+  MESSAGES_DATA.forEach(m => {
+    const u = USERS.find(u2 => u2.id === m.userId);
+    if (!u) return;
+    list.innerHTML += `
+      <div class="flex items-center gap-4 p-4 hover:bg-slate-50 cursor-pointer transition-colors" onclick="openConversation(${u.id})">
+        <div class="relative shrink-0">
+          <img src="${u.avatar}" class="w-14 h-14 rounded-2xl object-cover">
+          ${m.online ? '<div class="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-emerald-400 border-2 border-white rounded-full"></div>' : ''}
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex justify-between items-baseline">
+            <h4 class="font-bold text-sm ${m.unread ? 'text-slate-900' : 'text-slate-700'}">${u.name}</h4>
+            <span class="text-[10px] text-slate-400 font-medium shrink-0 ml-2">${m.time}</span>
+          </div>
+          <p class="text-xs truncate font-medium ${m.unread ? 'text-slate-700' : 'text-slate-400'}">${m.preview}</p>
+        </div>
+        ${m.unread ? `<div class="w-5 h-5 bg-indigo-600 text-white text-[10px] rounded-full flex items-center justify-center font-bold shrink-0">${m.unread}</div>` : ''}
+      </div>`;
+  });
+}
+
+function openConversation(userId) {
+  const u = USERS.find(u2 => u2.id === userId);
+  if (!u) return;
+  showToast(`Opening chat with ${u.name}…`);
+}
+
+// ============================================================
+// NOTIFICATIONS
+// ============================================================
+const NOTIF_ICONS = {
+  like:    {icon:'fa-heart',     bg:'bg-rose-100',    color:'text-rose-500'},
+  follow:  {icon:'fa-user-plus', bg:'bg-indigo-100',  color:'text-indigo-500'},
+  comment: {icon:'fa-comment',   bg:'bg-sky-100',     color:'text-sky-500'},
+  mention: {icon:'fa-at',        bg:'bg-amber-100',   color:'text-amber-500'},
+};
+
+function renderNotifications(filter) {
+  const list = document.getElementById('notif-list');
+  list.innerHTML = '';
+  const filtered = filter === 'all' ? NOTIFS_DATA : NOTIFS_DATA.filter(n => n.type === filter.replace('s',''));
+  filtered.forEach((n, i) => {
+    const u = USERS.find(u2 => u2.id === n.userId);
+    if (!u) return;
+    const ic = NOTIF_ICONS[n.type] || NOTIF_ICONS.like;
+    list.innerHTML += `
+      <div class="glass-card p-4 rounded-2xl border ${n.read ? 'border-slate-100' : 'border-indigo-100 bg-indigo-50/30'} flex items-center gap-3 slide-up cursor-pointer hover:border-indigo-200 transition-colors" style="animation-delay:${i*0.05}s">
+        <div class="relative shrink-0">
+          <img src="${u.avatar}" class="w-10 h-10 rounded-full object-cover">
+          <div class="absolute -bottom-1 -right-1 w-5 h-5 ${ic.bg} ${ic.color} rounded-full flex items-center justify-center text-[9px]"><i class="fas ${ic.icon}"></i></div>
+        </div>
+        <p class="text-xs flex-1 leading-relaxed"><span class="font-bold">${u.name}</span> ${n.text}</p>
+        <span class="text-[10px] text-slate-400 font-medium shrink-0">${n.time}</span>
+        ${!n.read ? '<div class="w-2 h-2 bg-indigo-500 rounded-full shrink-0"></div>' : ''}
+      </div>`;
+  });
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="text-center py-12 text-slate-400 text-sm">No notifications here</div>`;
+  }
+}
+
+function filterNotifs(type, btn) {
+  document.querySelectorAll('.notif-tab').forEach(b => {
+    b.classList.remove('bg-indigo-600','text-white');
+    b.classList.add('bg-white','text-slate-500');
+  });
+  btn.classList.add('bg-indigo-600','text-white');
+  btn.classList.remove('bg-white','text-slate-500');
+  renderNotifications(type);
+}
+
+function markAllRead() {
+  NOTIFS_DATA.forEach(n => n.read = true);
+  document.getElementById('notif-badge').style.display = 'none';
+  renderNotifications('all');
+  showToast('All notifications marked as read');
+}
+
+// ============================================================
+// BOOKMARKS
+// ============================================================
+function renderBookmarks() {
+  const list = document.getElementById('bookmark-list');
+  const empty = document.getElementById('bookmark-empty');
+  const saved = POSTS_DATA.filter(p => bookmarkedPosts.has(p.id));
+  list.innerHTML = '';
+  if (saved.length === 0) { list.classList.add('hidden'); empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden'); list.classList.remove('hidden');
+  saved.forEach(post => {
+    const u = USERS.find(u2 => u2.id === post.userId);
+    list.innerHTML += renderPostCard(post, u, true);
+  });
+}
+
+// ============================================================
+// SEARCH
+// ============================================================
+const allPeople = USERS.map(u => ({...u}));
+const allHashtags = ['#LakpinUI','#DesignTrends','#WebDev','#OpenSource','#3D','#DataScience','#Photography'];
+
+function renderSearchPeople() {
+  const container = document.getElementById('people-list');
+  container.innerHTML = '';
+  USERS.slice(0,5).forEach(u => {
+    if (u.handle === '@sarahdesign') return;
+    container.innerHTML += `
+      <div class="glass-card flex items-center gap-3 p-3 rounded-2xl border border-slate-100">
+        <img src="${u.avatar}" class="w-11 h-11 rounded-full object-cover">
+        <div class="flex-1 min-w-0">
+          <h4 class="text-sm font-bold truncate">${u.name}</h4>
+          <p class="text-xs text-slate-400">${u.handle} · ${u.followers} followers</p>
+        </div>
+        <button onclick="followUser(this)" class="text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-xl transition-colors shrink-0">Follow</button>
+      </div>`;
+  });
+}
+
+function runSearch(q) {
+  const recentDiv = document.getElementById('recent-searches');
+  const suggestedDiv = document.getElementById('suggested-people');
+  const resultsDiv = document.getElementById('search-results');
+  if (!q.trim()) {
+    recentDiv.classList.remove('hidden'); suggestedDiv.classList.remove('hidden'); resultsDiv.classList.add('hidden');
+    return;
+  }
+  recentDiv.classList.add('hidden'); suggestedDiv.classList.add('hidden'); resultsDiv.classList.remove('hidden');
+  const ql = q.toLowerCase();
+  const people = USERS.filter(u => u.name.toLowerCase().includes(ql) || u.handle.toLowerCase().includes(ql));
+  const tags = allHashtags.filter(t => t.toLowerCase().includes(ql));
+  document.getElementById('people-results').innerHTML = people.length
+    ? people.map(u=>`<div class="flex items-center gap-3 p-2 rounded-xl search-result cursor-pointer"><img src="${u.avatar}" class="w-9 h-9 rounded-full object-cover"><div class="flex-1"><h4 class="text-sm font-bold">${u.name}</h4><p class="text-xs text-slate-400">${u.handle}</p></div><button onclick="followUser(this)" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg">Follow</button></div>`).join('')
+    : '<p class="text-xs text-slate-400 p-3">No people found</p>';
+  document.getElementById('hashtag-results').innerHTML = tags.length
+    ? tags.map(t=>`<div class="flex items-center gap-3 p-2 rounded-xl search-result cursor-pointer" onclick="showHashtag('${t}')"><div class="w-9 h-9 bg-indigo-100 text-indigo-500 rounded-xl flex items-center justify-center text-sm"><i class="fas fa-hashtag"></i></div><div><p class="text-sm font-bold">${t}</p></div></div>`).join('')
+    : '<p class="text-xs text-slate-400 p-3">No hashtags found</p>';
+}
+
+function fillSearch(val) {
+  document.getElementById('search-input').value = val;
+  runSearch(val);
+}
+
+// ============================================================
+// SUGGESTED SIDEBAR
+// ============================================================
+function renderSuggestedSidebar() {
+  const el = document.getElementById('suggested-sidebar');
+  el.innerHTML = SUGGESTED_USERS.map((u,i) => `
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <img src="${u.avatar}" class="w-9 h-9 rounded-full object-cover">
+        <div>
+          <h4 class="text-xs font-bold">${u.name}</h4>
+          <p class="text-[10px] text-slate-400">${u.sub}</p>
+        </div>
+      </div>
+      <button onclick="toggleFollowSuggested(this,${i})" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors">${u.following ? 'Following' : 'Follow'}</button>
+    </div>`).join('');
+}
+
+function toggleFollowSuggested(btn, i) {
+  SUGGESTED_USERS[i].following = !SUGGESTED_USERS[i].following;
+  btn.textContent = SUGGESTED_USERS[i].following ? 'Following' : 'Follow';
+  showToast(SUGGESTED_USERS[i].following ? `Following ${SUGGESTED_USERS[i].name}!` : `Unfollowed ${SUGGESTED_USERS[i].name}`);
+}
+
+// ============================================================
+// INTERACTIONS
+// ============================================================
+function toggleLike(btn, postId) {
+  const post = POSTS_DATA.find(p => p.id === postId);
+  if (!post) return;
+  const icon = btn.querySelector('i');
+  const countEl = btn.querySelector('span');
+  const isLiked = likedPosts.has(postId);
+  if (!isLiked) {
+    likedPosts.add(postId);
+    post.likes++;
+    icon.className = 'fas fa-heart text-base';
+    btn.className = btn.className.replace('text-slate-500 hover:text-rose-500','text-rose-500');
+    icon.classList.add('like-popped');
+    setTimeout(() => icon.classList.remove('like-popped'), 400);
+  } else {
+    likedPosts.delete(postId);
+    post.likes--;
+    icon.className = 'far fa-heart text-base';
+    btn.className = btn.className.replace('text-rose-500','text-slate-500 hover:text-rose-500');
+  }
+  countEl.textContent = formatCount(post.likes);
+  // sync in bookmarks
+  const bc = document.querySelector(`[data-bm-like="${postId}"]`);
+  if (bc) bc.textContent = formatCount(post.likes);
+}
+
+function toggleBookmark(btn, postId) {
+  const post = POSTS_DATA.find(p => p.id === postId);
+  if (!post) return;
+  const icon = btn.querySelector('i');
+  if (bookmarkedPosts.has(postId)) {
+    bookmarkedPosts.delete(postId);
+    post.bookmarked = false;
+    icon.className = 'far fa-bookmark text-base';
+    btn.className = 'text-slate-400 hover:text-indigo-500 transition-colors';
+    showToast('Removed from bookmarks');
+  } else {
+    bookmarkedPosts.add(postId);
+    post.bookmarked = true;
+    icon.className = 'fas fa-bookmark text-base';
+    btn.className = 'text-indigo-600 transition-colors';
+    showToast('Saved to bookmarks ✨');
+  }
+}
+
+function sharePost(postId) { showToast('Link copied to clipboard!'); }
+
+function followUser(btn) {
+  const following = btn.dataset.following === 'true';
+  btn.dataset.following = !following;
+  btn.textContent = following ? 'Follow' : 'Following';
+  if (!following) { btn.classList.add('bg-indigo-600','text-white'); btn.classList.remove('bg-indigo-50','text-indigo-600'); }
+  else { btn.classList.remove('bg-indigo-600','text-white'); btn.classList.add('bg-indigo-50','text-indigo-600'); }
+  showToast(following ? 'Unfollowed' : 'Following!');
+}
+
+function showPostMenu(postId, btn) {
+  showToast('Post options: Report · Mute · Copy link');
+}
+
+// ============================================================
+// POST VIEW MODAL
+// ============================================================
+function openPost(postId) {
+  const post = POSTS_DATA.find(p => p.id === postId);
+  if (!post) return;
+  const u = USERS.find(u2 => u2.id === post.userId);
+  const isLiked = likedPosts.has(post.id);
+  const isBookmarked = bookmarkedPosts.has(post.id);
+  const sampleComments = [
+    {avatar:'https://i.pravatar.cc/150?u=1', name:'Alex Rivera', text:'This is absolutely stunning work! 🔥', time:'1h'},
+    {avatar:'https://i.pravatar.cc/150?u=4', name:'Elena Joy', text:'Wow, the attention to detail here is incredible.', time:'2h'},
+    {avatar:'https://i.pravatar.cc/150?u=8', name:'Chris Wiles', text:'Inspirational! Saved for reference.', time:'3h'},
+  ];
+  document.getElementById('post-modal-content').innerHTML = `
+    <div class="flex items-center gap-3 mb-4">
+      <img src="${u.avatar}" class="w-10 h-10 rounded-full object-cover">
+      <div>
+        <h4 class="font-bold text-sm">${u.name}</h4>
+        <p class="text-xs text-slate-400">${u.handle} · ${post.time}</p>
+      </div>
+    </div>
+    <p class="text-slate-700 leading-relaxed mb-4">${post.text.replace(/\n/g,'<br>')}</p>
+    ${post.image ? `<div class="rounded-2xl overflow-hidden mb-4"><img src="${post.image}" class="w-full object-cover" loading="lazy"></div>` : ''}
+    <div class="flex items-center justify-between py-3 border-y border-slate-100 mb-4">
+      <div class="flex gap-5">
+        <button class="flex items-center gap-1.5 ${isLiked?'text-rose-500':'text-slate-500 hover:text-rose-500'} transition-colors">
+          <i class="${isLiked?'fas':'far'} fa-heart"></i><span class="text-sm font-bold">${formatCount(post.likes)}</span>
+        </button>
+        <span class="flex items-center gap-1.5 text-slate-500 text-sm font-bold">
+          <i class="far fa-comment"></i> ${formatCount(post.comments)}
+        </span>
+      </div>
+      <button class="${isBookmarked?'text-indigo-600':'text-slate-400 hover:text-indigo-500'} transition-colors">
+        <i class="${isBookmarked?'fas':'far'} fa-bookmark"></i>
+      </button>
+    </div>
+    <h4 class="font-bold text-sm mb-3">Comments</h4>
+    <div class="space-y-4 mb-4">
+      ${sampleComments.map(c=>`
+        <div class="flex gap-3">
+          <img src="${c.avatar}" class="w-8 h-8 rounded-full object-cover shrink-0">
+          <div class="flex-1 bg-slate-50 rounded-2xl p-3">
+            <div class="flex items-baseline gap-2 mb-1"><span class="font-bold text-xs">${c.name}</span><span class="text-[10px] text-slate-400">${c.time}</span></div>
+            <p class="text-xs text-slate-600">${c.text}</p>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div class="flex gap-3 sticky bottom-0 bg-white pt-2 pb-1">
+      <img src="https://i.pravatar.cc/150?u=me" class="w-8 h-8 rounded-full object-cover shrink-0">
+      <div class="flex-1 flex gap-2">
+        <input type="text" placeholder="Write a comment…" class="flex-1 bg-slate-100 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-200 focus:bg-white transition-all outline-none">
+        <button onclick="showToast('Comment posted!')" class="bg-indigo-600 text-white px-3 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 transition-colors">Post</button>
+      </div>
+    </div>`;
+  document.getElementById('post-modal-overlay').classList.remove('hidden');
+}
+
+function closePostViewModal(e) {
+  document.getElementById('post-modal-overlay').classList.add('hidden');
+}
+
+// ============================================================
+// POST CREATION MODAL
+// ============================================================
+function openPostModal() {
+  document.getElementById('modal-overlay').classList.remove('hidden');
+  setTimeout(() => document.getElementById('modal-post-input').focus(), 100);
+}
+function closePostModal(e) {
+  if (!e || e.target === document.getElementById('modal-overlay') || e.type === 'click') {
+    document.getElementById('modal-overlay').classList.add('hidden');
+  }
+}
+function attachModalImage() { showToast('Image picker coming soon!'); }
+function submitModalPost() {
+  const input = document.getElementById('modal-post-input');
+  const text = input.value.trim();
+  if (!text) { showToast('Please write something first!'); return; }
+  const newPost = {
+    id: Date.now(), userId: 3, time: 'Just now', public: true,
+    text: text, image: null,
+    likes: 0, comments: 0, bookmarked: false, liked: false, tab: 'all'
+  };
+  POSTS_DATA.unshift(newPost);
+  input.value = '';
+  closePostModal();
+  showScreen('feed');
+  renderFeed(currentTab);
+  showToast('Post shared on Lakpin! 🚀');
+}
+
+// Inline feed submit
+function submitPost() {
+  const input = document.getElementById('main-post-input');
+  const text = input.value.trim();
+  if (!text) { showToast('Please write something first!'); return; }
+  const newPost = {
+    id: Date.now(), userId: 3, time: 'Just now', public: true,
+    text: text, image: null,
+    likes: 0, comments: 0, bookmarked: false, liked: false, tab: 'all'
+  };
+  POSTS_DATA.unshift(newPost);
+  input.value = '';
+  renderFeed(currentTab);
+  showToast('Post shared on Lakpin! 🚀');
+}
+
+// ============================================================
+// PROFILE TABS
+// ============================================================
+function switchProfileTab(btn, tabId) {
+  const tabs = ['profile-posts','profile-media','profile-likes'];
+  document.querySelectorAll('#profile .tab-btn').forEach(b => b.classList.remove('tab-active'));
+  btn.classList.add('tab-active');
+  tabs.forEach(t => {
+    const el = document.getElementById(t);
+    if (el) { el.classList.toggle('hidden', t !== tabId); el.classList.toggle('grid', t === 'profile-media' && t === tabId); }
+  });
+  if (tabId === 'profile-media') document.getElementById('profile-media').classList.remove('hidden');
+}
+
+// ============================================================
+// SETTINGS TOGGLES
+// ============================================================
+function toggleSetting(el) {
+  el.classList.toggle('on');
+  const label = el.closest('div').querySelector('span');
+  const isOn = el.classList.contains('on');
+  showToast(`${label ? label.textContent : 'Setting'} ${isOn ? 'enabled' : 'disabled'}`);
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function formatCount(n) {
+  if (n >= 1000) return (n/1000).toFixed(1).replace('.0','') + 'k';
+  return String(n);
+}
+
+let toastTimer;
+function showToast(msg, type='success') {
+  const toast = document.getElementById('toast');
+  const msgEl = document.getElementById('toast-message');
+  const iconEl = document.getElementById('toast-icon');
+  msgEl.textContent = msg;
+  iconEl.className = type === 'error' ? 'fas fa-exclamation-circle text-rose-400' : 'fas fa-check-circle text-emerald-400';
+  toast.classList.remove('opacity-0','translate-y-8','pointer-events-none');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.add('opacity-0','translate-y-8','pointer-events-none'), 3000);
+}
+
+function showHashtag(tag) {
+  showToast(`Showing posts for ${tag}`);
+  showScreen('explore');
+}
+
+function showUserProfile(userId) {
+  const u = USERS.find(u2 => u2.id === userId);
+  if (!u || userId === 3) { showScreen('profile'); return; }
+  showToast(`Viewing ${u.name}'s profile`);
+}
+
+function renderPostCard(post, u, inBookmarks=false) {
+  const isLiked = likedPosts.has(post.id);
+  const isBookmarked = bookmarkedPosts.has(post.id);
+  return `
+    <div class="glass-card rounded-3xl overflow-hidden border border-slate-100">
+      <div class="p-4 flex items-center gap-3">
+        <img src="${u.avatar}" class="w-9 h-9 rounded-full object-cover">
+        <div>
+          <h4 class="font-bold text-sm">${u.name}</h4>
+          <p class="text-xs text-slate-400">${u.handle} · ${post.time}</p>
+        </div>
+      </div>
+      <div class="px-4 pb-3 cursor-pointer" onclick="openPost(${post.id})">
+        <p class="text-sm text-slate-700 leading-relaxed">${post.text.replace(/\n/g,'<br>')}</p>
+      </div>
+      ${post.image ? `<div class="px-4 pb-3"><div class="rounded-2xl overflow-hidden aspect-video bg-slate-100"><img src="${post.image}" class="w-full h-full object-cover" loading="lazy"></div></div>` : ''}
+      <div class="px-5 py-3 flex items-center gap-5 border-t border-slate-100 bg-slate-50/40">
+        <span class="flex items-center gap-1.5 text-slate-500 text-xs font-bold"><i class="${isLiked?'fas':'far'} fa-heart ${isLiked?'text-rose-500':''}"></i><span data-bm-like="${post.id}">${formatCount(post.likes)}</span></span>
+        <span class="flex items-center gap-1.5 text-slate-500 text-xs font-bold"><i class="far fa-comment"></i> ${formatCount(post.comments)}</span>
+        <button onclick="toggleBookmark(this, ${post.id})" class="ml-auto ${isBookmarked?'text-indigo-600':'text-slate-400'}"><i class="${isBookmarked?'fas':'far'} fa-bookmark"></i></button>
+      </div>
+    </div>`;
+}
+</script>
+</body>
+</html>

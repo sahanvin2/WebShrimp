@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inkwell — A Blog About Design, Technology & Ideas</title>
+  <meta name="description" content="Thoughtful articles on design, technology, and the ideas shaping our digital future.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          colors: {
+            ink: {
+              50: '#f8f9fa',
+              100: '#f1f3f5',
+              200: '#e9ecef',
+              300: '#dee2e6',
+              400: '#ced4da',
+              500: '#adb5bd',
+              600: '#868e96',
+              700: '#495057',
+              800: '#343a40',
+              900: '#212529',
+              950: '#0d1117',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: #fafafa; color: #212529; }
+
+    /* Page transitions */
+    .page { opacity: 0; transform: translateY(12px); transition: opacity 0.4s ease, transform 0.4s ease; }
+    .page.active { opacity: 1; transform: translateY(0); }
+    .page.exiting { opacity: 0; transform: translateY(-8px); }
+
+    /* Article content typography */
+    .prose h2 { font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1rem; line-height: 1.3; color: #0d1117; }
+    .prose h3 { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 500; margin-top: 2rem; margin-bottom: 0.75rem; line-height: 1.4; color: #0d1117; }
+    .prose p { font-size: 1.125rem; line-height: 1.85; margin-bottom: 1.5rem; color: #495057; font-weight: 300; }
+    .prose blockquote { border-left: 3px solid #0d1117; padding-left: 1.5rem; margin: 2rem 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.25rem; line-height: 1.7; color: #343a40; }
+    .prose ul { margin-bottom: 1.5rem; padding-left: 1.5rem; }
+    .prose ul li { font-size: 1.125rem; line-height: 1.85; color: #495057; font-weight: 300; margin-bottom: 0.5rem; }
+    .prose ul li::marker { color: #adb5bd; }
+    .prose code { background: #f1f3f5; padding: 2px 8px; border-radius: 4px; font-size: 0.95em; color: #0d1117; }
+    .prose pre { background: #0d1117; color: #e9ecef; padding: 1.5rem; border-radius: 8px; overflow-x: auto; margin: 2rem 0; font-size: 0.9rem; line-height: 1.7; }
+    .prose pre code { background: none; color: inherit; padding: 0; }
+    .prose a { color: #0d1117; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: #ced4da; transition: text-decoration-color 0.2s; }
+    .prose a:hover { text-decoration-color: #0d1117; }
+    .prose img { border-radius: 8px; margin: 2rem 0; }
+    .prose hr { border: none; border-top: 1px solid #dee2e6; margin: 3rem 0; }
+
+    /* Scroll progress bar */
+    #scroll-progress { position: fixed; top: 0; left: 0; height: 2px; background: #0d1117; z-index: 100; transition: width 0.1s linear; }
+
+    /* Search overlay */
+    .search-overlay { backdrop-filter: blur(8px); background: rgba(13,17,23,0.3); }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #dee2e6; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #ced4da; }
+
+    /* Tag hover effect */
+    .tag-pill { transition: all 0.2s ease; }
+    .tag-pill:hover { background: #0d1117; color: #fff; transform: translateY(-1px); }
+    .tag-pill.active { background: #0d1117; color: #fff; }
+
+    /* Article card */
+    .article-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .article-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgba(13,17,23,0.08); }
+    .article-card:hover .card-image img { transform: scale(1.03); }
+    .card-image img { transition: transform 0.6s ease; }
+
+    /* TOC */
+    .toc-link { transition: all 0.2s ease; border-left: 2px solid transparent; }
+    .toc-link:hover { color: #0d1117; border-left-color: #ced4da; }
+    .toc-link.active { color: #0d1117; border-left-color: #0d1117; font-weight: 500; }
+
+    /* Nav link */
+    .nav-link { position: relative; }
+    .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: #0d1117; transition: width 0.3s ease; }
+    .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+
+    /* Fade in animation */
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in-up { animation: fadeInUp 0.5s ease forwards; }
+    .delay-100 { animation-delay: 0.1s; opacity: 0; }
+    .delay-200 { animation-delay: 0.2s; opacity: 0; }
+    .delay-300 { animation-delay: 0.3s; opacity: 0; }
+    .delay-400 { animation-delay: 0.4s; opacity: 0; }
+    .delay-500 { animation-delay: 0.5s; opacity: 0; }
+
+    /* Reading progress circle */
+    .progress-ring-circle { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
+
+    /* Mobile menu */
+    .mobile-menu { transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+    .mobile-menu.open { transform: translateX(0); }
+  </style>
+</head>
+<body>
+
+  <!-- Scroll Progress -->
+  <div id="scroll-progress" style="width: 0%;"></div>
+
+  <!-- Search Overlay -->
+  <div id="search-overlay" class="search-overlay fixed inset-0 z-50 hidden items-start justify-center pt-[15vh]" onclick="if(event.target===this)closeSearch()">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden fade-in-up">
+      <div class="flex items-center gap-3 px-6 py-4 border-b border-ink-200">
+        <i data-lucide="search" class="w-5 h-5 text-ink-400"></i>
+        <input id="search-input" type="text" placeholder="Search articles..." class="flex-1 text-lg font-light outline-none bg-transparent placeholder:text-ink-400" oninput="handleSearch(this.value)">
+        <kbd class="text-xs text-ink-500 bg-ink-100 px-2 py-1 rounded font-mono">ESC</kbd>
+      </div>
+      <div id="search-results" class="max-h-[50vh] overflow-y-auto">
+        <div class="px-6 py-8 text-center text-ink-500 font-light">Start typing to search...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="mobile-menu fixed inset-y-0 right-0 w-80 bg-white z-50 shadow-2xl">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-ink-200">
+      <span class="font-serif text-lg">Menu</span>
+      <button onclick="toggleMobileMenu()" class="p-1 hover:bg-ink-100 rounded-lg transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+    </div>
+    <nav class="p-6 space-y-1">
+      <a href="#home" onclick="navigate('home');toggleMobileMenu()" class="block px-4 py-3 rounded-lg hover:bg-ink-50 font-light text-ink-700 transition-colors">Home</a>
+      <a href="#category/design" onclick="navigate('category','design');toggleMobileMenu()" class="block px-4 py-3 rounded-lg hover:bg-ink-50 font-light text-ink-700 transition-colors">Design</a>
+      <a href="#category/technology" onclick="navigate('category','technology');toggleMobileMenu()" class="block px-4 py-3 rounded-lg hover:bg-ink-50 font-light text-ink-700 transition-colors">Technology</a>
+      <a href="#category/ideas" onclick="navigate('category','ideas');toggleMobileMenu()" class="block px-4 py-3 rounded-lg hover:bg-ink-50 font-light text-ink-700 transition-colors">Ideas</a>
+      <a href="#category/productivity" onclick="navigate('category','productivity');toggleMobileMenu()" class="block px-4 py-3 rounded-lg hover:bg-ink-50 font-light text-ink-700 transition-colors">Productivity</a>
+      <hr class="my-3 border-ink-200">
+      <a href="#about" onclick="navigate('about');toggleMobileMenu()" class="block px-4 py-3 rounded-lg hover:bg-ink-50 font-light text-ink-700 transition-colors">About</a>
+    </nav>
+  </div>
+  <div id="mobile-overlay" class="fixed inset-0 bg-black/20 z-40 hidden" onclick="toggleMobileMenu()"></div>
+
+  <!-- Navigation -->
+  <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-ink-100">
+    <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="#home" onclick="navigate('home')" class="flex items-center gap-2 group">
+        <div class="w-8 h-8 bg-ink-950 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
+          <i data-lucide="pen-line" class="w-4 h-4 text-white"></i>
+        </div>
+        <span class="font-serif text-xl tracking-tight">Inkwell</span>
+      </a>
+
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#home" onclick="navigate('home')" class="nav-link text-sm font-medium text-ink-600 hover:text-ink-950 transition-colors active" data-nav="home">Home</a>
+        <a href="#category/design" onclick="navigate('category','design')" class="nav-link text-sm font-medium text-ink-600 hover:text-ink-950 transition-colors" data-nav="category">Design</a>
+        <a href="#category/technology" onclick="navigate('category','technology')" class="nav-link text-sm font-medium text-ink-600 hover:text-ink-950 transition-colors" data-nav="technology">Technology</a>
+        <a href="#category/ideas" onclick="navigate('category','ideas')" class="nav-link text-sm font-medium text-ink-600 hover:text-ink-950 transition-colors" data-nav="ideas">Ideas</a>
+        <a href="#about" onclick="navigate('about')" class="nav-link text-sm font-medium text-ink-600 hover:text-ink-950 transition-colors" data-nav="about">About</a>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="openSearch()" class="p-2 hover:bg-ink-100 rounded-lg transition-colors" aria-label="Search">
+          <i data-lucide="search" class="w-[18px] h-[18px] text-ink-600"></i>
+        </button>
+        <button onclick="toggleMobileMenu()" class="md:hidden p-2 hover:bg-ink-100 rounded-lg transition-colors" aria-label="Menu">
+          <i data-lucide="menu" class="w-[18px] h-[18px] text-ink-600"></i>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main id="app" class="min-h-screen"></main>
+
+  <!-- Footer -->
+  <footer class="border-t border-ink-200 bg-white mt-20">
+    <div class="max-w-6xl mx-auto px-6 py-16">
+      <div class="grid md:grid-cols-4 gap-12">
+        <div class="md:col-span-2">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 bg-ink-950 rounded-lg flex items-center justify-center">
+              <i data-lucide="pen-line" class="w-4 h-4 text-white"></i>
+            </div>
+            <span class="font-serif text-xl tracking-tight">Inkwell</span>
+          </div>
+          <p class="text-ink-500 font-light leading-relaxed max-w-sm">Thoughtful writing on design, technology, and the ideas that shape our digital world. Published with care.</p>
+          <div class="flex gap-4 mt-6">
+            <a href="#" class="w-9 h-9 rounded-full bg-ink-100 flex items-center justify-center hover:bg-ink-950 hover:text-white text-ink-600 transition-all"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+            <a href="#" class="w-9 h-9 rounded-full bg-ink-100 flex items-center justify-center hover:bg-ink-950 hover:text-white text-ink-600 transition-all"><i data-lucide="github" class="w-4 h-4"></i></a>
+            <a href="#" class="w-9 h-9 rounded-full bg-ink-100 flex items-center justify-center hover:bg-ink-950 hover:text-white text-ink-600 transition-all"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+            <a href="#" class="w-9 h-9 rounded-full bg-ink-100 flex items-center justify-center hover:bg-ink-950 hover:text-white text-ink-600 transition-all"><i data-lucide="rss" class="w-4 h-4"></i></a>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-xs font-semibold uppercase tracking-widest text-ink-400 mb-4">Categories</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#category/design" onclick="navigate('category','design')" class="text-sm text-ink-600 hover:text-ink-950 transition-colors font-light">Design</a></li>
+            <li><a href="#category/technology" onclick="navigate('category','technology')" class="text-sm text-ink-600 hover:text-ink-950 transition-colors font-light">Technology</a></li>
+            <li><a href="#category/ideas" onclick="navigate('category','ideas')" class="text-sm text-ink-600 hover:text-ink-950 transition-colors font-light">Ideas</a></li>
+            <li><a href="#category/productivity" onclick="navigate('category','productivity')" class="text-sm text-ink-600 hover:text-ink-950 transition-colors font-light">Productivity</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-xs font-semibold uppercase tracking-widest text-ink-400 mb-4">Links</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#about" onclick="navigate('about')" class="text-sm text-ink-600 hover:text-ink-950 transition-colors font-light">About</a></li>
+            <li><a href="#" class="text-sm text-ink-600 hover:text-ink-950 transition-colors font-light">Newsletter</a></li>
+            <li><a href="#" class="text-sm text-ink-600 hover:text-ink-950 transition-colors font-light">RSS Feed</a></li>
+            <li><a href="#" class="text-sm text-ink-600 hover:text-ink-950 transition-colors font-light">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-ink-200 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="text-sm text-ink-400 font-light">&copy; 2025 Inkwell. All rights reserved.</p>
+        <p class="text-sm text-ink-400 font-light">Crafted with care for readers who value substance.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to Top -->
+  <button id="back-to-top" onclick="window.scrollTo({top:0})" class="fixed bottom-8 right-8 w-10 h-10 bg-ink-950 text-white rounded-full flex items-center justify-center shadow-lg opacity-0 translate-y-4 transition-all duration-300 hover:bg-ink-800 z-20" aria-label="Back to top">
+    <i data-lucide="arrow-up" class="w-4 h-4"></i>
+  </button>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────
+const articles = [
+  {
+    id: 'the-quiet-power-of-white-space',
+    title: 'The Quiet Power of White Space',
+    subtitle: 'Why the absence of elements is often more powerful than their presence.',
+    category: 'design',
+    tags: ['layout', 'minimalism', 'typography'],
+    date: '2025-01-15',
+    readTime: 7,
+    image: 'https://picsum.photos/seed/whitespace-design/1200/600.jpg',
+    featured: true,
+    excerpt: 'In a world obsessed with filling every pixel, the most courageous design decision might be to leave things empty. White space isn\'t laziness — it\'s a deliberate act of respect for your reader\'s attention.',
+    content: `
+      <p>In a world obsessed with filling every pixel, the most courageous design decision might be to leave things empty. White space — or negative space, as it's sometimes called — isn't laziness. It's a deliberate act of respect for your reader's attention.</p>
+
+      <h2>What White Space Actually Does</h2>
+      <p>At its core, white space creates breathing room. It separates unrelated elements, groups related ones, and establishes a visual hierarchy that guides the eye naturally. Think of it as the silence between notes in music — without it, you'd have noise, not melody.</p>
+
+      <p>Research consistently shows that adequate white space between lines of text increases comprehension by up to 20%. It's not decorative; it's functional.</p>
+
+      <blockquote>The most powerful things are often the things we leave unsaid — or in design, the spaces we leave unfilled.</blockquote>
+
+      <h2>The Fear of Emptiness</h2>
+      <p>There's a persistent anxiety among designers and clients alike that empty space looks "unfinished." This comes from a mistaken belief that value is measured in density — that more elements equal more worth.</p>
+
+      <ul>
+        <li>Apple's product pages use vast white space to convey premium quality</li>
+        <li>Medium's reading experience succeeds largely through generous spacing</li>
+        <li>Google's homepage is iconic precisely because of what it omits</li>
+      </ul>
+
+      <h2>Practical Application</h2>
+      <p>Start by increasing your default spacing by 50%. If your paragraph margin is 16px, try 24px. If your section padding is 40px, try 60px. You'll be surprised at how much more composed everything feels.</p>
+
+      <p>Pay special attention to the space around your typography. Line height, letter spacing, and paragraph margins are where white space has the most dramatic impact on readability.</p>
+
+      <h3>The 8px Grid as Foundation</h3>
+      <p>Using an 8px baseline grid for your spacing creates inherent rhythm. 8, 16, 24, 32, 48, 64 — these numbers feel right because they're harmonically related. When your spacing is consistent, readers feel it even if they can't articulate why.</p>
+
+      <hr>
+
+      <p>White space is a gift you give your audience. It says: "I've curated this for you. I'm not going to overwhelm you. Take your time." In an attention economy, that might be the most generous thing a designer can do.</p>
+    `
+  },
+  {
+    id: 'building-for-the-edge',
+    title: 'Building for the Edge: Beyond Traditional Servers',
+    subtitle: 'How edge computing is rewriting the rules of web architecture.',
+    category: 'technology',
+    tags: ['edge-computing', 'architecture', 'performance'],
+    date: '2025-01-10',
+    readTime: 9,
+    image: 'https://picsum.photos/seed/edge-computing/1200/600.jpg',
+    featured: false,
+    excerpt: 'The traditional model of centralizing computation in a few data centers is showing its age. Edge computing distributes processing to hundreds of nodes worldwide, fundamentally changing how we think about latency and user experience.',
+    content: `
+      <p>The traditional model of centralizing computation in a few data centers is showing its age. As users demand sub-100ms responses and applications grow more complex, the physics of light speed becomes our bottleneck. Edge computing offers a fundamentally different approach.</p>
+
+      <h2>The Latency Problem</h2>
+      <p>Light travels at roughly 200km per millisecond through fiber optic cables. A user in Tokyo hitting a server in Virginia faces a minimum of ~120ms of round-trip time — before any processing happens. Edge computing eliminates this by moving computation to where the users are.</p>
+
+      <blockquote>At scale, the network is the computer. But which network, and which computer, makes all the difference.</blockquote>
+
+      <h2>How Edge Changes Architecture</h2>
+      <p>Traditional architectures look like a funnel: all requests flow to a central point. Edge architecture looks more like a mesh, with processing happening at the nearest node. This inverts many assumptions we've held for decades.</p>
+
+      <ul>
+        <li>Database queries can be resolved locally with replicated state</li>
+        <li>Authentication happens at the edge, eliminating round trips</li>
+        <li>Personalization logic runs in the user's region, not a central datacenter</li>
+        <li>Static assets are served from the nearest point of presence</li>
+      </ul>
+
+      <h2>The Trade-offs</h2>
+      <p>Edge computing isn't magic. It comes with real trade-offs: eventual consistency, limited runtime environments, and debugging complexity. Not every application benefits from edge deployment — understanding when to use it is as important as knowing how.</p>
+
+      <h3>When Edge Makes Sense</h3>
+      <p>Read-heavy applications with global audiences benefit enormously. APIs that serve mostly static data, content delivery, and authentication flows are natural fits. Write-heavy, strongly consistent workloads may still be better served by traditional architectures.</p>
+
+      <hr>
+
+      <p>The edge isn't a replacement for traditional computing — it's a complement. The most resilient architectures will use both strategically, routing each request to wherever it can be handled most efficiently. The future is hybrid, and it's already here.</p>
+    `
+  },
+  {
+    id: 'attention-as-scarce-resource',
+    title: 'Attention as a Scarce Resource',
+    subtitle: 'Rethinking how we design for finite cognitive bandwidth.',
+    category: 'ideas',
+    tags: ['attention', 'psychology', 'ux'],
+    date: '2025-01-05',
+    readTime: 6,
+    image: 'https://picsum.photos/seed/attention-scarce/1200/600.jpg',
+    featured: false,
+    excerpt: 'Every design decision either respects or exploits your user\'s limited attention. In an age of infinite scroll and notification fatigue, designing with attention as a first-class constraint isn\'t just ethical — it\'s good business.',
+    content: `
+      <p>Herbert Simon predicted it in 1971: "A wealth of information creates a poverty of attention." Five decades later, we're drowning in the consequences of that observation. Every app, every website, every notification competes for the same finite resource.</p>
+
+      <h2>The Attention Budget</h2>
+      <p>Cognitive science tells us that focused attention is genuinely limited. We can hold roughly 4-7 items in working memory. We can sustain deep focus for 45-90 minutes before needing a break. Every unnecessary element in an interface is a withdrawal from this budget.</p>
+
+      <blockquote>Good design doesn't demand attention — it earns it by making the path so clear that attention flows naturally toward what matters.</blockquote>
+
+      <h2>Designing for Scarcity</h2>
+      <p>If attention is scarce, then every design element must justify its cost. Ask yourself: does this animation, this notification, this extra field of information earn the attention it requires?</p>
+
+      <ul>
+        <li>Progressive disclosure: show only what's needed, when it's needed</li>
+        <li>Predictable patterns: reduce cognitive load by meeting expectations</li>
+        <li>Meaningful motion: animate only to communicate state changes</li>
+        <li>Quiet by default: notifications should be the exception, not the rule</li>
+      </ul>
+
+      <h2>The Business Case</h2>
+      <p>Here's what's counterintuitive: respecting attention often increases engagement. When users feel their time is valued, they trust the product more. They return more often. They recommend it to others. The companies that win long-term aren't those that capture the most attention — they're those that waste the least.</p>
+
+      <hr>
+
+      <p>The next frontier in design isn't adding more features or more personalization. It's subtraction. It's the discipline to remove everything that doesn't serve the user's goal. In a world of infinite content, restraint is the ultimate luxury.</p>
+    `
+  },
+  {
+    id: 'deep-work-in-distracted-times',
+    title: 'Deep Work in Distracted Times',
+    subtitle: 'A practical framework for sustaining focus when everything fights for it.',
+    category: 'productivity',
+    tags: ['focus', 'deep-work', 'habits'],
+    date: '2024-12-28',
+    readTime: 8,
+    image: 'https://picsum.photos/seed/deep-work-focus/1200/600.jpg',
+    featured: false,
+    excerpt: 'Cal Newport popularized the concept, but the challenge remains: how do you actually do deep work when Slack, email, and social media are engineered to interrupt you? Here\'s a framework that works.',
+    content: `
+      <p>The gap between knowing about deep work and actually doing it is enormous. We all understand that sustained, distraction-free focus produces our best work. But understanding doesn't make it easier when your phone buzzes for the third time in ten minutes.</p>
+
+      <h2>The Environment Problem</h2>
+      <p>Willpower is a finite resource. Trying to resist distractions through sheer discipline is like trying to lose weight by keeping junk food in your kitchen and "just not eating it." The solution isn't stronger willpower — it's better environment design.</p>
+
+      <blockquote>You don't rise to the level of your goals. You fall to the level of your systems. And your systems are shaped by your environment.</blockquote>
+
+      <h2>A Practical Framework</h2>
+      <p>After years of experimenting, I've settled on a framework with four pillars:</p>
+
+      <ul>
+        <li><strong>Temporal blocks:</strong> Schedule deep work in 90-minute blocks, maximum two per day</li>
+        <li><strong>Physical separation:</strong> Different location for deep work than shallow work</li>
+        <li><strong>Digital isolation:</strong> Phone in another room, all notifications off, specific apps blocked</li>
+        <li><strong>Exit rituals:</strong> A clear end to each deep work session prevents bleed into shallow tasks</li>
+      </ul>
+
+      <h3>The Two-Block Rule</h3>
+      <p>Most people overestimate how much deep work they can do in a day. Two 90-minute blocks — one morning, one afternoon — is a sustainable maximum for most knowledge workers. The rest of the day is for meetings, email, and shallow tasks. Trying to do more leads to burnout, not productivity.</p>
+
+      <h2>The Recovery Paradox</h2>
+      <p>Deep work is cognitively expensive. Without adequate recovery, you can't sustain it. But here's the paradox: passive "rest" like scrolling social media doesn't actually restore cognitive capacity. Real recovery means walks, exercise, conversation, or even just sitting quietly without input.</p>
+
+      <hr>
+
+      <p>Deep work isn't a productivity hack — it's a fundamental human need. We're built to focus deeply on meaningful problems. The distraction economy is fighting against our nature. Reclaiming deep work isn't just about getting more done. It's about being more fully human.</p>
+    `
+  },
+  {
+    id: 'typography-is-interface',
+    title: 'Typography Is Your Interface',
+    subtitle: 'Why font choices matter more than any other design decision.',
+    category: 'design',
+    tags: ['typography', 'fonts', 'interface'],
+    date: '2024-12-20',
+    readTime: 5,
+    image: 'https://picsum.photos/seed/typography-interface/1200/600.jpg',
+    featured: false,
+    excerpt: 'In a text-heavy product, your type system is the interface. Every weight, size, and spacing decision either helps users accomplish their goals or creates friction. Here\'s how to think about it systematically.',
+    content: `
+      <p>If you stripped away every visual element from your product — the colors, the images, the icons, the borders — what would remain? Text. And in that text lives the entire experience. Typography isn't a layer of the interface; in many products, it is the interface.</p>
+
+      <h2>A Type Scale, Not Random Sizes</h2>
+      <p>The most common typography mistake is picking font sizes ad hoc. A 14px label here, a 22px heading there, a 17px body text somewhere else. This creates visual chaos that users feel even if they can't name it.</p>
+
+      <p>A proper type scale uses a mathematical ratio — like 1.25 (Major Third) or 1.333 (Perfect Fourth) — to generate all sizes from a base. This creates inherent harmony.</p>
+
+      <blockquote>When every size is chosen deliberately from a scale, the page feels composed. When sizes are arbitrary, it feels accidental.</blockquote>
+
+      <h2>Weight as Hierarchy</h2>
+      <p>Font weight is your most powerful hierarchy tool. A bold heading against a light body creates instant visual structure without any boxes, lines, or backgrounds. The mistake most teams make is using too many weights.</p>
+
+      <ul>
+        <li>Two weights are enough for most interfaces: Regular (400) and Semibold (600)</li>
+        <li>Add Light (300) for large display text if needed</li>
+        <li>Never use more than four weights in a single product</li>
+      </ul>
+
+      <h2>The Details That Matter</h2>
+      <p>Line height, letter spacing, and paragraph spacing are where typography goes from acceptable to excellent. Body text should sit at 1.5-1.75 line height. Headings can be tighter, around 1.1-1.3. Letter spacing should be slightly negative for large text and neutral for body text.</p>
+
+      <hr>
+
+      <p>The next time you're evaluating a design, try this: squint until everything blurs. What you see is the typographic skeleton. If that skeleton is strong, the design will work. If it's weak, no amount of decoration will save it.</p>
+    `
+  },
+  {
+    id: 'the-composable-web',
+    title: 'The Composable Web',
+    subtitle: 'Why the future of web development is small pieces, loosely joined.',
+    category: 'technology',
+    tags: ['architecture', 'components', 'standards'],
+    date: '2024-12-15',
+    readTime: 10,
+    image: 'https://picsum.photos/seed/composable-web/1200/600.jpg',
+    featured: false,
+    excerpt: 'Monolithic frameworks gave us structure but took away our agency. The emerging composable web — built on web components, progressive enhancement, and open standards — promises to give both back.',
+    content: `
+      <p>For a decade, we've built the web through the lens of monolithic frameworks. React, Vue, Angular — pick your camp, learn its idioms, and build everything within its walls. It worked. But it came with costs we're only now fully reckoning with.</p>
+
+      <h2>The Framework Tax</h2>
+      <p>Frameworks don't just add to your bundle size. They add cognitive overhead, lock-in risk, and upgrade complexity. When the framework moves, you move — whether you want to or not. Every major version bump is a tax on your team's time.</p>
+
+      <blockquote>The best code is code you don't have to maintain. The best framework is no framework at all — just standards, well-applied.</blockquote>
+
+      <h2>The Composable Alternative</h2>
+      <p>The composable web is built on a different philosophy: small, focused tools that do one thing well, connected by open standards. Web Components provide the encapsulation. ES modules provide the distribution. HTML provides the foundation.</p>
+
+      <ul>
+        <li><strong>Web Components</strong> for encapsulated, reusable UI elements</li>
+        <li><strong>Import Maps</strong> for dependency management without bundlers</li>
+        <li><strong>CSS Layers</strong> for styling architecture without preprocessors</li>
+        <li><strong>View Transitions</strong> for smooth navigation without JavaScript frameworks</li>
+      </ul>
+
+      <h3>The Middle Way</h3>
+      <p>The composable web doesn't mean abandoning all frameworks. It means choosing them more carefully — using a lightweight library for state management here, a micro-framework for reactivity there, vanilla Web Components for everything else. Composition over consolidation.</p>
+
+      <h2>What Changes Practically</h2>
+      <p>Your components become portable. A date picker built as a Web Component works in React, Vue, Svelte, or no framework at all. Your deployment becomes simpler — standard HTTP servers replace complex build pipelines. Your upgrade path becomes smoother — replace one component at a time, not the whole app.</p>
+
+      <hr>
+
+      <p>We spent years building cathedrals out of frameworks. The composable web is more like a city — diverse, evolving, built by many hands, but held together by shared infrastructure. It's messier in theory but more resilient in practice. And resilience, not elegance, is what the web has always been about.</p>
+    `
+  },
+  {
+    id: 'against-best-practices',
+    title: 'Against Best Practices',
+    subtitle: 'Why blindly following conventions might be the worst practice of all.',
+    category: 'ideas',
+    tags: ['design-thinking', 'conventions', 'critical-thinking'],
+    date: '2024-12-08',
+    readTime: 6,
+    image: 'https://picsum.photos/seed/against-best/1200/600.jpg',
+    featured: false,
+    excerpt: 'Best practices are averages — they represent what works for most people, most of the time. But your users aren\'t most people, and your product isn\'t most products. When do conventions help, and when do they hurt?',
+    content: `
+      <p>"Best practice" might be the most dangerous phrase in design and engineering. Not because the practices themselves are bad — they're usually sound. But because the phrase implies universality where none exists.</p>
+
+      <h2>The Origin of Conventions</h2>
+      <p>Every best practice started as an experiment that worked in a specific context. Someone tested it, measured the results, and shared the findings. Over time, context was stripped away and only the prescription remained. "Put the navigation at the top" became gospel, regardless of whether it's actually optimal for your specific use case.</p>
+
+      <blockquote>The problem with best practices is that they optimize for the average case. But no great product was built by optimizing for average.</blockquote>
+
+      <h2>When to Break the Rules</h2>
+      <p>Convention-breaking works when you understand why the convention exists and can articulate why your situation is different. It fails when you break rules for novelty's sake.</p>
+
+      <ul>
+        <li>Understand the convention's purpose before diverging from it</li>
+        <li>Have a hypothesis about why your approach will work better</li>
+        <li>Test with real users before committing</li>
+        <li>Have a fallback plan if your hypothesis is wrong</li>
+      </ul>
+
+      <h2>The Sophistication Trap</h2>
+      <p>Ironically, less experienced teams tend to follow best practices more rigidly. As teams gain confidence and understanding, they become more willing to question conventions. The most sophisticated practitioners don't ignore best practices — they use them as a starting point, not an endpoint.</p>
+
+      <hr>
+
+      <p>Best practices are training wheels. They keep you safe while you learn. But at some point, you need to take them off. Not recklessly — deliberately. With understanding, with intent, and with the humility to put them back on if you start to wobble.</p>
+    `
+  },
+  {
+    id: 'newsletter-morning-ritual',
+    title: 'The Newsletter as Morning Ritual',
+    subtitle: 'How curated emails became the antidote to algorithmic feeds.',
+    category: 'productivity',
+    tags: ['newsletters', 'reading', 'habits'],
+    date: '2024-12-01',
+    readTime: 5,
+    image: 'https://picsum.photos/seed/newsletter-ritual/1200/600.jpg',
+    featured: false,
+    excerpt: 'While social media feeds optimize for engagement, newsletters optimize for trust. The rise of curated email as a daily reading practice says something profound about what we actually want from the internet.',
+    content: `
+      <p>Somewhere in the last five years, newsletters stopped being "email marketing" and became something else entirely: a curated reading experience that people voluntarily invite into their mornings. The shift is significant.</p>
+
+      <h2>Why Newsletters Won</h2>
+      <p>Algorithmic feeds optimize for what keeps you scrolling. Newsletters optimize for what makes you want to open the next one. These are fundamentally different incentives. One leads to outrage and sensationalism; the other leads to trust and depth.</p>
+
+      <blockquote>A newsletter writer has one metric that matters: will you open the next email? That creates an entirely different relationship than a platform optimizing for time-on-site.</blockquote>
+
+      <h2>Building a Ritual</h2>
+      <p>The best newsletter reading habits have structure. Not rigid schedules, but gentle rituals:</p>
+
+      <ul>
+        <li>Dedicated reading time, separate from inbox triage</li>
+        <li>A curated list — quality over quantity, 5-10 maximum</li>
+        <li>A tool that separates newsletters from regular email</li>
+        <li>The discipline to unsubscribe when trust erodes</li>
+      </ul>
+
+      <h2>The Human Element</h2>
+      <p>Behind every good newsletter is a person with a perspective. Not an AI summarizer, not a content farm, but someone who thinks deeply about a topic and shares their thinking. This human connection — knowing that a real person wrote these words specifically for this audience — is what makes newsletters feel different from any other medium.</p>
+
+      <hr>
+
+      <p>In an age of infinite content, the most valuable thing someone can offer is curation with a point of view. Newsletters work because they're the opposite of everything social media became: slow instead of fast, personal instead of algorithmic, trusted instead of promoted. Sometimes the future looks a lot like the past.</p>
+    `
+  }
+];
+
+const categories = [
+  { slug: 'design', name: 'Design', description: 'Visual thinking, typography, layout, and the craft of making things look and feel right.', icon: 'palette' },
+  { slug: 'technology', name: 'Technology', description: 'Architecture, frameworks, tools, and the evolving platform of the web.', icon: 'code-2' },
+  { slug: 'ideas', name: 'Ideas', description: 'Big-picture thinking about design culture, ethics, and the philosophy of building.', icon: 'lightbulb' },
+  { slug: 'productivity', name: 'Productivity', description: 'Focus, systems, habits, and the art of doing meaningful work.', icon: 'zap' }
+];
+
+const author = {
+  name: 'Elena Marchetti',
+  role: 'Writer & Design Engineer',
+  bio: 'I write about the intersection of design, technology, and the human experience. After a decade building products at companies like Stripe and Figma, I started Inkwell to explore ideas that don\'t fit in a sprint cycle.',
+  location: 'San Francisco, CA',
+  avatar: 'https://picsum.photos/seed/elena-author/400/400.jpg',
+  social: {
+    twitter: '#',
+    github: '#',
+    linkedin: '#',
+    email: 'mailto:elena@inkwell.blog'
+  }
+};
+
+// ─── HELPERS ────────────────────────────────────────────────────────────
+function getReadingTime(text) {
+  const words = text.replace(/<[^>]*>/g, '').split(/\s+/).length;
+  return Math.max(1, Math.ceil(words / 220));
+}
+
+function formatDate(dateStr) {
+  return new Date(dateStr).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+function getCategoryMeta(slug) {
+  return categories.find(c => c.slug === slug) || categories[0];
+}
+
+function getAllTags() {
+  const tags = new Set();
+  articles.forEach(a => a.tags.forEach(t => tags.add(t)));
+  return [...tags].sort();
+}
+
+// ─── SEARCH ─────────────────────────────────────────────────────────────
+function openSearch() {
+  const overlay = document.getElementById('search-overlay');
+  overlay.classList.remove('hidden');
+  overlay.classList.add('flex');
+  setTimeout(() => document.getElementById('search-input').focus(), 100);
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSearch() {
+  const overlay = document.getElementById('search-overlay');
+  overlay.classList.add('hidden');
+  overlay.classList.remove('flex');
+  document.body.style.overflow = '';
+  document.getElementById('search-input').value = '';
+}
+
+function handleSearch(query) {
+  const results = document.getElementById('search-results');
+  if (!query.trim()) {
+    results.innerHTML = '<div class="px-6 py-8 text-center text-ink-500 font-light">Start typing to search...</div>';
+    return;
+  }
+  const q = query.toLowerCase();
+  const matches = articles.filter(a =>
+    a.title.toLowerCase().includes(q) ||
+    a.excerpt.toLowerCase().includes(q) ||
+    a.tags.some(t => t.toLowerCase().includes(q)) ||
+    a.category.toLowerCase().includes(q)
+  );
+  if (!matches.length) {
+    results.innerHTML = '<div class="px-6 py-8 text-center text-ink-500 font-light">No articles found.</div>';
+    return;
+  }
+  results.innerHTML = matches.map(a => `
+    <a href="#post/${a.id}" onclick="closeSearch();navigate('post','${a.id}')" class="flex items-start gap-4 px-6 py-4 hover:bg-ink-50 transition-colors cursor-pointer border-b border-ink-100 last:border-0">
+      <img src="${a.image}" class="w-16 h-16 rounded-lg object-cover flex-shrink-0" alt="">
+      <div class="min-w-0">
+        <p class="text-sm font-medium text-ink-900 truncate">${a.title}</p>
+        <p class="text-sm text-ink-500 font-light mt-0.5 line-clamp-1">${a.excerpt}</p>
+        <div class="flex items-center gap-2 mt-1.5">
+          <span class="text-xs text-ink-400 capitalize">${a.category}</span>
+          <span class="text-ink-300">·</span>
+          <span class="text-xs text-ink-400">${a.readTime} min read</span>
+        </div>
+      </div>
+    </a>
+  `).join('');
+}
+
+// ─── MOBILE MENU ────────────────────────────────────────────────────────
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const overlay = document.getElementById('mobile-overlay');
+  menu.classList.toggle('open');
+  overlay.classList.toggle('hidden');
+  document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+}
+
+// ─── NAVIGATION ─────────────────────────────────────────────────────────
+let currentView = null;
+
+function navigate(view, param = null) {
+  const app = document.getElementById('app');
+  if (currentView) {
+    const old = app.querySelector('.page');
+    if (old) old.classList.add('exiting');
+    setTimeout(() => render(view, param), 200);
+  } else {
+    render(view, param);
+  }
+  window.scrollTo({ top: 0 });
+  updateNavActive(view, param);
+}
+
+function updateNavActive(view, param) {
+  document.querySelectorAll('[data-nav]').forEach(el => el.classList.remove('active'));
+  if (view === 'home') document.querySelector('[data-nav="home"]')?.classList.add('active');
+  else if (view === 'category') {
+    const catNav = document.querySelector(`[data-nav="${param}"]`);
+    if (catNav) catNav.classList.add('active');
+  }
+  else if (view === 'about') document.querySelector('[data-nav="about"]')?.classList.add('active');
+}
+
+function render(view, param) {
+  const app = document.getElementById('app');
+  currentView = view;
+  let html = '';
+
+  switch(view) {
+    case 'home': html = renderHome(); break;
+    case 'category': html = renderCategory(param); break;
+    case 'post': html = renderPost(param); break;
+    case 'about': html = renderAbout(); break;
+    default: html = renderHome();
+  }
+
+  app.innerHTML = `<div class="page">${html}</div>`;
+  requestAnimationFrame(() => {
+    app.querySelector('.page')?.classList.add('active');
+    lucide.createIcons();
+  });
+}
+
+// ─── RENDERERS ──────────────────────────────────────────────────────────
+
+function renderHome() {
+  const featured = articles.filter(a => a.featured);
+  const recent = articles.filter(a => !a.featured).slice(0, 6);
+  const allTags = getAllTags();
+
+  return `
+    <!-- Hero / Featured -->
+    <section class="max-w-6xl mx-auto px-6 pt-12 pb-16">
+      ${featured.length ? `
+      <a href="#post/${featured[0].id}" onclick="navigate('post','${featured[0].id}')" class="group block">
+        <div class="relative rounded-2xl overflow-hidden bg-ink-100">
+          <div class="aspect-[21/9] md:aspect-[21/8]">
+            <img src="${featured[0].image}" alt="${featured[0].title}" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700">
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-xs font-medium uppercase tracking-widest text-white/80 bg-white/15 backdrop-blur-sm px-3 py-1 rounded-full">${featured[0].category}</span>
+              <span class="text-sm text-white/60 font-light">${featured[0].readTime} min read</span>
+            </div>
+            <h1 class="font-serif text-2xl md:text-4xl lg:text-[2.75rem] text-white leading-tight tracking-tight max-w-3xl">${featured[0].title}</h1>
+            <p class="text-white/70 font-light mt-3 text-base md:text-lg max-w-2xl leading-relaxed hidden sm:block">${featured[0].subtitle}</p>
+            <div class="flex items-center gap-3 mt-5">
+              <img src="${author.avatar}" class="w-8 h-8 rounded-full object-cover border-2 border-white/30" alt="${author.name}">
+              <span class="text-sm text-white/80 font-light">${author.name} · ${formatDate(featured[0].date)}</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      ` : ''}
+    </section>
+
+    <!-- Tags Filter -->
+    <section class="max-w-6xl mx-auto px-6 pb-10">
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class="text-sm text-ink-400 font-medium mr-1">Explore:</span>
+        <button onclick="filterByTag(null)" class="tag-pill active text-sm px-3 py-1.5 rounded-full border border-ink-200 bg-ink-950 text-white font-medium transition-all" data-tag="all">All</button>
+        ${allTags.map(t => `
+          <button onclick="filterByTag('${t}')" class="tag-pill text-sm px-3 py-1.5 rounded-full border border-ink-200 bg-white text-ink-600 font-medium" data-tag="${t}">${t}</button>
+        `).join('')}
+      </div>
+    </section>
+
+    <!-- Recent Articles Grid -->
+    <section class="max-w-6xl mx-auto px-6 pb-20">
+      <div id="articles-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        ${recent.map((a, i) => articleCard(a, i)).join('')}
+      </div>
+    </section>
+
+    <!-- Newsletter CTA -->
+    <section class="max-w-6xl mx-auto px-6 pb-20">
+      <div class="bg-ink-950 rounded-2xl p-8 md:p-14 text-center relative overflow-hidden">
+        <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 50%, white 1px, transparent 1px); background-size: 60px 60px;"></div>
+        <div class="relative z-10">
+          <span class="text-xs font-medium uppercase tracking-widest text-ink-500 mb-4 block">Stay in the loop</span>
+          <h2 class="font-serif text-2xl md:text-3xl text-white tracking-tight mb-3">Get the next article in your inbox</h2>
+          <p class="text-ink-500 font-light max-w-md mx-auto mb-8">One email per week. No spam, no promotions. Just thoughtful writing on the topics you care about.</p>
+          <div class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <input type="email" placeholder="you@example.com" class="flex-1 px-5 py-3 rounded-lg bg-white/10 border border-white/10 text-white placeholder:text-ink-500 font-light outline-none focus:border-white/30 transition-colors">
+            <button onclick="subscribeNewsletter(this)" class="px-6 py-3 bg-white text-ink-950 rounded-lg font-medium text-sm hover:bg-ink-100 transition-colors flex-shrink-0">Subscribe</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function articleCard(article, index = 0) {
+  const delayClass = `delay-${Math.min((index % 3 + 1) * 100, 500)}`;
+  return `
+    <a href="#post/${article.id}" onclick="navigate('post','${article.id}')" class="article-card group block bg-white rounded-xl border border-ink-100 overflow-hidden fade-in-up ${delayClass}" data-tags='${JSON.stringify(article.tags)}'>
+      <div class="card-image aspect-[16/10] overflow-hidden">
+        <img src="${article.image}" alt="${article.title}" class="w-full h-full object-cover">
+      </div>
+      <div class="p-6">
+        <div class="flex items-center gap-2.5 mb-3">
+          <span class="text-xs font-medium uppercase tracking-wider text-ink-500">${article.category}</span>
+          <span class="w-1 h-1 rounded-full bg-ink-300"></span>
+          <span class="text-xs text-ink-400 font-light">${article.readTime} min read</span>
+        </div>
+        <h3 class="font-serif text-lg leading-snug text-ink-950 group-hover:text-ink-700 transition-colors">${article.title}</h3>
+        <p class="text-sm text-ink-500 font-light mt-2 line-clamp-2 leading-relaxed">${article.excerpt}</p>
+        <div class="flex items-center justify-between mt-5 pt-4 border-t border-ink-100">
+          <span class="text-xs text-ink-400 font-light">${formatDate(article.date)}</span>
+          <span class="text-xs font-medium text-ink-950 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">Read <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+        </div>
+      </div>
+    </a>
+  `;
+}
+
+function renderCategory(slug) {
+  const cat = getCategoryMeta(slug);
+  const filtered = articles.filter(a => a.category === slug);
+  const allTags = getAllTags().filter(t => filtered.some(a => a.tags.includes(t)));
+
+  return `
+    <section class="max-w-6xl mx-auto px-6 pt-12 pb-6">
+      <div class="fade-in-up">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-xl bg-ink-100 flex items-center justify-center">
+            <i data-lucide="${cat.icon}" class="w-5 h-5 text-ink-700"></i>
+          </div>
+          <span class="text-xs font-medium uppercase tracking-widest text-ink-400">${cat.slug}</span>
+        </div>
+        <h1 class="font-serif text-3xl md:text-4xl tracking-tight text-ink-950 mb-3">${cat.name}</h1>
+        <p class="text-ink-500 font-light text-lg max-w-2xl leading-relaxed">${cat.description}</p>
+      </div>
+    </section>
+
+    ${allTags.length ? `
+    <section class="max-w-6xl mx-auto px-6 py-6">
+      <div class="flex items-center gap-2 flex-wrap fade-in-up delay-100">
+        <button onclick="filterByTag(null, '${slug}')" class="tag-pill active text-sm px-3 py-1.5 rounded-full border border-ink-200 bg-ink-950 text-white font-medium transition-all" data-cat-tag="all">All</button>
+        ${allTags.map(t => `
+          <button onclick="filterByTag('${t}', '${slug}')" class="tag-pill text-sm px-3 py-1.5 rounded-full border border-ink-200 bg-white text-ink-600 font-medium" data-cat-tag="${t}">${t}</button>
+        `).join('')}
+      </div>
+    </section>
+    ` : ''}
+
+    <section class="max-w-6xl mx-auto px-6 pb-20">
+      <div id="articles-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        ${filtered.map((a, i) => articleCard(a, i)).join('')}
+      </div>
+      ${!filtered.length ? `
+        <div class="text-center py-20">
+          <i data-lucide="file-text" class="w-12 h-12 text-ink-300 mx-auto mb-4"></i>
+          <p class="text-ink-500 font-light">No articles in this category yet.</p>
+        </div>
+      ` : ''}
+    </section>
+  `;
+}
+
+function renderPost(id) {
+  const article = articles.find(a => a.id === id);
+  if (!article) return '<div class="max-w-6xl mx-auto px-6 py-20 text-center"><p class="text-ink-500">Article not found.</p></div>';
+
+  const cat = getCategoryMeta(article.category);
+  const related = articles.filter(a => a.id !== id && (a.category === article.category || a.tags.some(t => article.tags.includes(t)))).slice(0, 3);
+  const headings = article.content.match(/<h[23][^>]*>(.*?)<\/h[23]>/g)?.map(h => {
+    const text = h.replace(/<[^>]*>/g, '');
+    const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    return { text, slug, level: h.startsWith('<h2') ? 2 : 3 };
+  }) || [];
+
+  // Add IDs to headings in content
+  let processedContent = article.content;
+  headings.forEach(h => {
+    const tag = h.level === 2 ? 'h2' : 'h3';
+    processedContent = processedContent.replace(
+      `<${tag}>${h.text}</${tag}>`,
+      `<${tag} id="${h.slug}">${h.text}</${tag}>`
+    );
+  });
+
+  return `
+    <!-- Article Header -->
+    <header class="max-w-4xl mx-auto px-6 pt-12 pb-8 fade-in-up">
+      <a href="#home" onclick="navigate('home')" class="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-ink-900 transition-colors font-light mb-8">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to all articles
+      </a>
+      <div class="flex items-center gap-3 mb-5">
+        <a href="#category/${article.category}" onclick="navigate('category','${article.category}')" class="text-xs font-medium uppercase tracking-widest text-ink-500 hover:text-ink-900 transition-colors">${cat.name}</a>
+        <span class="w-1 h-1 rounded-full bg-ink-300"></span>
+        <span class="text-xs text-ink-400 font-light">${article.readTime} min read</span>
+      </div>
+      <h1 class="font-serif text-3xl md:text-4xl lg:text-5xl tracking-tight text-ink-950 leading-[1.15] mb-4">${article.title}</h1>
+      <p class="text-lg md:text-xl text-ink-500 font-light leading-relaxed">${article.subtitle}</p>
+      <div class="flex items-center gap-4 mt-8 pb-8 border-b border-ink-200">
+        <img src="${author.avatar}" class="w-11 h-11 rounded-full object-cover" alt="${author.name}">
+        <div>
+          <p class="text-sm font-medium text-ink-900">${author.name}</p>
+          <p class="text-sm text-ink-400 font-light">${formatDate(article.date)}</p>
+        </div>
+        <div class="ml-auto flex items-center gap-2">
+          <button onclick="shareArticle('${article.id}')" class="p-2 hover:bg-ink-100 rounded-lg transition-colors" aria-label="Share">
+            <i data-lucide="share-2" class="w-4 h-4 text-ink-500"></i>
+          </button>
+          <button onclick="bookmarkArticle(this)" class="p-2 hover:bg-ink-100 rounded-lg transition-colors" aria-label="Bookmark">
+            <i data-lucide="bookmark" class="w-4 h-4 text-ink-500"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Article Body + Sidebar -->
+    <div class="max-w-6xl mx-auto px-6 pb-20">
+      <div class="lg:flex lg:gap-16">
+        <!-- Sidebar / TOC -->
+        <aside class="hidden lg:block lg:w-56 flex-shrink-0">
+          <div class="sticky top-24">
+            <p class="text-xs font-semibold uppercase tracking-widest text-ink-400 mb-4">On this page</p>
+            <nav class="space-y-1">
+              ${headings.map(h => `
+                <a href="#${h.slug}" class="toc-link block text-sm text-ink-500 font-light py-1 pl-3 ${h.level === 3 ? 'ml-3' : ''}" onclick="event.preventDefault();document.getElementById('${h.slug}').scrollIntoView({behavior:'smooth',block:'start'})">${h.text}</a>
+              `).join('')}
+            </nav>
+            ${article.tags.length ? `
+              <div class="mt-8 pt-6 border-t border-ink-100">
+                <p class="text-xs font-semibold uppercase tracking-widest text-ink-400 mb-3">Tags</p>
+                <div class="flex flex-wrap gap-1.5">
+                  ${article.tags.map(t => `<span class="text-xs px-2.5 py-1 rounded-full bg-ink-100 text-ink-600 font-medium">${t}</span>`).join('')}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        </aside>
+
+        <!-- Content -->
+        <article class="flex-1 max-w-2xl">
+          <div class="aspect-[21/9] rounded-xl overflow-hidden mb-10">
+            <img src="${article.image}" alt="${article.title}" class="w-full h-full object-cover">
+          </div>
+          <div class="prose">${processedContent}</div>
+
+          <!-- Mobile Tags -->
+          <div class="lg:hidden mt-10 pt-6 border-t border-ink-200">
+            <div class="flex flex-wrap gap-2">
+              ${article.tags.map(t => `<span class="text-xs px-3 py-1.5 rounded-full bg-ink-100 text-ink-600 font-medium">${t}</span>`).join('')}
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- Author Card -->
+    <section class="max-w-4xl mx-auto px-6 pb-16">
+      <div class="bg-ink-50 rounded-xl p-6 md:p-8 flex flex-col sm:flex-row items-start gap-5">
+        <img src="${author.avatar}" class="w-16 h-16 rounded-full object-cover flex-shrink-0" alt="${author.name}">
+        <div>
+          <p class="text-xs font-medium uppercase tracking-widest text-ink-400 mb-1">Written by</p>
+          <h3 class="font-serif text-lg text-ink-950">${author.name}</h3>
+          <p class="text-sm text-ink-500 font-light mt-1 leading-relaxed">${author.bio.substring(0, 160)}...</p>
+          <a href="#about" onclick="navigate('about')" class="inline-flex items-center gap-1 text-sm font-medium text-ink-950 mt-3 hover:gap-2 transition-all">Read more <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Articles -->
+    ${related.length ? `
+    <section class="max-w-6xl mx-auto px-6 pb-20">
+      <h2 class="font-serif text-2xl tracking-tight text-ink-950 mb-8">Continue reading</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        ${related.map((a, i) => articleCard(a, i)).join('')}
+      </div>
+    </section>
+    ` : ''}
+  `;
+}
+
+function renderAbout() {
+  return `
+    <section class="max-w-6xl mx-auto px-6 pt-12 pb-20">
+      <div class="max-w-3xl mx-auto">
+        <!-- Header -->
+        <div class="fade-in-up">
+          <span class="text-xs font-medium uppercase tracking-widest text-ink-400 mb-4 block">About</span>
+          <h1 class="font-serif text-3xl md:text-4xl lg:text-5xl tracking-tight text-ink-950 leading-tight mb-6">Hi, I'm ${author.name}.</h1>
+          <p class="text-lg text-ink-500 font-light leading-relaxed">${author.bio}</p>
+        </div>
+
+        <!-- Photo + Details -->
+        <div class="mt-12 flex flex-col md:flex-row gap-10 items-start fade-in-up delay-100">
+          <div class="w-full md:w-64 flex-shrink-0">
+            <img src="${author.avatar}" alt="${author.name}" class="w-48 h-48 md:w-full md:h-auto rounded-2xl object-cover">
+          </div>
+          <div class="space-y-6">
+            <div>
+              <h3 class="text-xs font-semibold uppercase tracking-widest text-ink-400 mb-2">Currently</h3>
+              <p class="text-ink-700 font-light leading-relaxed">Writing full-time at Inkwell. Previously a design engineer at Stripe and a product designer at Figma. I care deeply about the craft of building software that respects people.</p>
+            </div>
+            <div>
+              <h3 class="text-xs font-semibold uppercase tracking-widest text-ink-400 mb-2">Focus areas</h3>
+              <div class="flex flex-wrap gap-2">
+                <span class="text-sm px-3 py-1.5 rounded-full bg-ink-100 text-ink-700 font-medium">Design Systems</span>
+                <span class="text-sm px-3 py-1.5 rounded-full bg-ink-100 text-ink-700 font-medium">Web Architecture</span>
+                <span class="text-sm px-3 py-1.5 rounded-full bg-ink-100 text-ink-700 font-medium">Typography</span>
+                <span class="text-sm px-3 py-1.5 rounded-full bg-ink-100 text-ink-700 font-medium">Design Ethics</span>
+                <span class="text-sm px-3 py-1.5 rounded-full bg-ink-100 text-ink-700 font-medium">Deep Work</span>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-xs font-semibold uppercase tracking-widest text-ink-400 mb-2">Location</h3>
+              <p class="text-ink-700 font-light flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-ink-400"></i>${author.location}</p>
+            </div>
+            <div>
+              <h3 class="text-xs font-semibold uppercase tracking-widest text-ink-400 mb-3">Connect</h3>
+              <div class="flex gap-3">
+                <a href="${author.social.twitter}" class="inline-flex items-center gap-2 text-sm text-ink-600 hover:text-ink-950 transition-colors px-3 py-2 rounded-lg hover:bg-ink-100"><i data-lucide="twitter" class="w-4 h-4"></i> Twitter</a>
+                <a href="${author.social.github}" class="inline-flex items-center gap-2 text-sm text-ink-600 hover:text-ink-950 transition-colors px-3 py-2 rounded-lg hover:bg-ink-100"><i data-lucide="github" class="w-4 h-4"></i> GitHub</a>
+                <a href="${author.social.linkedin}" class="inline-flex items-center gap-2 text-sm text-ink-600 hover:text-ink-950 transition-colors px-3 py-2 rounded-lg hover:bg-ink-100"><i data-lucide="linkedin" class="w-4 h-4"></i> LinkedIn</a>
+                <a href="${author.social.email}" class="inline-flex items-center gap-2 text-sm text-ink-600 hover:text-ink-950 transition-colors px-3 py-2 rounded-lg hover:bg-ink-100"><i data-lucide="mail" class="w-4 h-4"></i> Email</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Philosophy -->
+        <div class="mt-16 pt-16 border-t border-ink-200 fade-in-up delay-200">
+          <h2 class="font-serif text-2xl tracking-tight text-ink-950 mb-6">Writing philosophy</h2>
+          <div class="grid sm:grid-cols-2 gap-8">
+            <div class="space-y-4">
+              <div class="flex gap-3">
+                <div class="w-8 h-8 rounded-lg bg-ink-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <i data-lucide="target" class="w-4 h-4 text-ink-600"></i>
+                </div>
+                <div>
+                  <h4 class="font-medium text-ink-900 mb-1">Substance over style</h4>
+                  <p class="text-sm text-ink-500 font-light leading-relaxed">Good writing looks easy but isn't. Every sentence earns its place. If it can be cut, it should be.</p>
+                </div>
+              </div>
+              <div class="flex gap-3">
+                <div class="w-8 h-8 rounded-lg bg-ink-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <i data-lucide="eye" class="w-4 h-4 text-ink-600"></i>
+                </div>
+                <div>
+                  <h4 class="font-medium text-ink-900 mb-1">Reader-first always</h4>
+                  <p class="text-sm text-ink-500 font-light leading-relaxed">Every design decision on this site — spacing, typography, color — exists to serve your reading experience.</p>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <div class="flex gap-3">
+                <div class="w-8 h-8 rounded-lg bg-ink-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <i data-lucide="clock" class="w-4 h-4 text-ink-600"></i>
+                </div>
+                <div>
+                  <h4 class="font-medium text-ink-900 mb-1">Respect your time</h4>
+                  <p class="text-sm text-ink-500 font-light leading-relaxed">I'd rather publish one article that rewards 7 minutes of your attention than ten that waste it.</p>
+                </div>
+              </div>
+              <div class="flex gap-3">
+                <div class="w-8 h-8 rounded-lg bg-ink-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <i data-lucide="refresh-cw" class="w-4 h-4 text-ink-600"></i>
+                </div>
+                <div>
+                  <h4 class="font-medium text-ink-900 mb-1">Update my thinking</h4>
+                  <p class="text-sm text-ink-500 font-light leading-relaxed">I add correction notes to old posts when my views change. Strong opinions, loosely held.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="mt-16 pt-16 border-t border-ink-200 fade-in-up delay-300">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
+            <div>
+              <p class="font-serif text-3xl text-ink-950">${articles.length}</p>
+              <p class="text-sm text-ink-400 font-light mt-1">Articles</p>
+            </div>
+            <div>
+              <p class="font-serif text-3xl text-ink-950">4</p>
+              <p class="text-sm text-ink-400 font-light mt-1">Categories</p>
+            </div>
+            <div>
+              <p class="font-serif text-3xl text-ink-950">${getAllTags().length}</p>
+              <p class="text-sm text-ink-400 font-light mt-1">Topics</p>
+            </div>
+            <div>
+              <p class="font-serif text-3xl text-ink-950">${Math.round(articles.reduce((s,a) => s+a.readTime, 0))}</p>
+              <p class="text-sm text-ink-400 font-light mt-1">Min of reading</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact CTA -->
+        <div class="mt-16 text-center fade-in-up delay-400">
+          <div class="bg-ink-950 rounded-2xl p-10 md:p-14">
+            <h2 class="font-serif text-2xl md:text-3xl text-white tracking-tight mb-3">Want to work together?</h2>
+            <p class="text-ink-500 font-light max-w-md mx-auto mb-8">I'm open to speaking, consulting, and collaboration on projects that align with my values.</p>
+            <a href="${author.social.email}" class="inline-flex items-center gap-2 px-6 py-3 bg-white text-ink-950 rounded-lg font-medium text-sm hover:bg-ink-100 transition-colors">
+              <i data-lucide="mail" class="w-4 h-4"></i> Get in touch
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+// ─── TAG FILTERING ──────────────────────────────────────────────────────
+function filterByTag(tag, category = null) {
+  let filtered = articles;
+  if (category) filtered = filtered.filter(a => a.category === category);
+  if (tag) filtered = filtered.filter(a => a.tags.includes(tag));
+
+  const grid = document.getElementById('articles-grid');
+  if (!grid) return;
+
+  // Update active tag pill
+  const attr = category ? 'data-cat-tag' : 'data-tag';
+  document.querySelectorAll(`[${attr}]`).forEach(btn => {
+    btn.classList.remove('active', 'bg-ink-950', 'text-white');
+    btn.classList.add('bg-white', 'text-ink-600');
+  });
+  const activeBtn = document.querySelector(`[${attr}="${tag || 'all'}"]`);
+  if (activeBtn) {
+    activeBtn.classList.add('active', 'bg-ink-950', 'text-white');
+    activeBtn.classList.remove('bg-white', 'text-ink-600');
+  }
+
+  if (!filtered.length) {
+    grid.innerHTML = `
+      <div class="col-span-full text-center py-16">
+        <i data-lucide="search-x" class="w-10 h-10 text-ink-300 mx-auto mb-3"></i>
+        <p class="text-ink-500 font-light">No articles match this filter.</p>
+        <button onclick="filterByTag(null${category ? ", '"+category+"'" : ''})" class="text-sm text-ink-950 font-medium mt-2 hover:underline">Clear filter</button>
+      </div>
+    `;
+    lucide.createIcons();
+    return;
+  }
+
+  grid.innerHTML = filtered.map((a, i) => articleCard(a, i)).join('');
+  lucide.createIcons();
+}
+
+// ─── UTILITIES ──────────────────────────────────────────────────────────
+function subscribeNewsletter(btn) {
+  const input = btn.previousElementSibling;
+  if (!input.value || !input.value.includes('@')) {
+    input.style.borderColor = '#e03131';
+    input.setAttribute('placeholder', 'Please enter a valid email');
+    setTimeout(() => { input.style.borderColor = ''; input.setAttribute('placeholder', 'you@example.com'); }, 2000);
+    return;
+  }
+  btn.textContent = 'Subscribed ✓';
+  btn.disabled = true;
+  btn.classList.add('opacity-70', 'cursor-not-allowed');
+  input.value = '';
+}
+
+function shareArticle(id) {
+  if (navigator.share) {
+    navigator.share({ title: articles.find(a=>a.id===id)?.title, url: window.location.href });
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    const btn = event.currentTarget;
+    btn.innerHTML = '<i data-lucide="check" class="w-4 h-4 text-green-600"></i>';
+    lucide.createIcons();
+    setTimeout(() => { btn.innerHTML = '<i data-lucide="share-2" class="w-4 h-4 text-ink-500"></i>'; lucide.createIcons(); }, 2000);
+  }
+}
+
+function bookmarkArticle(btn) {
+  btn.innerHTML = '<i data-lucide="bookmark-check" class="w-4 h-4 text-ink-950"></i>';
+  lucide.createIcons();
+  setTimeout(() => { btn.innerHTML = '<i data-lucide="bookmark" class="w-4 h-4 text-ink-500"></i>'; lucide.createIcons(); }, 1500);
+}
+
+// ─── SCROLL EFFECTS ─────────────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('scroll-progress').style.width = progress + '%';
+
+  const backBtn = document.getElementById('back-to-top');
+  if (scrollTop > 600) {
+    backBtn.style.opacity = '1';
+    backBtn.style.transform = 'translateY(0)';
+  } else {
+    backBtn.style.opacity = '0';
+    backBtn.style.transform = 'translateY(1rem)';
+  }
+
+  // Update TOC active state
+  document.querySelectorAll('.toc-link').forEach(link => {
+    link.classList.remove('active');
+  });
+  const headings = document.querySelectorAll('.prose h2[id], .prose h3[id]');
+  for (let i = headings.length - 1; i >= 0; i--) {
+    const h = headings[i];
+    if (h.getBoundingClientRect().top <= 120) {
+      const link = document.querySelector(`.toc-link[href="#${h.id}"]`);
+      if (link) link.classList.add('active');
+      break;
+    }
+  }
+});
+
+// ─── KEYBOARD SHORTCUTS ─────────────────────────────────────────────────
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    openSearch();
+  }
+  if (e.key === 'Escape') {
+    closeSearch();
+    const menu = document.getElementById('mobile-menu');
+    if (menu.classList.contains('open')) toggleMobileMenu();
+  }
+});
+
+// ─── HASH ROUTING ───────────────────────────────────────────────────────
+function handleHash() {
+  const hash = window.location.hash.slice(1);
+  if (!hash || hash === 'home') navigate('home');
+  else if (hash.startsWith('category/')) navigate('category', hash.split('/')[1]);
+  else if (hash.startsWith('post/')) navigate('post', hash.split('/')[1]);
+  else if (hash === 'about') navigate('about');
+  else navigate('home');
+}
+
+window.addEventListener('hashchange', handleHash);
+
+// ─── INIT ───────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  handleHash();
+  lucide.createIcons();
+});
+</script>
+</body>
+</html>

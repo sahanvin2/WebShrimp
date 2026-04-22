@@ -1,18 +1,18 @@
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ShoppingCart, Briefcase, Layout, Rocket, AppWindow, Settings } from "lucide-react";
 
 const SERVICES = [
-  { icon: "🛒", title: "E-Commerce Websites", desc: "Online stores that convert visitors into loyal customers.", color: "bg-brand-orange-soft text-brand-orange" },
-  { icon: "💼", title: "Business Websites", desc: "Professional websites to build trust and grow your brand.", color: "bg-brand-blue-soft text-brand-blue" },
-  { icon: "🖼️", title: "Portfolio Websites", desc: "Showcase your work with beautiful portfolio websites.", color: "bg-purple-50 text-purple-600" },
-  { icon: "🚀", title: "Landing Pages", desc: "High-converting pages for your marketing campaigns.", color: "bg-pink-50 text-pink-600" },
-  { icon: "📱", title: "Social Media Content", desc: "Eye-catching posters, videos & designs for social media.", color: "bg-emerald-50 text-emerald-600" },
-  { icon: "🔧", title: "Website Maintenance", desc: "Keep your website updated, secure and running smoothly.", color: "bg-amber-50 text-amber-600" },
+  { icon: <ShoppingCart className="h-6 w-6" />, title: "E-Commerce Websites", slug: "e-commerce-websites", desc: "Online stores that convert visitors into loyal customers.", color: "bg-orange-50 text-brand-orange" },
+  { icon: <Briefcase className="h-6 w-6" />, title: "Business Websites", slug: "business-websites", desc: "Professional websites to build trust and grow your brand.", color: "bg-blue-50 text-brand-blue" },
+  { icon: <Layout className="h-6 w-6" />, title: "Portfolio Websites", slug: "portfolio-websites", desc: "Showcase your work with beautiful portfolio websites.", color: "bg-purple-50 text-purple-600" },
+  { icon: <Rocket className="h-6 w-6" />, title: "Landing Pages", slug: "landing-pages", desc: "High-converting pages for your marketing campaigns.", color: "bg-pink-50 text-pink-600" },
+  { icon: <AppWindow className="h-6 w-6" />, title: "Social Media Content", slug: "social-media-content", desc: "Eye-catching designs and content for your brand social presence.", color: "bg-emerald-50 text-emerald-600" },
+  { icon: <Settings className="h-6 w-6" />, title: "Website Maintenance", slug: "website-maintenance", desc: "Keep your website updated, secure and running smoothly.", color: "bg-amber-50 text-amber-600" },
 ];
 
 const ServicesPreview = () => {
   return (
-    <section className="container-x py-20 lg:py-28">
+    <section className="container-x py-16 lg:py-20">
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
         <div className="reveal">
           <span className="section-label">What We Do</span>
@@ -29,21 +29,22 @@ const ServicesPreview = () => {
         </Link>
       </div>
 
-      <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="mt-12 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-6 pb-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:pb-0 md:overflow-visible">
         {SERVICES.map((s, i) => (
           <article
             key={s.title}
-            className="reveal group rounded-2xl bg-card border border-border p-7 shadow-card card-lift"
+            className="reveal group rounded-2xl bg-card border border-border p-7 shadow-card card-lift w-[85vw] shrink-0 snap-center md:w-auto md:shrink"
             style={{ transitionDelay: `${i * 60}ms` }}
           >
-            <div className={`h-14 w-14 rounded-2xl flex items-center justify-center text-2xl ${s.color}`}>
-              <span aria-hidden>{s.icon}</span>
+            <div className={`h-14 w-14 rounded-2xl flex items-center justify-center ${s.color} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm`}>
+              {s.icon}
             </div>
             <h3 className="mt-5 text-xl text-brand-navy">{s.title}</h3>
             <p className="mt-2 text-muted-foreground">{s.desc}</p>
             <Link
-              to="/services"
+              to={`/services/${s.slug}`}
               className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-blue group-hover:gap-2.5 transition-all"
+              aria-label={`Learn more about ${s.title}`}
             >
               Learn More <ArrowRight className="h-4 w-4" />
             </Link>

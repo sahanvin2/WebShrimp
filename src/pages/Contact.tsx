@@ -31,6 +31,13 @@ const BUDGETS = [
   "Under LKR 25,000", "LKR 25,000–60,000", "LKR 60,000–120,000", "LKR 120,000+", "Custom Quote Needed",
 ];
 
+const CONTACT = {
+  phoneDisplay: "+94 70 303 1636",
+  phoneHref: "tel:+94703031636",
+  whatsappHref: "https://wa.me/94703031636",
+  email: "sahannawarathne2004@gmail.com",
+};
+
 const Contact = () => {
   const [form, setForm] = useState<FormState>({
     name: "", email: "", phone: "", service: "", budget: "", message: "",
@@ -49,9 +56,21 @@ const Contact = () => {
     return Object.keys(e).length === 0;
   };
 
-  const onSubmit = (ev: FormEvent) => {
+  const onSubmit = async (ev: FormEvent) => {
     ev.preventDefault();
     if (!validate()) return;
+
+    const message = [
+      "Hello! I want to discuss a project.",
+      `Name: ${form.name}`,
+      `Email: ${form.email}`,
+      `Phone: ${form.phone || "Not provided"}`,
+      `Service: ${form.service}`,
+      `Budget: ${form.budget || "Not selected"}`,
+      `Message: ${form.message}`,
+    ].join("\n");
+
+    window.open(`${CONTACT.whatsappHref}?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
     setSent(true);
   };
 
@@ -143,14 +162,19 @@ const Contact = () => {
             <div className="rounded-3xl bg-blue-grad text-white p-8 shadow-glow">
               <h3 className="text-xl">Contact Info</h3>
               <ul className="mt-5 space-y-4 text-sm">
-                <li className="flex items-start gap-3"><Phone className="h-5 w-5 mt-0.5 text-brand-orange" /> <a href="tel:+94711214567" className="hover:underline">+94 71 121 4567</a></li>
-                <li className="flex items-start gap-3"><Mail className="h-5 w-5 mt-0.5 text-brand-orange" /> <a href="mailto:hello@webshrimp.lk" className="hover:underline">hello@webshrimp.lk</a></li>
+                <li className="flex items-start gap-3"><Phone className="h-5 w-5 mt-0.5 text-brand-orange" /> <a href={CONTACT.phoneHref} className="hover:text-brand-yellow transition-colors">{CONTACT.phoneDisplay}</a></li>
+                <li className="flex items-start gap-3"><Mail className="h-5 w-5 mt-0.5 text-brand-orange" /> <a href={`mailto:${CONTACT.email}`} className="hover:text-brand-yellow transition-colors">{CONTACT.email}</a></li>
                 <li className="flex items-start gap-3"><MapPin className="h-5 w-5 mt-0.5 text-brand-orange" /> Colombo, Sri Lanka</li>
                 <li className="flex items-start gap-3"><Clock className="h-5 w-5 mt-0.5 text-brand-orange" /> Mon–Sat, 9AM–6PM<br /><span className="text-white/65 text-xs">Emergency support 24/7</span></li>
               </ul>
               <div className="mt-6 flex gap-3">
-                {[Facebook, Instagram, Linkedin, Youtube].map((Icon, i) => (
-                  <a key={i} href="#" className="h-10 w-10 inline-flex items-center justify-center rounded-full bg-white/10 hover:bg-brand-orange transition-colors">
+                {[
+                  { Icon: Facebook, href: "https://www.facebook.com", base: "bg-[#1877F2]", hover: "hover:bg-[#2d88ff]" },
+                  { Icon: Instagram, href: "https://www.instagram.com", base: "bg-gradient-to-br from-[#f58529] via-[#dd2a7b] to-[#8134af]", hover: "hover:brightness-110" },
+                  { Icon: Linkedin, href: "https://www.linkedin.com", base: "bg-[#0A66C2]", hover: "hover:bg-[#1d74cb]" },
+                  { Icon: Youtube, href: "https://www.youtube.com", base: "bg-[#FF0000]", hover: "hover:bg-[#ff3333]" },
+                ].map(({ Icon, href, base, hover }, i) => (
+                  <a key={i} href={href} target="_blank" rel="noopener noreferrer" className={`h-10 w-10 inline-flex items-center justify-center rounded-full text-white transition-colors ${base} ${hover}`}>
                     <Icon className="h-4 w-4" />
                   </a>
                 ))}
@@ -184,14 +208,16 @@ const Contact = () => {
       <section className="container-x pb-20">
         <div className="grid sm:grid-cols-3 gap-5">
           {[
-            { Icon: MessageCircle, title: "WhatsApp", desc: "Chat with us on WhatsApp", color: "bg-emerald-500", href: "https://wa.me/94711214567" },
-            { Icon: Mail, title: "Email", desc: "Send us an email", color: "bg-brand-blue", href: "mailto:hello@webshrimp.lk" },
-            { Icon: Phone, title: "Call", desc: "Give us a call", color: "bg-brand-orange", href: "tel:+94711214567" },
+            { Icon: MessageCircle, title: "WhatsApp", desc: "Start a chat instantly", color: "bg-[#25D366]", href: CONTACT.whatsappHref },
+            { Icon: Mail, title: "Email", desc: CONTACT.email, color: "bg-[#2563EB]", href: `mailto:${CONTACT.email}` },
+            { Icon: Phone, title: "Call", desc: CONTACT.phoneDisplay, color: "bg-brand-orange", href: CONTACT.phoneHref },
           ].map(({ Icon, title, desc, color, href }) => (
             <a
               key={title}
               href={href}
-              className="reveal group rounded-2xl bg-card border border-border p-6 shadow-card card-lift flex items-center gap-5"
+              target={title === "WhatsApp" ? "_blank" : undefined}
+              rel={title === "WhatsApp" ? "noopener noreferrer" : undefined}
+              className="reveal group rounded-2xl bg-card border border-border p-6 shadow-card flex items-center gap-5 hover:shadow-glow transition-all"
             >
               <div className={`h-14 w-14 rounded-2xl ${color} text-white flex items-center justify-center shrink-0`}>
                 <Icon className="h-6 w-6" />

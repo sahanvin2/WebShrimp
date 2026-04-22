@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Aiden Cole — Creative Director</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        serif: ['Instrument Serif', 'serif'],
+      },
+    }
+  }
+}
+</script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: #09090b; color: #f4f4f5; overflow-x: hidden; cursor: none; }
+
+  /* Custom Cursor */
+  .cursor-dot {
+    width: 8px; height: 8px; background: #10b981;
+    border-radius: 50%; position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9999;
+    transition: transform 0.1s ease;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 40px; height: 40px;
+    border: 1.5px solid rgba(16,185,129,0.5);
+    border-radius: 50%; position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9998;
+    transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+  }
+  .cursor-ring.hovering {
+    width: 70px; height: 70px;
+    border-color: rgba(16,185,129,0.8);
+    background: rgba(16,185,129,0.05);
+  }
+  .cursor-ring.clicking {
+    transform: scale(0.8);
+  }
+
+  /* Noise overlay */
+  .noise::before {
+    content: ''; position: fixed; inset: 0; z-index: 9000;
+    pointer-events: none; opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+  }
+
+  /* Text reveal */
+  .reveal-text {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+  .reveal-text > span {
+    display: inline-block;
+    transform: translateY(105%);
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal-text.revealed > span {
+    transform: translateY(0);
+  }
+
+  /* Fade in up */
+  .fade-up {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* Stagger children */
+  .stagger-children .fade-up:nth-child(1) { transition-delay: 0ms; }
+  .stagger-children .fade-up:nth-child(2) { transition-delay: 100ms; }
+  .stagger-children .fade-up:nth-child(3) { transition-delay: 200ms; }
+  .stagger-children .fade-up:nth-child(4) { transition-delay: 300ms; }
+  .stagger-children .fade-up:nth-child(5) { transition-delay: 400ms; }
+  .stagger-children .fade-up:nth-child(6) { transition-delay: 500ms; }
+  .stagger-children .fade-up:nth-child(7) { transition-delay: 600ms; }
+  .stagger-children .fade-up:nth-child(8) { transition-delay: 700ms; }
+
+  /* Parallax image */
+  .parallax-img { transition: transform 0.1s linear; will-change: transform; }
+
+  /* Project card hover */
+  .project-card { position: relative; overflow: hidden; }
+  .project-card .card-image {
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), filter 0.7s ease;
+  }
+  .project-card:hover .card-image {
+    transform: scale(1.08);
+    filter: brightness(0.7);
+  }
+  .project-card .card-overlay {
+    opacity: 0; transition: opacity 0.5s ease;
+  }
+  .project-card:hover .card-overlay { opacity: 1; }
+  .project-card .card-content {
+    transform: translateY(30px); opacity: 0;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, opacity 0.6s ease 0.1s;
+  }
+  .project-card:hover .card-content { transform: translateY(0); opacity: 1; }
+  .project-card .card-tag {
+    transform: translateY(10px); opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, opacity 0.5s ease 0.2s;
+  }
+  .project-card:hover .card-tag { transform: translateY(0); opacity: 1; }
+
+  /* Gallery filter */
+  .gallery-item {
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .gallery-item.hidden-item {
+    opacity: 0; transform: scale(0.9);
+    position: absolute; pointer-events: none;
+  }
+  .gallery-item.visible-item {
+    opacity: 1; transform: scale(1);
+    position: relative; pointer-events: auto;
+  }
+
+  /* Magnetic button */
+  .magnetic-btn {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Case study overlay */
+  .case-study-overlay {
+    position: fixed; inset: 0; z-index: 8000;
+    background: rgba(0,0,0,0.95);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.5s ease;
+    overflow-y: auto;
+  }
+  .case-study-overlay.active { opacity: 1; pointer-events: auto; }
+  .case-study-overlay .cs-content {
+    transform: translateY(60px);
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+  }
+  .case-study-overlay.active .cs-content { transform: translateY(0); }
+
+  /* Horizontal rule glow */
+  .hr-glow {
+    height: 1px; border: none;
+    background: linear-gradient(90deg, transparent, rgba(16,185,129,0.3), transparent);
+  }
+
+  /* Marquee */
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .marquee-track { animation: marquee 30s linear infinite; }
+
+  /* Hero line draw */
+  @keyframes drawLine {
+    from { stroke-dashoffset: 1000; }
+    to { stroke-dashoffset: 0; }
+  }
+  .draw-line { stroke-dasharray: 1000; animation: drawLine 2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+  /* Floating */
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    33% { transform: translateY(-15px) rotate(2deg); }
+    66% { transform: translateY(5px) rotate(-1deg); }
+  }
+  .float { animation: float 8s ease-in-out infinite; }
+  .float-delay { animation: float 8s ease-in-out 2s infinite; }
+
+  /* Nav blur */
+  .nav-blur {
+    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    background: rgba(9,9,11,0.7);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #09090b; }
+  ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 9500;
+    padding: 1rem 1.5rem; border-radius: 0.75rem;
+    background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3);
+    color: #a7f3d0; font-size: 0.875rem;
+    transform: translateY(120%); opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  @media (max-width: 768px) {
+    body { cursor: auto; }
+    .cursor-dot, .cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body class="noise">
+
+<!-- Custom Cursor -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Navigation -->
+<nav class="nav-blur fixed top-0 left-0 right-0 z-[7000] border-b border-white/5">
+  <div class="max-w-7xl mx-auto px-6 md:px-12 h-16 flex items-center justify-between">
+    <a href="#hero" class="text-sm font-medium tracking-wider uppercase text-zinc-100 hover:text-emerald-400 transition-colors duration-300 cursor-none">
+      A.C
+    </a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#work" class="text-xs font-medium uppercase tracking-widest text-zinc-500 hover:text-zinc-100 transition-colors duration-300 cursor-none">Work</a>
+      <a href="#gallery" class="text-xs font-medium uppercase tracking-widest text-zinc-500 hover:text-zinc-100 transition-colors duration-300 cursor-none">Gallery</a>
+      <a href="#about" class="text-xs font-medium uppercase tracking-widest text-zinc-500 hover:text-zinc-100 transition-colors duration-300 cursor-none">About</a>
+      <a href="#contact" class="text-xs font-medium uppercase tracking-widest text-zinc-500 hover:text-zinc-100 transition-colors duration-300 cursor-none">Contact</a>
+    </div>
+    <button id="mobileMenuBtn" class="md:hidden text-zinc-400 hover:text-zinc-100 transition-colors cursor-none">
+      <i data-lucide="menu" class="w-5 h-5"></i>
+    </button>
+    <div class="hidden md:block">
+      <span class="text-[10px] uppercase tracking-[0.2em] text-zinc-600">Available for projects</span>
+      <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 ml-2 animate-pulse"></span>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mobileMenu" class="fixed inset-0 z-[6999] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8 opacity-0 pointer-events-none transition-opacity duration-500">
+  <button id="mobileMenuClose" class="absolute top-5 right-6 text-zinc-400 hover:text-zinc-100">
+    <i data-lucide="x" class="w-6 h-6"></i>
+  </button>
+  <a href="#work" class="mobile-nav-link text-3xl font-serif text-zinc-300 hover:text-emerald-400 transition-colors">Work</a>
+  <a href="#gallery" class="mobile-nav-link text-3xl font-serif text-zinc-300 hover:text-emerald-400 transition-colors">Gallery</a>
+  <a href="#about" class="mobile-nav-link text-3xl font-serif text-zinc-300 hover:text-emerald-400 transition-colors">About</a>
+  <a href="#contact" class="mobile-nav-link text-3xl font-serif text-zinc-300 hover:text-emerald-400 transition-colors">Contact</a>
+</div>
+
+<!-- Hero Section -->
+<section id="hero" class="relative min-h-screen flex items-end pb-20 md:pb-28 overflow-hidden">
+  <!-- Background elements -->
+  <div class="absolute inset-0">
+    <div class="absolute top-1/4 -right-32 w-[500px] h-[500px] rounded-full bg-emerald-500/5 blur-[120px] float"></div>
+    <div class="absolute bottom-1/4 -left-32 w-[400px] h-[400px] rounded-full bg-blue-500/5 blur-[100px] float-delay"></div>
+    <!-- Grid pattern -->
+    <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 80px 80px;"></div>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-6 md:px-12 w-full">
+    <div class="grid lg:grid-cols-12 gap-8 items-end">
+      <!-- Left content -->
+      <div class="lg:col-span-8">
+        <div class="fade-up">
+          <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03] text-[10px] uppercase tracking-[0.2em] text-zinc-500 mb-8">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            Creative Director & Designer
+          </span>
+        </div>
+
+        <h1 class="text-[clamp(3rem,8vw,7rem)] font-serif leading-[0.9] tracking-tight text-zinc-100">
+          <div class="reveal-text"><span>Aiden</span></div>
+          <div class="reveal-text"><span>Cole</span></div>
+        </h1>
+
+        <div class="mt-8 md:mt-10 max-w-lg fade-up">
+          <p class="text-base md:text-lg font-light leading-relaxed text-zinc-400">
+            Crafting digital experiences at the intersection of design, motion, and storytelling — for brands that refuse to blend in.
+          </p>
+        </div>
+
+        <div class="mt-10 flex flex-wrap items-center gap-4 fade-up">
+          <a href="#work" class="magnetic-btn inline-flex items-center gap-3 px-7 py-3.5 bg-zinc-100 text-zinc-900 rounded-full text-sm font-medium hover:bg-emerald-400 hover:text-zinc-900 transition-all duration-300 cursor-none group">
+            View Selected Work
+            <i data-lucide="arrow-down-right" class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:translate-y-0.5"></i>
+          </a>
+          <a href="#contact" class="magnetic-btn inline-flex items-center gap-3 px-7 py-3.5 border border-white/10 text-zinc-400 rounded-full text-sm font-medium hover:border-white/25 hover:text-zinc-200 transition-all duration-300 cursor-none">
+            Get in Touch
+          </a>
+        </div>
+      </div>
+
+      <!-- Right stats -->
+      <div class="lg:col-span-4 flex lg:flex-col gap-8 md:gap-10 fade-up">
+        <div>
+          <div class="text-4xl md:text-5xl font-serif text-zinc-100">12<span class="text-emerald-500">+</span></div>
+          <div class="text-xs uppercase tracking-[0.15em] text-zinc-600 mt-1">Years Experience</div>
+        </div>
+        <div>
+          <div class="text-4xl md:text-5xl font-serif text-zinc-100">80<span class="text-emerald-500">+</span></div>
+          <div class="text-xs uppercase tracking-[0.15em] text-zinc-600 mt-1">Projects Delivered</div>
+        </div>
+        <div>
+          <div class="text-4xl md:text-5xl font-serif text-zinc-100">24<span class="text-emerald-500">+</span></div>
+          <div class="text-xs uppercase tracking-[0.15em] text-zinc-600 mt-1">Awards Won</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 fade-up">
+      <span class="text-[10px] uppercase tracking-[0.2em] text-zinc-600">Scroll</span>
+      <div class="w-px h-8 bg-gradient-to-b from-zinc-600 to-transparent"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div class="py-6 border-y border-white/5 overflow-hidden">
+  <div class="marquee-track flex items-center gap-12 whitespace-nowrap">
+    <span class="text-xs uppercase tracking-[0.3em] text-zinc-700">Brand Identity</span>
+    <span class="text-emerald-700">✦</span>
+    <span class="text-xs uppercase tracking-[0.3em] text-zinc-700">UI/UX Design</span>
+    <span class="text-emerald-700">✦</span>
+    <span class="text-xs uppercase tracking-[0.3em] text-zinc-700">Motion Design</span>
+    <span class="text-emerald-700">✦</span>
+    <span class="text-xs uppercase tracking-[0.3em] text-zinc-700">Creative Direction</span>
+    <span class="text-emerald-700">✦</span>
+    <span class="text-xs uppercase tracking-[0.3em] text-zinc-700">Web Development</span>
+    <span class="text-emerald-700">✦</span>
+    <span class="text-xs uppercase tracking-[0.3em] text-zinc-700">Art Direction</span>
+    <span class="text-emerald-700">✦</span>
+    <span class="text-xs uppercase tracking-[0.3em] text-zinc-700">3D & Visual</span>
+    <span class="text-emerald-700">✦</span>
+    <span class="text-xs uppercase tracking-[0.3em] text-zinc-700">Brand Identity</span>
+    <span class="text-emerald-700">✦</span>
+    <span class="text-xs uppercase tracking-[0.3em] text-zinc-700">UI/UX Design</span>
+    <span class="text-emerald-700">✦</span>
+    <span class="text-xs uppercase tracking-[0.3em] text-zinc-700">Motion Design</span>
+    <span class="text-emerald-700">✦</span>
+    <span class="text-xs uppercase tracking-[0.3em] text-zinc-700">Creative Direction</span>
+    <span class="text-emerald-700">✦</span>
+    <span class="text-xs uppercase tracking-[0.3em] text-zinc-700">Web Development</span>
+    <span class="text-emerald-700">✦</span>
+    <span class="text-xs uppercase tracking-[0.3em] text-zinc-700">Art Direction</span>
+    <span class="text-emerald-700">✦</span>
+    <span class="text-xs uppercase tracking-[0.3em] text-zinc-700">3D & Visual</span>
+    <span class="text-emerald-700">✦</span>
+  </div>
+</div>
+
+<!-- Featured Work -->
+<section id="work" class="py-24 md:py-36">
+  <div class="max-w-7xl mx-auto px-6 md:px-12">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16 md:mb-24">
+      <div>
+        <span class="text-[10px] uppercase tracking-[0.2em] text-emerald-500 fade-up">Featured Projects</span>
+        <h2 class="mt-3 text-3xl md:text-5xl font-serif tracking-tight text-zinc-100 reveal-text"><span>Selected Work</span></h2>
+      </div>
+      <p class="text-sm text-zinc-500 max-w-xs font-light fade-up">A curated selection of projects where strategy met creativity to produce exceptional results.</p>
+    </div>
+
+    <!-- Featured Project 1 — Large -->
+    <div class="project-card rounded-2xl overflow-hidden mb-8 cursor-none group" onclick="openCaseStudy(0)">
+      <div class="relative aspect-[16/9] md:aspect-[21/9]">
+        <img src="https://picsum.photos/seed/noir-brand/1400/600.jpg" alt="Noir Branding" class="card-image parallax-img absolute inset-0 w-full h-full object-cover">
+        <div class="card-overlay absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-8 md:p-12">
+          <div class="card-tag">
+            <span class="inline-block px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm text-[10px] uppercase tracking-[0.15em] text-zinc-300 mb-4">Brand Identity — 2024</span>
+          </div>
+          <h3 class="card-content text-2xl md:text-4xl font-serif text-white">Noir Collective</h3>
+          <p class="card-content text-sm text-zinc-400 mt-2 max-w-md">Complete brand identity and digital platform for a luxury fashion house, from strategy to execution.</p>
+          <div class="card-content mt-4 flex items-center gap-2 text-emerald-400 text-sm font-medium">
+            <span>View Case Study</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <!-- Corner number -->
+        <div class="absolute top-6 right-8 text-6xl md:text-8xl font-serif text-white/5">01</div>
+      </div>
+    </div>
+
+    <!-- Featured Projects 2 & 3 — Side by side -->
+    <div class="grid md:grid-cols-2 gap-8">
+      <div class="project-card rounded-2xl overflow-hidden cursor-none group" onclick="openCaseStudy(1)">
+        <div class="relative aspect-[4/5]">
+          <img src="https://picsum.photos/seed/flux-app/700/875.jpg" alt="Flux App" class="card-image parallax-img absolute inset-0 w-full h-full object-cover">
+          <div class="card-overlay absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-8">
+            <div class="card-tag">
+              <span class="inline-block px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm text-[10px] uppercase tracking-[0.15em] text-zinc-300 mb-4">UI/UX Design — 2024</span>
+            </div>
+            <h3 class="card-content text-xl md:text-2xl font-serif text-white">Flux Wellness</h3>
+            <p class="card-content text-sm text-zinc-400 mt-2">Meditation app redesign that increased daily engagement by 340%.</p>
+            <div class="card-content mt-4 flex items-center gap-2 text-emerald-400 text-sm font-medium">
+              <span>View Case Study</span>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div class="absolute top-6 right-8 text-6xl font-serif text-white/5">02</div>
+        </div>
+      </div>
+
+      <div class="project-card rounded-2xl overflow-hidden cursor-none group" onclick="openCaseStudy(2)">
+        <div class="relative aspect-[4/5]">
+          <img src="https://picsum.photos/seed/ember-studio/700/875.jpg" alt="Ember Studio" class="card-image parallax-img absolute inset-0 w-full h-full object-cover">
+          <div class="card-overlay absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-8">
+            <div class="card-tag">
+              <span class="inline-block px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm text-[10px] uppercase tracking-[0.15em] text-zinc-300 mb-4">Web Design — 2023</span>
+            </div>
+            <h3 class="card-content text-xl md:text-2xl font-serif text-white">Ember Architecture</h3>
+            <p class="card-content text-sm text-zinc-400 mt-2">Immersive portfolio for an award-winning architecture studio.</p>
+            <div class="card-content mt-4 flex items-center gap-2 text-emerald-400 text-sm font-medium">
+              <span>View Case Study</span>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div class="absolute top-6 right-8 text-6xl font-serif text-white/5">03</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr-glow max-w-7xl mx-auto">
+
+<!-- Portfolio Gallery -->
+<section id="gallery" class="py-24 md:py-36">
+  <div class="max-w-7xl mx-auto px-6 md:px-12">
+    <div class="text-center mb-16">
+      <span class="text-[10px] uppercase tracking-[0.2em] text-emerald-500 fade-up">Full Portfolio</span>
+      <h2 class="mt-3 text-3xl md:text-5xl font-serif tracking-tight text-zinc-100 reveal-text"><span>All Projects</span></h2>
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-wrap justify-center gap-2 mb-14 fade-up">
+      <button class="filter-btn active px-5 py-2 rounded-full text-xs uppercase tracking-[0.1em] font-medium transition-all duration-300 cursor-none" data-filter="all">All Work</button>
+      <button class="filter-btn px-5 py-2 rounded-full text-xs uppercase tracking-[0.1em] font-medium transition-all duration-300 cursor-none" data-filter="branding">Branding</button>
+      <button class="filter-btn px-5 py-2 rounded-full text-xs uppercase tracking-[0.1em] font-medium transition-all duration-300 cursor-none" data-filter="uiux">UI/UX</button>
+      <button class="filter-btn px-5 py-2 rounded-full text-xs uppercase tracking-[0.1em] font-medium transition-all duration-300 cursor-none" data-filter="web">Web</button>
+      <button class="filter-btn px-5 py-2 rounded-full text-xs uppercase tracking-[0.1em] font-medium transition-all duration-300 cursor-none" data-filter="motion">Motion</button>
+    </div>
+
+    <!-- Gallery Grid — Bento style -->
+    <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 stagger-children">
+
+      <div class="gallery-item visible-item col-span-2 row-span-2 project-card rounded-2xl overflow-hidden cursor-none group" data-category="branding" onclick="openCaseStudy(3)">
+        <div class="relative aspect-square">
+          <img src="https://picsum.photos/seed/lunar-brand/800/800.jpg" alt="Lunar" class="card-image absolute inset-0 w-full h-full object-cover">
+          <div class="card-overlay absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-6">
+            <div class="card-tag"><span class="text-[10px] uppercase tracking-[0.15em] text-emerald-400">Branding</span></div>
+            <h3 class="card-content text-lg font-serif text-white mt-1">Lunar Studios</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="gallery-item visible-item project-card rounded-2xl overflow-hidden cursor-none group" data-category="uiux" onclick="openCaseStudy(4)">
+        <div class="relative aspect-square">
+          <img src="https://picsum.photos/seed/pulse-dash/400/400.jpg" alt="Pulse" class="card-image absolute inset-0 w-full h-full object-cover">
+          <div class="card-overlay absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <div class="card-tag"><span class="text-[10px] uppercase tracking-[0.15em] text-emerald-400">UI/UX</span></div>
+            <h3 class="card-content text-sm font-serif text-white mt-1">Pulse Dashboard</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="gallery-item visible-item project-card rounded-2xl overflow-hidden cursor-none group" data-category="motion" onclick="openCaseStudy(5)">
+        <div class="relative aspect-square">
+          <img src="https://picsum.photos/seed/kinetic-type/400/400.jpg" alt="Kinetic" class="card-image absolute inset-0 w-full h-full object-cover">
+          <div class="card-overlay absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <div class="card-tag"><span class="text-[10px] uppercase tracking-[0.15em] text-emerald-400">Motion</span></div>
+            <h3 class="card-content text-sm font-serif text-white mt-1">Kinetic Type</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="gallery-item visible-item project-card rounded-2xl overflow-hidden cursor-none group" data-category="web" onclick="openCaseStudy(6)">
+        <div class="relative aspect-square">
+          <img src="https://picsum.photos/seed/vertex-web/400/400.jpg" alt="Vertex" class="card-image absolute inset-0 w-full h-full object-cover">
+          <div class="card-overlay absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <div class="card-tag"><span class="text-[10px] uppercase tracking-[0.15em] text-emerald-400">Web</span></div>
+            <h3 class="card-content text-sm font-serif text-white mt-1">Vertex Labs</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="gallery-item visible-item project-card rounded-2xl overflow-hidden cursor-none group" data-category="branding" onclick="openCaseStudy(7)">
+        <div class="relative aspect-square">
+          <img src="https://picsum.photos/seed/aura-brand/400/400.jpg" alt="Aura" class="card-image absolute inset-0 w-full h-full object-cover">
+          <div class="card-overlay absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <div class="card-tag"><span class="text-[10px] uppercase tracking-[0.15em] text-emerald-400">Branding</span></div>
+            <h3 class="card-content text-sm font-serif text-white mt-1">Aura Skincare</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="gallery-item visible-item col-span-2 project-card rounded-2xl overflow-hidden cursor-none group" data-category="web" onclick="openCaseStudy(8)">
+        <div class="relative aspect-[2/1]">
+          <img src="https://picsum.photos/seed/nexus-platform/800/400.jpg" alt="Nexus" class="card-image absolute inset-0 w-full h-full object-cover">
+          <div class="card-overlay absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-6">
+            <div class="card-tag"><span class="text-[10px] uppercase tracking-[0.15em] text-emerald-400">Web</span></div>
+            <h3 class="card-content text-lg font-serif text-white mt-1">Nexus Platform</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="gallery-item visible-item project-card rounded-2xl overflow-hidden cursor-none group" data-category="uiux" onclick="openCaseStudy(9)">
+        <div class="relative aspect-square">
+          <img src="https://picsum.photos/seed/drift-app/400/400.jpg" alt="Drift" class="card-image absolute inset-0 w-full h-full object-cover">
+          <div class="card-overlay absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <div class="card-tag"><span class="text-[10px] uppercase tracking-[0.15em] text-emerald-400">UI/UX</span></div>
+            <h3 class="card-content text-sm font-serif text-white mt-1">Drift Music</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="gallery-item visible-item project-card rounded-2xl overflow-hidden cursor-none group" data-category="motion" onclick="openCaseStudy(10)">
+        <div class="relative aspect-square">
+          <img src="https://picsum.photos/seed/echo-motion/400/400.jpg" alt="Echo" class="card-image absolute inset-0 w-full h-full object-cover">
+          <div class="card-overlay absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <div class="card-tag"><span class="text-[10px] uppercase tracking-[0.15em] text-emerald-400">Motion</span></div>
+            <h3 class="card-content text-sm font-serif text-white mt-1">Echo Reel</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr-glow max-w-7xl mx-auto">
+
+<!-- About Section -->
+<section id="about" class="py-24 md:py-36 relative overflow-hidden">
+  <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-emerald-500/3 blur-[150px]"></div>
+  <div class="max-w-7xl mx-auto px-6 md:px-12 relative">
+    <div class="grid lg:grid-cols-12 gap-12 md:gap-16 items-center">
+      <!-- Image -->
+      <div class="lg:col-span-5 fade-up">
+        <div class="relative">
+          <div class="aspect-[3/4] rounded-2xl overflow-hidden">
+            <img src="https://picsum.photos/seed/aiden-portrait/600/800.jpg" alt="Aiden Cole" class="parallax-img w-full h-full object-cover">
+          </div>
+          <!-- Floating badge -->
+          <div class="absolute -bottom-4 -right-4 md:-right-8 bg-zinc-900 border border-white/10 rounded-xl p-4 md:p-5 float">
+            <div class="text-2xl font-serif text-emerald-400">12+</div>
+            <div class="text-[10px] uppercase tracking-[0.15em] text-zinc-500 mt-0.5">Years of<br>Craft</div>
+          </div>
+          <!-- Decorative border -->
+          <div class="absolute -top-3 -left-3 w-20 h-20 border-t-2 border-l-2 border-emerald-500/30 rounded-tl-2xl"></div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="lg:col-span-7">
+        <span class="text-[10px] uppercase tracking-[0.2em] text-emerald-500 fade-up">About Me</span>
+        <h2 class="mt-3 text-3xl md:text-5xl font-serif tracking-tight text-zinc-100 reveal-text"><span>Design is how I<br>make sense of things</span></h2>
+
+        <div class="mt-8 space-y-5 fade-up">
+          <p class="text-base md:text-lg font-light leading-relaxed text-zinc-400">
+            I'm a creative director and designer based in New York, with over a decade of experience building brands and digital products for startups, agencies, and Fortune 500 companies.
+          </p>
+          <p class="text-base md:text-lg font-light leading-relaxed text-zinc-400">
+            My approach is rooted in strategic thinking — every visual decision serves a purpose. I believe the best design doesn't just look good, it <span class="text-zinc-200 font-normal">creates meaning</span>, sparks emotion, and drives action.
+          </p>
+          <p class="text-base md:text-lg font-light leading-relaxed text-zinc-400">
+            When I'm not pushing pixels, you'll find me exploring analog photography, curating my vinyl collection, or getting lost in the architecture of a new city.
+          </p>
+        </div>
+
+        <!-- Skills/Tools -->
+        <div class="mt-12 fade-up">
+          <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 mb-5">Tools & Expertise</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs text-zinc-400">Figma</span>
+            <span class="px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs text-zinc-400">After Effects</span>
+            <span class="px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs text-zinc-400">Framer</span>
+            <span class="px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs text-zinc-400">Webflow</span>
+            <span class="px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs text-zinc-400">Blender</span>
+            <span class="px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs text-zinc-400">Photoshop</span>
+            <span class="px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs text-zinc-400">Illustrator</span>
+            <span class="px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs text-zinc-400">React</span>
+            <span class="px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs text-zinc-400">TypeScript</span>
+            <span class="px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs text-zinc-400">Branding</span>
+            <span class="px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs text-zinc-400">Motion Design</span>
+            <span class="px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs text-zinc-400">Art Direction</span>
+          </div>
+        </div>
+
+        <!-- Clients -->
+        <div class="mt-12 fade-up">
+          <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 mb-5">Selected Clients</div>
+          <div class="flex flex-wrap gap-x-8 gap-y-3">
+            <span class="text-sm text-zinc-500 font-light">Stripe</span>
+            <span class="text-sm text-zinc-500 font-light">Spotify</span>
+            <span class="text-sm text-zinc-500 font-light">Nike</span>
+            <span class="text-sm text-zinc-500 font-light">Airbnb</span>
+            <span class="text-sm text-zinc-500 font-light">Linear</span>
+            <span class="text-sm text-zinc-500 font-light">Vercel</span>
+            <span class="text-sm text-zinc-500 font-light">Notion</span>
+            <span class="text-sm text-zinc-500 font-light">Figma</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr-glow max-w-7xl mx-auto">
+
+<!-- Contact Section -->
+<section id="contact" class="py-24 md:py-36 relative">
+  <div class="absolute inset-0">
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full bg-emerald-500/5 blur-[150px]"></div>
+  </div>
+  <div class="max-w-7xl mx-auto px-6 md:px-12 relative">
+    <div class="max-w-3xl mx-auto text-center">
+      <span class="text-[10px] uppercase tracking-[0.2em] text-emerald-500 fade-up">Let's Work Together</span>
+      <h2 class="mt-3 text-4xl md:text-6xl lg:text-7xl font-serif tracking-tight text-zinc-100 reveal-text"><span>Have a project<br>in mind?</span></h2>
+      <p class="mt-6 text-base md:text-lg font-light text-zinc-400 fade-up">I'm always open to discussing new projects, creative ideas, or opportunities to be part of something remarkable.</p>
+
+      <!-- Contact Form -->
+      <form id="contactForm" class="mt-14 space-y-5 text-left fade-up">
+        <div class="grid md:grid-cols-2 gap-5">
+          <div>
+            <label class="block text-[10px] uppercase tracking-[0.2em] text-zinc-600 mb-2">Name</label>
+            <input type="text" required placeholder="Your name" class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm text-zinc-100 placeholder:text-zinc-700 focus:outline-none focus:border-emerald-500/40 focus:ring-1 focus:ring-emerald-500/20 transition-all duration-300 cursor-none">
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase tracking-[0.2em] text-zinc-600 mb-2">Email</label>
+            <input type="email" required placeholder="you@company.com" class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm text-zinc-100 placeholder:text-zinc-700 focus:outline-none focus:border-emerald-500/40 focus:ring-1 focus:ring-emerald-500/20 transition-all duration-300 cursor-none">
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] uppercase tracking-[0.2em] text-zinc-600 mb-2">Project Type</label>
+          <select class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm text-zinc-400 focus:outline-none focus:border-emerald-500/40 focus:ring-1 focus:ring-emerald-500/20 transition-all duration-300 cursor-none appearance-none" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2371717a%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M4.646%205.646a.5.5%200%200%201%20.708%200L8%208.293l2.646-2.647a.5.5%200%200%201%20.708.708l-3%203a.5.5%200%200%201-.708%200l-3-3a.5.5%200%200%201%200-.708z%22%2F%3E%3C%2Fsvg%3E'); background-position: right 1rem center; background-repeat: no-repeat;">
+            <option value="" disabled selected>Select a project type</option>
+            <option>Brand Identity</option>
+            <option>UI/UX Design</option>
+            <option>Web Design & Development</option>
+            <option>Motion Design</option>
+            <option>Creative Direction</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[10px] uppercase tracking-[0.2em] text-zinc-600 mb-2">Message</label>
+          <textarea rows="5" required placeholder="Tell me about your project..." class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm text-zinc-100 placeholder:text-zinc-700 focus:outline-none focus:border-emerald-500/40 focus:ring-1 focus:ring-emerald-500/20 transition-all duration-300 resize-none cursor-none"></textarea>
+        </div>
+        <div class="pt-3 text-center">
+          <button type="submit" class="magnetic-btn inline-flex items-center gap-3 px-10 py-4 bg-zinc-100 text-zinc-900 rounded-full text-sm font-medium hover:bg-emerald-400 hover:text-zinc-900 transition-all duration-300 cursor-none group">
+            Send Message
+            <i data-lucide="send" class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
+          </button>
+        </div>
+      </form>
+
+      <!-- Or reach out directly -->
+      <div class="mt-16 pt-10 border-t border-white/5 fade-up">
+        <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 mb-5">Or reach out directly</div>
+        <div class="flex flex-wrap justify-center gap-6">
+          <a href="mailto:hello@aidencole.com" class="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-emerald-400 transition-colors duration-300 cursor-none">
+            <i data-lucide="mail" class="w-4 h-4"></i>
+            hello@aidencole.com
+          </a>
+          <a href="#" class="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-emerald-400 transition-colors duration-300 cursor-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter w-4 h-4"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+            @aidencole
+          </a>
+          <a href="#" class="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-emerald-400 transition-colors duration-300 cursor-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dribbble w-4 h-4"><circle cx="12" cy="12" r="10"/><path d="M19.13 5.09C15.22 9.14 10 10.44 2.25 10.94"/><path d="M21.75 12.84c-6.6.66-10.46 1.9-14 6.16"/><path d="M8.56 2.75c4.37 6 6 9.42 8 17.72"/></svg>
+            Dribbble
+          </a>
+          <a href="#" class="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-emerald-400 transition-colors duration-300 cursor-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin w-4 h-4"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="border-t border-white/5 py-10">
+  <div class="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="text-xs text-zinc-600">© 2024 Aiden Cole. All rights reserved.</div>
+    <div class="flex items-center gap-2 text-xs text-zinc-700">
+      <span>Crafted with</span>
+      <i data-lucide="heart" class="w-3 h-3 text-emerald-700"></i>
+      <span>and intention</span>
+    </div>
+    <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="text-xs text-zinc-600 hover:text-zinc-400 transition-colors flex items-center gap-1 cursor-none">
+      Back to top <i data-lucide="arrow-up" class="w-3 h-3"></i>
+    </button>
+  </div>
+</footer>
+
+<!-- Case Study Overlay -->
+<div id="caseStudyOverlay" class="case-study-overlay">
+  <div class="cs-content min-h-screen">
+    <!-- Close button -->
+    <button onclick="closeCaseStudy()" class="fixed top-5 right-6 z-[8100] w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-all cursor-none backdrop-blur-sm">
+      <i data-lucide="x" class="w-5 h-5"></i>
+    </button>
+
+    <!-- Case Study Content -->
+    <div id="caseStudyContent" class="max-w-5xl mx-auto px-6 md:px-12 pt-24 pb-20"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast">
+  <div class="flex items-center gap-2">
+    <i data-lucide="check-circle" class="w-4 h-4"></i>
+    <span id="toastMsg">Message sent successfully!</span>
+  </div>
+</div>
+
+<script>
+// ===== CASE STUDY DATA =====
+const caseStudies = [
+  {
+    title: 'Noir Collective',
+    category: 'Brand Identity — 2024',
+    image: 'https://picsum.photos/seed/noir-brand/1200/600.jpg',
+    images: ['https://picsum.photos/seed/noir-detail1/800/500.jpg','https://picsum.photos/seed/noir-detail2/800/500.jpg','https://picsum.photos/seed/noir-detail3/800/500.jpg'],
+    overview: 'A complete brand identity overhaul for Noir Collective, an emerging luxury fashion house. The challenge was to create a visual language that conveyed both timelessness and modern edge — a balance that would resonate with fashion-forward audiences while maintaining the gravitas of a heritage brand.',
+    role: 'Creative Direction, Brand Identity, Visual Systems',
+    client: 'Noir Collective',
+    duration: '4 months',
+    results: ['Brand recognition increased by 280%', 'E-commerce conversion up 65%', 'Featured in Communication Arts & Awwwards'],
+    process: 'The process began with deep cultural research — studying the intersection of streetwear and haute couture. We developed a typographic system built around a custom serif with sharp, architectural angles. The color palette was deliberately restrained: deep blacks, warm grays, and a single accent of oxidized copper. Every touchpoint — from the digital platform to packaging to in-store experience — was designed as an extension of this core visual philosophy.'
+  },
+  {
+    title: 'Flux Wellness',
+    category: 'UI/UX Design — 2024',
+    image: 'https://picsum.photos/seed/flux-app/1200/600.jpg',
+    images: ['https://picsum.photos/seed/flux-screen1/800/500.jpg','https://picsum.photos/seed/flux-screen2/800/500.jpg','https://picsum.photos/seed/flux-screen3/800/500.jpg'],
+    overview: 'A complete redesign of the Flux meditation and wellness app. The existing experience felt clinical and disengaging — our mission was to create something that felt alive, responsive, and genuinely calming from the first interaction.',
+    role: 'UX Strategy, UI Design, Prototyping',
+    client: 'Flux Wellness Inc.',
+    duration: '3 months',
+    results: ['Daily active users increased 340%', 'Session length up 2.1x', 'App Store rating improved to 4.8★'],
+    process: 'We started with extensive user research, conducting 40+ interviews and analyzing behavioral data. The key insight: users didn\'t want another "task" — they wanted an experience that met them where they were. We designed an adaptive interface that shifts its visual tone based on time of day, user mood, and session history. The motion design language uses organic, breathing animations that subtly guide users into a meditative state before the session even begins.'
+  },
+  {
+    title: 'Ember Architecture',
+    category: 'Web Design — 2023',
+    image: 'https://picsum.photos/seed/ember-studio/1200/600.jpg',
+    images: ['https://picsum.photos/seed/ember-interior/800/500.jpg','https://picsum.photos/seed/ember-exterior/800/500.jpg','https://picsum.photos/seed/ember-process/800/500.jpg'],
+    overview: 'An immersive portfolio website for Ember, an award-winning architecture studio known for their sculptural residential projects. The site needed to feel like walking through one of their buildings — spacious, considered, and full of revealed moments.',
+    role: 'Web Design, Creative Direction, Development',
+    client: 'Ember Architecture Studio',
+    duration: '5 months',
+    results: ['Inquiry rate increased 190%', 'Average session duration 4.2 minutes', 'Won 3 Awwwards including SOTD'],
+    process: 'We treated the website itself as an architectural project. The scroll experience was meticulously choreographed — full-bleed imagery that fills the viewport, reveals triggered by scroll position, and transitions that mirror the experience of moving through physical space. The typography system uses scale and negative space to create hierarchy without visual noise. Every interaction, from hover states to page transitions, was designed to feel weighty and intentional.'
+  },
+  { title: 'Lunar Studios', category: 'Branding', image: 'https://picsum.photos/seed/lunar-brand/800/800.jpg', images: [], overview: 'Visual identity for an independent game studio crafting narrative-driven experiences.', role: 'Brand Identity', client: 'Lunar Studios', duration: '2 months', results: ['Successful studio launch', '100K+ community members in 3 months'], process: 'Built a brand around the concept of celestial navigation — each visual element maps to a star, creating a system that grows with the studio\'s portfolio.' },
+  { title: 'Pulse Dashboard', category: 'UI/UX', image: 'https://picsum.photos/seed/pulse-dash/400/400.jpg', images: [], overview: 'Analytics dashboard redesign for a SaaS platform serving enterprise clients.', role: 'UX Design, Design System', client: 'Pulse Analytics', duration: '3 months', results: ['User task completion up 45%', 'Support tickets down 60%'], process: 'Simplified a complex data landscape into an intuitive hierarchy, using progressive disclosure and smart defaults to reduce cognitive load.' },
+  { title: 'Kinetic Type', category: 'Motion', image: 'https://picsum.photos/seed/kinetic-type/400/400.jpg', images: [], overview: 'A personal experimental project exploring the boundaries between typography and motion.', role: 'Motion Design, Creative Coding', client: 'Self-initiated', duration: 'Ongoing', results: ['Featured on Motionographer', '2M+ views across platforms'], process: 'Using a combination of After Effects, Cinema 4D, and custom WebGL shaders to create typographic compositions that breathe, respond, and transform.' },
+  { title: 'Vertex Labs', category: 'Web', image: 'https://picsum.photos/seed/vertex-web/400/400.jpg', images: [], overview: 'Marketing website for an AI research lab pushing the boundaries of language models.', role: 'Web Design, Development', client: 'Vertex Labs', duration: '2 months', results: ['40% increase in demo requests', 'Featured in Product Hunt Top 5'], process: 'Designed a site that makes complex AI research feel accessible and exciting, using interactive demos and clear visual storytelling.' },
+  { title: 'Aura Skincare', category: 'Branding', image: 'https://picsum.photos/seed/aura-brand/400/400.jpg', images: [], overview: 'Brand identity and packaging design for a clean beauty startup.', role: 'Brand Identity, Packaging', client: 'Aura Beauty', duration: '3 months', results: ['Sold out first production run in 2 weeks', 'Featured in Vogue'], process: 'Created a visual language around the concept of light and transparency — minimal, luminous, and effortlessly luxurious.' },
+  { title: 'Nexus Platform', category: 'Web', image: 'https://picsum.photos/seed/nexus-platform/800/400.jpg', images: [], overview: 'Full platform redesign for a collaborative work management tool.', role: 'UX Strategy, UI Design', client: 'Nexus Inc.', duration: '6 months', results: ['NPS score improved from 32 to 67', 'Enterprise adoption up 120%'], process: 'Conducted a ground-up redesign of the information architecture, interaction patterns, and visual design system to serve teams of 5 to 5000.' },
+  { title: 'Drift Music', category: 'UI/UX', image: 'https://picsum.photos/seed/drift-app/400/400.jpg', images: [], overview: 'Music discovery app focused on ambient and experimental genres.', role: 'Product Design', client: 'Drift Music', duration: '4 months', results: ['50K downloads in first month', 'Avg. session 38 minutes'], process: 'Designed an interface that disappears into the music — gesture-driven navigation, adaptive color schemes that respond to album art, and a discovery engine built on mood rather than genre.' },
+  { title: 'Echo Reel', category: 'Motion', image: 'https://picsum.photos/seed/echo-motion/400/400.jpg', images: [], overview: 'Annual showreel and motion design system for a production company.', role: 'Motion Design, Art Direction', client: 'Echo Productions', duration: '1 month', results: ['250K views', '3 new client inquiries'], process: 'Developed a reusable motion design system with custom transitions, lower thirds, and identity animations that echo across all of Echo\'s output.' }
+];
+
+// ===== CUSTOM CURSOR =====
+const dot = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  dot.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px)`;
+});
+
+function animateCursor() {
+  ringX += (mouseX - ringX) * 0.15;
+  ringY += (mouseY - ringY) * 0.15;
+  ring.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+document.addEventListener('mousedown', () => ring.classList.add('clicking'));
+document.addEventListener('mouseup', () => ring.classList.remove('clicking'));
+
+document.querySelectorAll('a, button, .project-card, .filter-btn, input, textarea, select').forEach(el => {
+  el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
+  el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
+});
+
+// ===== SCROLL ANIMATIONS =====
+const observerOptions = { threshold: 0.15, rootMargin: '0px 0px -50px 0px' };
+
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
+
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('revealed');
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.reveal-text').forEach(el => revealObserver.observe(el));
+
+// ===== PARALLAX ON SCROLL =====
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      const scrollY = window.scrollY;
+      document.querySelectorAll('.parallax-img').forEach(img => {
+        const rect = img.closest('.project-card, .aspect-\\[3\\/4\\]')?.getBoundingClientRect();
+        if (rect && rect.top < window.innerHeight && rect.bottom > 0) {
+          const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+          const parallaxOffset = (progress - 0.5) * 40;
+          img.style.transform = `translateY(${parallaxOffset}px)`;
+        }
+      });
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+
+// ===== MAGNETIC BUTTONS =====
+document.querySelectorAll('.magnetic-btn').forEach(btn => {
+  btn.addEventListener('mousemove', e => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = 'translate(0, 0)';
+  });
+});
+
+// ===== GALLERY FILTER =====
+const filterBtns = document.querySelectorAll('.filter-btn');
+const galleryItems = document.querySelectorAll('.gallery-item');
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const filter = btn.dataset.filter;
+
+    galleryItems.forEach(item => {
+      const category = item.dataset.category;
+      if (filter === 'all' || category === filter) {
+        item.classList.remove('hidden-item');
+        item.classList.add('visible-item');
+      } else {
+        item.classList.remove('visible-item');
+        item.classList.add('hidden-item');
+      }
+    });
+  });
+});
+
+// Filter button styles
+function updateFilterStyles() {
+  filterBtns.forEach(btn => {
+    if (btn.classList.contains('active')) {
+      btn.style.background = 'rgba(16,185,129,0.15)';
+      btn.style.color = '#a7f3d0';
+      btn.style.border = '1px solid rgba(16,185,129,0.3)';
+    } else {
+      btn.style.background = 'rgba(255,255,255,0.03)';
+      btn.style.color = '#71717a';
+      btn.style.border = '1px solid rgba(255,255,255,0.06)';
+    }
+  });
+}
+updateFilterStyles();
+filterBtns.forEach(btn => btn.addEventListener('click', updateFilterStyles));
+
+// ===== CASE STUDY =====
+function openCaseStudy(index) {
+  const cs = caseStudies[index];
+  const overlay = document.getElementById('caseStudyOverlay');
+  const content = document.getElementById('caseStudyContent');
+
+  let imagesHtml = '';
+  if (cs.images && cs.images.length) {
+    imagesHtml = `<div class="grid md:grid-cols-3 gap-5 mt-16">
+      ${cs.images.map(img => `<div class="rounded-xl overflow-hidden aspect-[16/10]"><img src="${img}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt=""></div>`).join('')}
+    </div>`;
+  }
+
+  content.innerHTML = `
+    <div class="mb-10">
+      <span class="text-[10px] uppercase tracking-[0.2em] text-emerald-500">${cs.category}</span>
+      <h2 class="mt-3 text-4xl md:text-6xl font-serif tracking-tight text-zinc-100">${cs.title}</h2>
+    </div>
+    <div class="rounded-2xl overflow-hidden aspect-[2/1]">
+      <img src="${cs.image}" class="w-full h-full object-cover" alt="${cs.title}">
+    </div>
+    ${imagesHtml}
+    <div class="grid md:grid-cols-3 gap-8 mt-16">
+      <div>
+        <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 mb-2">Role</div>
+        <div class="text-sm text-zinc-300 font-light">${cs.role}</div>
+      </div>
+      <div>
+        <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 mb-2">Client</div>
+        <div class="text-sm text-zinc-300 font-light">${cs.client}</div>
+      </div>
+      <div>
+        <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 mb-2">Duration</div>
+        <div class="text-sm text-zinc-300 font-light">${cs.duration}</div>
+      </div>
+    </div>
+    <div class="mt-16">
+      <h3 class="text-lg font-serif text-zinc-200 mb-4">Overview</h3>
+      <p class="text-base font-light leading-relaxed text-zinc-400">${cs.overview}</p>
+    </div>
+    <div class="mt-16">
+      <h3 class="text-lg font-serif text-zinc-200 mb-4">Process</h3>
+      <p class="text-base font-light leading-relaxed text-zinc-400">${cs.process}</p>
+    </div>
+    <div class="mt-16">
+      <h3 class="text-lg font-serif text-zinc-200 mb-6">Key Results</h3>
+      <div class="grid md:grid-cols-3 gap-4">
+        ${cs.results.map(r => `
+          <div class="p-5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+            <div class="flex items-start gap-3">
+              <div class="mt-0.5 w-5 h-5 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="check" class="w-3 h-3 text-emerald-400"></i>
+              </div>
+              <span class="text-sm text-zinc-300 font-light">${r}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="mt-16 pt-10 border-t border-white/5 flex flex-wrap gap-4">
+      <button onclick="closeCaseStudy()" class="px-6 py-3 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-400 hover:text-white hover:bg-white/10 transition-all cursor-none">← Back to Portfolio</button>
+    </div>
+  `;
+
+  overlay.classList.add('active');
+  overlay.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+  lucide.createIcons();
+}
+
+function closeCaseStudy() {
+  const overlay = document.getElementById('caseStudyOverlay');
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('caseStudyOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeCaseStudy();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCaseStudy(); });
+
+// ===== CONTACT FORM =====
+document.getElementById('contactForm').addEventListener('submit', e => {
+  e.preventDefault();
+  showToast('Message sent successfully! I\'ll get back to you soon.');
+  e.target.reset();
+});
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+// ===== MOBILE MENU =====
+const mobileMenu = document.getElementById('mobileMenu');
+document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+  mobileMenu.style.opacity = '1';
+  mobileMenu.style.pointerEvents = 'auto';
+});
+document.getElementById('mobileMenuClose').addEventListener('click', () => {
+  mobileMenu.style.opacity = '0';
+  mobileMenu.style.pointerEvents = 'none';
+});
+document.querySelectorAll('.mobile-nav-link').forEach(link => {
+  link.addEventListener('click', () => {
+    mobileMenu.style.opacity = '0';
+    mobileMenu.style.pointerEvents = 'none';
+  });
+});
+
+// ===== NAV ACTIVE STATE ON SCROLL =====
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('nav a[href^="#"]');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const top = section.offsetTop - 100;
+    if (window.scrollY >= top) current = section.getAttribute('id');
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('text-zinc-100');
+    link.classList.add('text-zinc-500');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('text-zinc-100');
+      link.classList.remove('text-zinc-500');
+    }
+  });
+});
+
+// ===== INIT =====
+lucide.createIcons();
+
+// Trigger hero animations on load
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.querySelectorAll('#hero .fade-up, #hero .reveal-text').forEach(el => {
+      el.classList.add('visible', 'revealed');
+    });
+  }, 200);
+});
+</script>
+</body>
+</html>
