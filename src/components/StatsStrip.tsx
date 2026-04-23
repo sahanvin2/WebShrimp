@@ -1,7 +1,7 @@
 const STATS = [
-  { value: "200+", label: "Projects Delivered" },
-  { value: "50+", label: "Happy Clients" },
-  { value: "5.0", label: "Average Rating" },
+  { value: "5+", label: "Projects Delivered" },
+  { value: "5+", label: "Happy Clients" },
+  { value: "100%", label: "Client Satisfaction" },
   { value: "24/7", label: "Support" },
 ];
 

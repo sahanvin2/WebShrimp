@@ -80,7 +80,7 @@ const Navbar = () => {
 
         <div className="hidden lg:block">
           <Button asChild variant="cta" size="pill">
-            <Link to="/contact">Get a Free Quote</Link>
+            <a href="https://wa.me/94703031636?text=Hello%2C%20I%27d%20like%20to%20get%20a%20free%20quote!" target="_blank" rel="noopener noreferrer">Get a Free Quote</a>
           </Button>
         </div>
 
@@ -118,7 +118,7 @@ const Navbar = () => {
             </NavLink>
           ))}
           <Button asChild variant="cta" size="pill" className="mt-4 w-full">
-            <Link to="/contact">Get a Free Quote</Link>
+            <a href="https://wa.me/94703031636?text=Hello%2C%20I%27d%20like%20to%20get%20a%20free%20quote!" target="_blank" rel="noopener noreferrer">Get a Free Quote</a>
           </Button>
         </div>
       </div>

@@ -32,7 +32,7 @@ const STACK_TABS = {
 
 type TabKey = keyof typeof STACK_TABS;
 
-const CLIENTS = ["Movia", "Curevia", "Ezyv Sail"];
+const CLIENTS = ["Movia", "Curevia", "EzyCV", "Sail"];
 
 const About = () => {
   const [tab, setTab] = useState<TabKey>("Frontend");
