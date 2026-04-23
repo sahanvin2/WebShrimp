@@ -86,21 +86,45 @@ const Portfolio = () => {
   const [featuredProject, setFeaturedProject] = useState(PROJECTS[0]);
   const featuredRef = useRef<HTMLElement>(null);
 
-  // Scroll to top on mount
+  // Aggressive scroll lock to completely defeat iframe layout shifts and focus stealing
   useEffect(() => {
+    window.history.scrollRestoration = "manual";
+
+    // Force to top immediately
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+
+    // Continuously force to top for the first 800ms while iframes load
+    const interval = setInterval(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    }, 50);
+
+    const timeout = setTimeout(() => {
+      clearInterval(interval);
+      window.history.scrollRestoration = "auto";
+    }, 800);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+      window.history.scrollRestoration = "auto";
+    };
   }, []);
 
   const filtered = active === "All" ? PROJECTS : PROJECTS.filter((p) => p.category === active);
 
   return (
     <SiteLayout>
-      <PageHero
-        label="Our Portfolio"
-        title="Our Capabilities"
-        subtitle="A curated selection of conceptual demos and templates to give you an idea of our design capabilities. Your actual product will be fully customized, production-ready, and functionally superior."
-        breadcrumb="Portfolio"
-      />
+        <PageHero
+          label="Our Portfolio"
+          title="Our Capabilities"
+          subtitle="A curated selection of conceptual demos and templates to give you an idea of our design capabilities. Your actual product will be fully customized, production-ready, and functionally superior."
+          breadcrumb="Portfolio"
+        />
+        <style>{`
+          .hw-container {
+            container-type: inline-size;
+          }
+        `}</style>
 
       {/* Filters */}
       <section className="container-x pt-8">
@@ -109,11 +133,10 @@ const Portfolio = () => {
             <button
               key={c}
               onClick={() => setActive(c)}
-              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
-                active === c
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${active === c
                   ? "bg-brand-blue text-white shadow-glow"
                   : "bg-white text-brand-navy border border-border hover:border-brand-blue"
-              }`}
+                }`}
             >
               {c}
             </button>
@@ -129,13 +152,13 @@ const Portfolio = () => {
               <div className="absolute top-6 left-6 z-10 px-3 py-1 rounded-full bg-white/95 text-xs font-semibold text-brand-blue border border-border">
                 Featured Live Demo
               </div>
-              <div className="h-full w-full rounded-2xl overflow-hidden border border-border shadow-card bg-white relative min-h-[320px]" style={{ containerType: 'inline-size' }}>
-                <iframe 
-                  src={featuredProject.url} 
-                  title={`${featuredProject.title} preview`} 
-                  className="absolute top-0 left-0 w-[1280px] h-[960px] origin-top-left" 
+              <div className="h-full w-full rounded-2xl overflow-hidden border border-border shadow-card bg-white relative min-h-[320px] hw-container">
+                <iframe
+                  src={featuredProject.url}
+                  title={`${featuredProject.title} preview`}
+                  className="absolute top-0 left-0 w-[1280px] h-[960px] origin-top-left"
                   style={{ transform: 'scale(calc(100cqw / 1280))' }}
-                  loading="lazy" 
+                  loading="lazy"
                   sandbox="allow-scripts allow-same-origin"
                 />
               </div>
@@ -198,12 +221,12 @@ const Portfolio = () => {
               role="button"
               tabIndex={0}
             >
-              <div className="relative aspect-[4/3] bg-brand-blue-soft overflow-hidden border-b border-border" style={{ containerType: 'inline-size' }}>
+              <div className="relative aspect-[4/3] bg-brand-blue-soft overflow-hidden border-b border-border hw-container">
                 <iframe
                   src={p.url}
                   title={`${p.title} preview`}
                   className="absolute top-0 left-0 w-[1280px] h-[960px] origin-top-left pointer-events-none"
-                  style={{ transform: 'scale(calc(100cqw / 1280))' }}
+                  style={{ transform: 'scale(calc(100cqi / 1280))' }}
                   loading="lazy"
                   sandbox="allow-scripts allow-same-origin"
                 />

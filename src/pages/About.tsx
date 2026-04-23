@@ -7,6 +7,8 @@ import CtaBanner from "@/components/CtaBanner";
 import storyImage from "@/assets/built-by-makers.png";
 import missionImage from "../../assets/upscayl_png_upscayl-standard-4x_4x/Our Mission.png";
 import visionImage from "../../assets/upscayl_png_upscayl-standard-4x_4x/Our Vision.png";
+import sahanImg from "@/assets/Sahan.jpg";
+import vinuraImg from "@/assets/Vinura.jpg";
 
 const VALUES = [
   { icon: Lightbulb, title: "Innovation", desc: "We stay ahead of tech trends so you don't have to." },
@@ -16,8 +18,8 @@ const VALUES = [
 ];
 
 const TEAM = [
-  { initials: "SN", name: "Sahan Nawarathne", role: "Founder & Software Eng", bio: "Leading the vision and building robust web and software solutions.", color: "bg-brand-blue text-white" },
-  { initials: "VN", name: "Vinura Nawarathne", role: "Co-founder & QA", bio: "Ensuring every product shipped is flawless and pixel-perfect.", color: "bg-brand-orange text-white" },
+  { img: sahanImg, initials: "SN", name: "Sahan Nawarathne", role: "Founder & Software Eng", bio: "Leading the vision and building robust web and software solutions.", color: "bg-brand-blue text-white" },
+  { img: vinuraImg, initials: "VN", name: "Vinura Nawarathne", role: "Co-founder & QA", bio: "Ensuring every product shipped is flawless and pixel-perfect.", color: "bg-brand-orange text-white" },
 ];
 
 const STACK_TABS = {
@@ -30,7 +32,7 @@ const STACK_TABS = {
 
 type TabKey = keyof typeof STACK_TABS;
 
-const CLIENTS = ["Nimal & Co.", "Lanka Foods", "Ocean Spice", "Ceylon Tech", "Green Valley", "Urban Bites", "Sapphire Travels", "Kandy Crafts"];
+const CLIENTS = ["Movia", "Curevia", "Ezyv Sail"];
 
 const About = () => {
   const [tab, setTab] = useState<TabKey>("Frontend");
@@ -52,7 +54,7 @@ const About = () => {
             Built by makers, for businesses that want to grow.
           </h2>
           <p className="mt-6 text-muted-foreground leading-relaxed">
-            We are a passionate team of web designers, developers and digital creators based in Colombo, Sri Lanka. Since our founding, we've helped 200+ businesses across Sri Lanka and beyond establish a powerful digital presence.
+            We are a passionate team of web designers, developers and digital creators based in Colombo, Sri Lanka. Since our founding, we've helped 5+ businesses across Sri Lanka and beyond establish a powerful digital presence.
           </p>
           <p className="mt-4 text-muted-foreground leading-relaxed">
             We believe every business — big or small — deserves a beautiful, high-performing website that works as hard as they do. That's the promise behind everything we ship.
@@ -175,9 +177,15 @@ const About = () => {
               className="reveal rounded-2xl border border-border bg-card p-6 text-center shadow-card card-lift w-[85vw] shrink-0 snap-center md:w-auto md:shrink"
               style={{ transitionDelay: `${i * 70}ms` }}
             >
-              <div className={`mx-auto h-20 w-20 rounded-full flex items-center justify-center font-display font-bold text-xl ${m.color}`}>
-                {m.initials}
-              </div>
+              {(m as any).img ? (
+                <div className="mx-auto h-20 w-20 rounded-full overflow-hidden border-2 border-brand-blue/20">
+                  <img src={(m as any).img} alt={m.name} className="w-full h-full object-cover" />
+                </div>
+              ) : (
+                <div className={`mx-auto h-20 w-20 rounded-full flex items-center justify-center font-display font-bold text-xl ${m.color}`}>
+                  {m.initials}
+                </div>
+              )}
               <h3 className="mt-4 text-lg text-brand-navy">{m.name}</h3>
               <p className="text-xs uppercase tracking-wider text-brand-blue font-semibold mt-1">{m.role}</p>
               <p className="mt-3 text-sm text-muted-foreground">{m.bio}</p>
