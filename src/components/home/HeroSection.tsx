@@ -3,45 +3,57 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Star, Sparkles, Zap, ShieldCheck, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const numFrames = 192;
-
-const pad = (num: number, size: number) => {
-  let s = num.toString();
-  while (s.length < size) s = "0" + s;
-  return s;
-};
-
 const HeroSection = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [framesLoaded, setFramesLoaded] = useState(0);
   const [isAnimationReady, setIsAnimationReady] = useState(false);
+  const [totalFrames, setTotalFrames] = useState(1);
   
   const framesRef = useRef<HTMLImageElement[]>([]);
   const currentFrameIndexRef = useRef(-1);
 
   useEffect(() => {
-    // Preload frames
+    // Dynamically load all frames from the src/assets directory using Vite's glob import
+    const frameUrlsObj = import.meta.glob('../../assets/Hero Section/ezgif-frame-*.jpg', { eager: true, import: 'default' });
+    
+    // Sort to ensure ezgif-frame-001 comes before ezgif-frame-002
+    const urls = Object.keys(frameUrlsObj).sort().map(k => frameUrlsObj[k] as string);
+    const numFramesActual = urls.length;
+    
+    setTotalFrames(numFramesActual > 0 ? numFramesActual : 1);
+
+    if (numFramesActual === 0) {
+      console.warn("No frames found in src/assets/Hero Section!");
+      setIsAnimationReady(true);
+      return;
+    }
+
     let loaded = 0;
     const frames: HTMLImageElement[] = [];
-    const cacheBuster = "v=3"; // Ensures we load the newest images
     
-    for (let i = 1; i <= numFrames; i++) {
+    urls.forEach((url) => {
       const img = new Image();
-      img.src = `/images/rocket-sequence/ezgif-frame-${pad(i, 3)}.jpg?${cacheBuster}`;
+      img.src = url;
       img.onload = () => {
         loaded++;
         setFramesLoaded(loaded);
-        if (loaded === numFrames) {
+        if (loaded === numFramesActual) {
           setIsAnimationReady(true);
         }
       };
+      img.onerror = () => {
+        console.warn("Failed to load frame:", url);
+        loaded++;
+        if (loaded === numFramesActual) setIsAnimationReady(true);
+      };
       frames.push(img);
-    }
+    });
+    
     framesRef.current = frames;
   }, []);
 
   useEffect(() => {
-    if (!isAnimationReady || !canvasRef.current) return;
+    if (!isAnimationReady || !canvasRef.current || framesRef.current.length === 0) return;
     
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d', { alpha: false });
@@ -51,7 +63,6 @@ const HeroSection = () => {
       const img = framesRef.current[index];
       if (!img || !img.complete || img.naturalWidth === 0) return;
 
-      // Ensure canvas intrinsic size matches image size
       if (canvas.width !== img.naturalWidth || canvas.height !== img.naturalHeight) {
         canvas.width = img.naturalWidth;
         canvas.height = img.naturalHeight;
@@ -63,14 +74,12 @@ const HeroSection = () => {
     let ticking = false;
 
     const updateScroll = () => {
-      // Speed up animation so it finishes while passing the feature pills
-      // 0.6 * windowHeight ensures it completes much faster
       const scrollY = window.scrollY;
       const maxScroll = window.innerHeight * 0.6; 
       
       const progress = Math.max(0, Math.min(1, scrollY / maxScroll));
-      let frameIndex = Math.floor(progress * numFrames);
-      frameIndex = Math.min(numFrames - 1, frameIndex);
+      let frameIndex = Math.floor(progress * totalFrames);
+      frameIndex = Math.min(totalFrames - 1, frameIndex);
       
       if (frameIndex !== currentFrameIndexRef.current) {
         currentFrameIndexRef.current = frameIndex;
@@ -86,7 +95,6 @@ const HeroSection = () => {
       }
     };
 
-    // Initial draw
     drawFrame(0);
     currentFrameIndexRef.current = 0;
     updateScroll();
@@ -96,7 +104,7 @@ const HeroSection = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [isAnimationReady]);
+  }, [isAnimationReady, totalFrames]);
 
   return (
     <section className="relative overflow-hidden bg-hero min-h-[100svh] flex flex-col justify-center">
@@ -111,7 +119,7 @@ const HeroSection = () => {
           <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-20 backdrop-blur-sm">
             <div className="flex flex-col items-center gap-4">
               <div className="w-10 h-10 border-4 border-brand-blue/30 border-t-brand-blue rounded-full animate-spin"></div>
-              <p className="text-brand-navy text-sm font-medium">Loading sequence ({Math.floor((framesLoaded / numFrames) * 100)}%)</p>
+              <p className="text-brand-navy text-sm font-medium">Loading sequence ({Math.floor((framesLoaded / totalFrames) * 100)}%)</p>
             </div>
           </div>
         )}

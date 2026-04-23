@@ -1,0 +1,122 @@
+name: Deploy to Digital Ocean
+
+on:
+  push:
+    branches:
+      - main
+      - production
+  workflow_dispatch:
+
+env:
+  DO droplet IP: ${{ secrets.DO_DROPLET_IP }}
+  DO SSH KEY: ${{ secrets.DO_SSH_KEY }}
+  DEPLOY USER: ${{ secrets.DEPLOY_USER }}
+  BACKEND PORT: 3000
+  FRONTEND PORT: 80
+
+jobs:
+  deploy:
+    name: Deploy Application
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd backend && npm ci && cd ..
+          cd frontend && npm ci && cd ..
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Build backend
+        run: |
+          cd backend
+          npm run build
+          cd ..
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DO_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.DO_DROPLET_IP }} >> ~/.ssh/known_hosts
+
+      - name: Deploy backend
+        run: |
+          # Create remote directories
+          ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DO_DROPLET_IP }} "mkdir -p ~/webshrimp/backend"
+          
+          # Copy backend files
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            backend/ \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DO_DROPLET_IP }}:~/webshrimp/backend/
+          
+          # Copy .env file if it exists
+          if [ -f "backend/.env" ]; then
+            ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DO_DROPLET_IP }} "mkdir -p ~/webshrimp/backend"
+            echo "${{ secrets.BACKEND_ENV }}" | ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DO_DROPLET_IP }} "cat > ~/webshrimp/backend/.env"
+          fi
+
+      - name: Deploy frontend
+        run: |
+          # Create remote directories
+          ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DO_DROPLET_IP }} "mkdir -p ~/webshrimp/frontend"
+          
+          # Copy frontend files
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            dist/ \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DO_DROPLET_IP }}:~/webshrimp/frontend/dist/
+          
+          # Copy other frontend files
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            index.html \
+            favicon.ico \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DO_DROPLET_IP }}:~/webshrimp/frontend/
+
+      - name: Restart backend service
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DO_DROPLET_IP }} "cd ~/webshrimp/backend && npm run build"
+          ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DO_DROPLET_IP }} "pm2 restart webshrimp-backend || pm2 start ~/webshrimp/backend/dist/index.js --name webshrimp-backend"
+          ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DO_DROPLET_IP }} "pm2 save"
+
+      - name: Verify deployment
+        run: |
+          sleep 10
+          curl -f http://${{ secrets.DO_DROPLET_IP }}/api/health || exit 1
+          curl -f http://${{ secrets.DO_DROPLET_IP }} || exit 1
+
+      - name: Cleanup
+        run: |
+          rm -rf ~/.ssh
+
+  notify:
+    name: Send Deployment Notification
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Send Slack notification
+        if: github.event_name == 'push'
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: "Deployment to production completed!"
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        continue-on-error: true

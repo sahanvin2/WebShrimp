@@ -86,28 +86,9 @@ const Portfolio = () => {
   const [featuredProject, setFeaturedProject] = useState(PROJECTS[0]);
   const featuredRef = useRef<HTMLElement>(null);
 
-  // Aggressive scroll lock to completely defeat iframe layout shifts and focus stealing
+  // Scroll to top on mount
   useEffect(() => {
-    window.history.scrollRestoration = "manual";
-    
-    // Force to top immediately
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-    
-    // Continuously force to top for the first 800ms while iframes load
-    const interval = setInterval(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-    }, 50);
-    
-    const timeout = setTimeout(() => {
-      clearInterval(interval);
-      window.history.scrollRestoration = "auto";
-    }, 800);
-    
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-      window.history.scrollRestoration = "auto";
-    };
   }, []);
 
   const filtered = active === "All" ? PROJECTS : PROJECTS.filter((p) => p.category === active);
@@ -153,7 +134,7 @@ const Portfolio = () => {
                   src={featuredProject.url} 
                   title={`${featuredProject.title} preview`} 
                   className="absolute top-0 left-0 w-[1280px] h-[960px] origin-top-left" 
-                  style={{ transform: 'scale(calc(100cqi / 1280))' }}
+                  style={{ transform: 'scale(calc(100cqw / 1280))' }}
                   loading="lazy" 
                   sandbox="allow-scripts allow-same-origin"
                 />
@@ -222,7 +203,7 @@ const Portfolio = () => {
                   src={p.url}
                   title={`${p.title} preview`}
                   className="absolute top-0 left-0 w-[1280px] h-[960px] origin-top-left pointer-events-none"
-                  style={{ transform: 'scale(calc(100cqi / 1280))' }}
+                  style={{ transform: 'scale(calc(100cqw / 1280))' }}
                   loading="lazy"
                   sandbox="allow-scripts allow-same-origin"
                 />
