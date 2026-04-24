@@ -28,7 +28,7 @@ const SERVICES = [
   "Social Media", "Mobile App", "Custom Software", "Other",
 ];
 const BUDGETS = [
-  "Under LKR 25,000", "LKR 25,000–60,000", "LKR 60,000–120,000", "LKR 120,000+", "Custom Quote Needed",
+  "LKR 45,000 (Essential)", "LKR 120,000 (Professional)", "LKR 250,000 (Premium)", "Custom Quote Needed",
 ];
 
 const CONTACT = {

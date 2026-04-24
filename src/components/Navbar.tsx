@@ -8,7 +8,7 @@ const NAV = [
   { to: "/", label: "Home" },
   { to: "/services", label: "Services" },
   { to: "/about", label: "About" },
-  { to: "/portfolio", label: "Portfolio" },
+  { to: "/portfolio", label: "Samples" },
   { to: "/pricing", label: "Pricing" },
   { to: "/resources", label: "Resources" },
   { to: "/contact", label: "Contact" },

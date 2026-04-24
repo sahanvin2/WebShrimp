@@ -85,27 +85,39 @@ const Portfolio = () => {
   const [active, setActive] = useState<Category>("All");
   const [featuredProject, setFeaturedProject] = useState(PROJECTS[0]);
   const featuredRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
 
-  // Scroll to top on mount
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, []);
+
+  useEffect(() => {
+    const observeElement = (entries: ResizeObserverEntry[]) => {
+      for (const entry of entries) {
+        // Calculate scale based on container width vs base width 1280
+        setScale(entry.contentRect.width / 1280);
+      }
+    };
+    
+    const observer = new ResizeObserver(observeElement);
+    
+    // We observe the document body to trigger re-renders of the grid cards when window resizes
+    observer.observe(document.body);
+    
+    return () => observer.disconnect();
   }, []);
 
   const filtered = active === "All" ? PROJECTS : PROJECTS.filter((p) => p.category === active);
 
   return (
     <SiteLayout>
-        <PageHero
-          label="Our Portfolio"
-          title="Our Capabilities"
-          subtitle="A curated selection of conceptual demos and templates to give you an idea of our design capabilities. Your actual product will be fully customized, production-ready, and functionally superior."
-          breadcrumb="Portfolio"
-        />
-        <style>{`
-          .hw-container {
-            container-type: inline-size;
-          }
-        `}</style>
+      <PageHero
+        label="Our Samples"
+        title="Our Capabilities"
+        subtitle="A curated selection of conceptual demos and templates to give you an idea of our design capabilities. Your actual product will be fully customized, production-ready, and functionally superior."
+        breadcrumb="Samples"
+      />
 
       {/* Filters */}
       <section className="container-x pt-8">
@@ -133,12 +145,19 @@ const Portfolio = () => {
               <div className="absolute top-6 left-6 z-10 px-3 py-1 rounded-full bg-white/95 text-xs font-semibold text-brand-blue border border-border">
                 Featured Live Demo
               </div>
-              <div className="h-full w-full rounded-2xl overflow-hidden border border-border shadow-card bg-white relative min-h-[320px] hw-container">
+              <div 
+                className="h-full w-full rounded-2xl overflow-hidden border border-border shadow-card bg-white relative min-h-[320px]"
+                ref={containerRef}
+              >
                 <iframe
                   src={featuredProject.url}
                   title={`${featuredProject.title} preview`}
-                  className="absolute top-0 left-0 w-[1280px] h-[960px] origin-top-left"
-                  style={{ transform: 'scale(calc(100cqw / 1280))' }}
+                  className="absolute top-0 left-0 origin-top-left"
+                  style={{ 
+                    width: '1280px', 
+                    height: '960px', 
+                    transform: `scale(${containerRef.current ? containerRef.current.offsetWidth / 1280 : 1})` 
+                  }}
                   loading="lazy"
                   sandbox="allow-scripts allow-same-origin"
                 />
@@ -202,12 +221,21 @@ const Portfolio = () => {
               role="button"
               tabIndex={0}
             >
-              <div className="relative aspect-[4/3] bg-brand-blue-soft overflow-hidden border-b border-border hw-container">
+              <div 
+                className="relative aspect-[4/3] bg-brand-blue-soft overflow-hidden border-b border-border"
+                ref={(el) => {
+                  if (el) {
+                    const elScale = el.offsetWidth / 1280;
+                    const iframe = el.querySelector('iframe');
+                    if (iframe) iframe.style.transform = `scale(${elScale})`;
+                  }
+                }}
+              >
                 <iframe
                   src={p.url}
                   title={`${p.title} preview`}
-                  className="absolute top-0 left-0 w-[1280px] h-[960px] origin-top-left pointer-events-none"
-                  style={{ transform: 'scale(calc(100cqw / 1280))' }}
+                  className="absolute top-0 left-0 origin-top-left pointer-events-none"
+                  style={{ width: '1280px', height: '960px', transform: 'scale(0.5)' }}
                   loading="lazy"
                   sandbox="allow-scripts allow-same-origin"
                 />
