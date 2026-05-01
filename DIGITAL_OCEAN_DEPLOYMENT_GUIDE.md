@@ -6,13 +6,14 @@
 ## Table of Contents
 1. [Prerequisites](#prerequisites)
 2. [Droplet Setup](#droplet-setup)
-3. [Server Configuration](#server-configuration)
-4. [Frontend Deployment](#frontend-deployment)
-5. [Backend Deployment](#backend-deployment)
-6. [Database Setup](#database-setup)
-7. [Domain & SSL](#domain--ssl)
-8. [Monitoring & Maintenance](#monitoring--maintenance)
-9. [Troubleshooting](#troubleshooting)
+3. [Continue From Current Root Setup](#continue-from-current-root-setup)
+4. [Server Configuration](#server-configuration)
+5. [Frontend Deployment](#frontend-deployment)
+6. [Backend Deployment](#backend-deployment)
+7. [Database Setup](#database-setup)
+8. [Domain & SSL](#domain--ssl)
+9. [Monitoring & Maintenance](#monitoring--maintenance)
+10. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -63,11 +64,77 @@ apt update && apt upgrade -y
 apt install -y ufw fail2ban certbot python3-certbot-nginx git curl wget htop net-tools
 
 # Create non-root user (if using root)
-adduser yourusername
-usermod -aG sudo yourusername
+adduser sahan
+usermod -aG sudo sahan
 
 # Switch to new user
-su - yourusername
+su - sahan
+```
+
+Security note:
+- Do not keep real passwords in this guide or in git commits.
+- If you already exposed credentials, rotate them immediately.
+
+---
+
+## Continue From Current Root Setup
+
+Use this section if you already did some work as root and want to continue safely without starting over.
+
+### Step 1: Create user and grant sudo
+
+```bash
+# As root
+adduser sahan
+usermod -aG sudo sahan
+id sahan
+```
+
+### Step 2: Copy SSH access to new user
+
+```bash
+# As root
+mkdir -p /home/sahan/.ssh
+cp -a /root/.ssh/authorized_keys /home/sahan/.ssh/authorized_keys
+chown -R sahan:sahan /home/sahan/.ssh
+chmod 700 /home/sahan/.ssh
+chmod 600 /home/sahan/.ssh/authorized_keys
+```
+
+### Step 3: Test login in a new terminal
+
+```bash
+ssh sahan@YOUR_DROPLET_IP
+sudo -v
+```
+
+### Step 4: Move existing project folders from root to sahan
+
+```bash
+# As root, only if these folders already exist under /root
+mv /root/webshrimp-backend /home/sahan/ 2>/dev/null || true
+mv /root/webshrimp-frontend /home/sahan/ 2>/dev/null || true
+chown -R sahan:sahan /home/sahan/webshrimp-backend /home/sahan/webshrimp-frontend 2>/dev/null || true
+```
+
+### Step 5: If PM2 was started as root, clean and restart under sahan
+
+```bash
+# As root
+pm2 delete all || true
+pm2 kill || true
+
+# Switch to sahan
+su - sahan
+```
+
+### Step 6: Optional hardening after sahan login works
+
+```bash
+# As root
+nano /etc/ssh/sshd_config
+# Set: PermitRootLogin no
+systemctl restart ssh
 ```
 
 ---
@@ -135,13 +202,46 @@ sudo -u postgres psql
 CREATE DATABASE webshrimp;
 
 # Create database user
-CREATE USER webshrimp_user WITH PASSWORD 'your_strong_password_here';
+CREATE USER webshrimp_user WITH PASSWORD 'REPLACE_WITH_NEW_DB_PASSWORD';
 
-# Grant privileges
+# Grant privileges on database
 GRANT ALL PRIVILEGES ON DATABASE webshrimp TO webshrimp_user;
-GRANT ALL PRIVILEGES ON SCHEMA public TO webshrimp_user;
+
+# Connect into target database before schema grants
+\c webshrimp
+
+# Grant privileges on schema and existing objects
+GRANT ALL ON SCHEMA public TO webshrimp_user;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO webshrimp_user;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO webshrimp_user;
+
+# Grant default privileges for future objects
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO webshrimp_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO webshrimp_user;
 
 # Exit psql
+\q
+```
+
+If you typed a wrong SQL command and got stuck at `postgres-#`, run:
+
+```sql
+\r
+```
+
+If you need to remove broken previous attempts and recreate cleanly:
+
+```bash
+sudo -u postgres psql
+
+DROP DATABASE IF EXISTS webshrimp;
+DROP ROLE IF EXISTS webshrimp_user;
+
+CREATE DATABASE webshrimp;
+CREATE USER webshrimp_user WITH PASSWORD 'REPLACE_WITH_NEW_DB_PASSWORD';
+GRANT ALL PRIVILEGES ON DATABASE webshrimp TO webshrimp_user;
+\c webshrimp
+GRANT ALL ON SCHEMA public TO webshrimp_user;
 \q
 ```
 
@@ -196,7 +296,7 @@ git clone YOUR_GITHUB_REPO_URL .
 nano .env
 
 # Add these variables:
-DATABASE_URL=postgresql://webshrimp_user:your_password@localhost:5432/webshrimp
+DATABASE_URL=postgresql://webshrimp_user:REPLACE_WITH_NEW_DB_PASSWORD@localhost:5432/webshrimp
 PORT=3000
 NODE_ENV=production
 
@@ -736,6 +836,26 @@ nginx -t && systemctl restart nginx
 # Quick SSL setup
 certbot --nginx -d your-domain.com
 ```
+
+---
+
+## End-to-End Continuation Checklist (Root -> Production)
+
+Follow this exact order if you already started and want to continue now:
+
+1. As root, create `sahan` and copy SSH key access.
+2. Login as `sahan` in a new SSH terminal.
+3. Move project folders from `/root` to `/home/sahan` and fix ownership.
+4. Install and verify PostgreSQL, Node.js, PM2, Nginx.
+5. In PostgreSQL, recreate database/user cleanly if needed.
+6. Import `backend/schema.sql` into `webshrimp`.
+7. Create backend `.env` with new rotated DB password.
+8. Build backend and run with PM2 as `sahan`.
+9. Build frontend and configure Nginx root to `/home/sahan/webshrimp-frontend/dist`.
+10. Enable site, test `nginx -t`, restart Nginx.
+11. Configure domain DNS and issue SSL with Certbot.
+12. Disable root SSH login after confirming `sahan` works.
+13. Configure backups and monitor PM2/Nginx/PostgreSQL logs.
 
 ---
 
