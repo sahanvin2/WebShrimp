@@ -1,0 +1,2955 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sōkai Wellness — Japanese-Inspired Spa & Retreat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Playfair+Display:ital,wght@0,400;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --ivory: #faf7f2;
+            --moss: #2d4a3e;
+            --terracotta: #c47d5a;
+            --sage: #8aab96;
+            --moss-light: #3a5f50;
+            --ivory-dark: #f0ebe3;
+            --text: #4a4a4a;
+            --text-light: #7a7a7a;
+            --card-shadow: 0 4px 30px rgba(45, 74, 62, 0.08);
+            --radius: 24px;
+            --radius-sm: 14px;
+            --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            color: var(--text);
+            background: var(--ivory);
+            overflow-x: hidden;
+            line-height: 1.7
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            font-style: italic;
+            color: var(--moss);
+            line-height: 1.3
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit
+        }
+
+        button {
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            border: none;
+            outline: none
+        }
+
+        img {
+            max-width: 100%;
+            display: block
+        }
+
+        ::selection {
+            background: var(--sage);
+            color: var(--ivory)
+        }
+
+        /* Organic texture overlay */
+        .organic-texture {
+            position: relative
+        }
+
+        .organic-texture::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0.03;
+            pointer-events: none;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(45, 74, 62, 0.15) 2px, rgba(45, 74, 62, 0.15) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(45, 74, 62, 0.08) 3px, rgba(45, 74, 62, 0.08) 6px);
+            z-index: 1
+        }
+
+        /* Watercolor blobs */
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0
+        }
+
+        .blob-moss {
+            background: radial-gradient(circle, rgba(138, 171, 150, 0.25), transparent 70%)
+        }
+
+        .blob-terra {
+            background: radial-gradient(circle, rgba(196, 125, 90, 0.2), transparent 70%)
+        }
+
+        .blob-sage {
+            background: radial-gradient(circle, rgba(138, 171, 150, 0.15), transparent 70%)
+        }
+
+        /* Reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .reveal-delay-1 {
+            transition-delay: 0.15s
+        }
+
+        .reveal-delay-2 {
+            transition-delay: 0.3s
+        }
+
+        .reveal-delay-3 {
+            transition-delay: 0.45s
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 24px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition)
+        }
+
+        .header.scrolled {
+            padding: 14px 48px;
+            background: rgba(250, 247, 242, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 1px 30px rgba(45, 74, 62, 0.06)
+        }
+
+        .header-logo {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.5rem;
+            color: var(--moss);
+            letter-spacing: 0.5px
+        }
+
+        .header-logo span {
+            color: var(--terracotta);
+            font-weight: 400
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 36px;
+            align-items: center
+        }
+
+        .header-nav a {
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text-light);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: color 0.3s
+        }
+
+        .header-nav a:hover {
+            color: var(--moss)
+        }
+
+        .header-cta {
+            background: var(--moss);
+            color: var(--ivory) !important;
+            padding: 10px 24px;
+            border-radius: 100px;
+            font-size: 0.8rem !important;
+            letter-spacing: 0.5px;
+            transition: background 0.3s
+        }
+
+        .header-cta:hover {
+            background: var(--moss-light)
+        }
+
+        /* Hamburger */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            padding: 8px;
+            cursor: pointer;
+            z-index: 1001
+        }
+
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 1.5px;
+            background: var(--moss);
+            transition: var(--transition);
+            border-radius: 2px
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(4px, 5px)
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(4px, -5px)
+        }
+
+        /* Mobile drawer */
+        .mobile-drawer {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s
+        }
+
+        .mobile-drawer.open {
+            pointer-events: auto;
+            opacity: 1
+        }
+
+        .mobile-drawer-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(45, 74, 62, 0.3)
+        }
+
+        .mobile-drawer-panel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: min(320px, 85vw);
+            height: 100%;
+            background: var(--ivory);
+            padding: 100px 40px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+        }
+
+        .mobile-drawer.open .mobile-drawer-panel {
+            transform: translateX(0)
+        }
+
+        .mobile-drawer-panel a {
+            font-size: 1.1rem;
+            color: var(--moss);
+            font-weight: 400;
+            letter-spacing: 0.5px
+        }
+
+        .mobile-drawer-panel .header-cta {
+            display: inline-block;
+            text-align: center;
+            margin-top: 12px
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 24px 80px;
+            position: relative;
+            overflow: hidden
+        }
+
+        .hero-svg {
+            position: absolute;
+            width: clamp(300px, 50vw, 700px);
+            right: -5%;
+            top: 5%;
+            opacity: 0.12;
+            z-index: 0
+        }
+
+        .hero-svg.left {
+            right: auto;
+            left: -8%;
+            top: auto;
+            bottom: 5%;
+            transform: scaleX(-1);
+            opacity: 0.08
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 7vw, 6.5rem);
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+            letter-spacing: -1px
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--text-light);
+            max-width: 500px;
+            margin-bottom: 48px;
+            position: relative;
+            z-index: 2;
+            font-weight: 300
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            position: relative;
+            z-index: 2
+        }
+
+        .btn-primary {
+            background: var(--moss);
+            color: var(--ivory);
+            padding: 16px 36px;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            transition: all 0.3s
+        }
+
+        .btn-primary:hover {
+            background: var(--moss-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(45, 74, 62, 0.2)
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--moss);
+            padding: 16px 36px;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            border: 1.5px solid rgba(45, 74, 62, 0.3);
+            transition: all 0.3s
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--moss);
+            background: rgba(45, 74, 62, 0.04)
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            z-index: 2
+        }
+
+        .scroll-indicator span {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-light)
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--sage), transparent);
+            animation: scrollPulse 2s ease infinite
+        }
+
+        @keyframes scrollPulse {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scaleY(0.6)
+            }
+
+            50% {
+                opacity: 1;
+                transform: scaleY(1)
+            }
+        }
+
+        /* ===== SECTION SHARED ===== */
+        .section {
+            padding: 100px 24px;
+            position: relative
+        }
+
+        .section-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--terracotta);
+            font-weight: 500;
+            margin-bottom: 12px
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            margin-bottom: 16px
+        }
+
+        .section-desc {
+            color: var(--text-light);
+            max-width: 560px;
+            font-size: 1rem;
+            margin-bottom: 56px
+        }
+
+        /* ===== PHILOSOPHY ===== */
+        .philosophy-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px
+        }
+
+        .philosophy-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(138, 171, 150, 0.15);
+            border-radius: var(--radius);
+            padding: 48px 36px;
+            text-align: center;
+            transition: var(--transition)
+        }
+
+        .philosophy-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--card-shadow);
+            border-color: rgba(138, 171, 150, 0.3)
+        }
+
+        .philosophy-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            margin: 0 auto 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .philosophy-icon svg {
+            width: 32px;
+            height: 32px
+        }
+
+        .philosophy-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 16px
+        }
+
+        .philosophy-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.8
+        }
+
+        /* ===== TREATMENTS ===== */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 48px;
+            flex-wrap: wrap
+        }
+
+        .tab-btn {
+            padding: 12px 28px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text-light);
+            background: transparent;
+            border: 1.5px solid rgba(45, 74, 62, 0.12);
+            transition: all 0.3s;
+            letter-spacing: 0.3px
+        }
+
+        .tab-btn.active {
+            background: var(--moss);
+            color: var(--ivory);
+            border-color: var(--moss)
+        }
+
+        .tab-btn:hover:not(.active) {
+            border-color: var(--moss);
+            color: var(--moss)
+        }
+
+        .tab-content {
+            display: none
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeUp 0.5s ease
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .treatments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px
+        }
+
+        .treatment-card {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(138, 171, 150, 0.12);
+            border-radius: var(--radius);
+            padding: 36px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column
+        }
+
+        .treatment-card:hover {
+            box-shadow: var(--card-shadow);
+            transform: translateY(-4px)
+        }
+
+        .treatment-card h4 {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+            font-style: normal;
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            color: var(--moss)
+        }
+
+        .treatment-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 16px;
+            font-size: 0.8rem;
+            color: var(--text-light)
+        }
+
+        .treatment-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .treatment-card p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            flex: 1;
+            margin-bottom: 24px
+        }
+
+        .treatment-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--terracotta);
+            margin-bottom: 20px
+        }
+
+        .btn-book-sm {
+            background: var(--terracotta);
+            color: var(--ivory);
+            padding: 12px 24px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            letter-spacing: 0.3px;
+            transition: all 0.3s;
+            align-self: flex-start
+        }
+
+        .btn-book-sm:hover {
+            background: #b36e4d;
+            transform: translateY(-1px)
+        }
+
+        /* ===== RETREAT PACKAGES ===== */
+        .retreat-scroll {
+            display: flex;
+            gap: 28px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none
+        }
+
+        .retreat-scroll::-webkit-scrollbar {
+            display: none
+        }
+
+        .retreat-card {
+            min-width: 340px;
+            max-width: 380px;
+            scroll-snap-align: start;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(138, 171, 150, 0.12);
+            border-radius: var(--radius);
+            padding: 40px 32px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0
+        }
+
+        .retreat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--card-shadow)
+        }
+
+        .retreat-card.featured {
+            border-color: var(--terracotta);
+            background: linear-gradient(135deg, rgba(196, 125, 90, 0.06), rgba(250, 247, 242, 0.9));
+            position: relative
+        }
+
+        .retreat-card.featured::before {
+            content: 'Most Popular';
+            position: absolute;
+            top: -12px;
+            left: 32px;
+            background: var(--terracotta);
+            color: var(--ivory);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-style: normal;
+            font-family: 'DM Sans', sans-serif
+        }
+
+        .retreat-card h4 {
+            font-size: 1.4rem;
+            margin-bottom: 8px
+        }
+
+        .retreat-nights {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-bottom: 24px
+        }
+
+        .retreat-inclusions {
+            list-style: none;
+            margin-bottom: 28px;
+            flex: 1
+        }
+
+        .retreat-inclusions li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(138, 171, 150, 0.1);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text)
+        }
+
+        .retreat-inclusions li svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            color: var(--sage)
+        }
+
+        .retreat-price {
+            text-align: center;
+            padding-top: 24px;
+            border-top: 1px solid rgba(138, 171, 150, 0.15)
+        }
+
+        .retreat-price .from {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px
+        }
+
+        .retreat-price .amount {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--moss);
+            display: block;
+            margin-top: 4px
+        }
+
+        /* ===== GALLERY ===== */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: 240px 240px;
+            gap: 16px
+        }
+
+        .gallery-item {
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition)
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 40px rgba(45, 74, 62, 0.15)
+        }
+
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(45, 74, 62, 0.3), transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s
+        }
+
+        .gallery-item:hover::after {
+            opacity: 1
+        }
+
+        .gallery-item-label {
+            position: absolute;
+            bottom: 16px;
+            left: 20px;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 400;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.4s
+        }
+
+        .gallery-item:hover .gallery-item-label {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .g1 {
+            background: linear-gradient(135deg, #3a5f50, #8aab96, #d4e4d9);
+            grid-column: span 2
+        }
+
+        .g2 {
+            background: linear-gradient(135deg, #c47d5a, #e8b89d, #f0ebe3)
+        }
+
+        .g3 {
+            background: linear-gradient(135deg, #8aab96, #b8d1c2, #faf7f2)
+        }
+
+        .g4 {
+            background: linear-gradient(135deg, #2d4a3e, #5a8a70, #a8c8b0)
+        }
+
+        .g5 {
+            background: linear-gradient(135deg, #c47d5a, #d4a88a, #e8d5c4);
+            grid-column: span 2
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s
+        }
+
+        .lightbox.open {
+            opacity: 1;
+            pointer-events: auto
+        }
+
+        .lightbox-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(45, 74, 62, 0.6);
+            backdrop-filter: blur(8px)
+        }
+
+        .lightbox-content {
+            position: relative;
+            width: min(90vw, 800px);
+            height: min(70vh, 600px);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+        }
+
+        .lightbox.open .lightbox-content {
+            transform: scale(1)
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(250, 247, 242, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: transform 0.3s
+        }
+
+        .lightbox-close:hover {
+            transform: scale(1.1)
+        }
+
+        .lightbox-close svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--moss)
+        }
+
+        /* ===== BOOKING FLOW ===== */
+        .booking-container {
+            max-width: 720px;
+            margin: 0 auto
+        }
+
+        .booking-progress {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 48px
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            transition: color 0.3s
+        }
+
+        .progress-step.active {
+            color: var(--moss)
+        }
+
+        .progress-step.done {
+            color: var(--sage)
+        }
+
+        .progress-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid rgba(45, 74, 62, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s
+        }
+
+        .progress-step.active .progress-circle {
+            border-color: var(--moss);
+            background: var(--moss);
+            color: var(--ivory)
+        }
+
+        .progress-step.done .progress-circle {
+            border-color: var(--sage);
+            background: var(--sage);
+            color: var(--ivory)
+        }
+
+        .progress-line {
+            flex: 1;
+            height: 2px;
+            background: rgba(45, 74, 62, 0.1);
+            margin: 0 16px
+        }
+
+        .progress-line.done {
+            background: var(--sage)
+        }
+
+        .booking-step {
+            display: none;
+            animation: fadeUp 0.5s ease
+        }
+
+        .booking-step.active {
+            display: block
+        }
+
+        .booking-options {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 24px
+        }
+
+        .booking-option {
+            padding: 20px 24px;
+            border: 1.5px solid rgba(138, 171, 150, 0.15);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.5)
+        }
+
+        .booking-option:hover {
+            border-color: var(--sage);
+            background: rgba(255, 255, 255, 0.8)
+        }
+
+        .booking-option.selected {
+            border-color: var(--moss);
+            background: rgba(45, 74, 62, 0.04)
+        }
+
+        .booking-option h4 {
+            font-size: 1rem;
+            font-style: normal;
+            font-family: 'Playfair Display', serif;
+            color: var(--moss)
+        }
+
+        .booking-option .opt-meta {
+            font-size: 0.8rem;
+            color: var(--text-light)
+        }
+
+        .booking-option .opt-price {
+            font-family: 'Playfair Display', serif;
+            color: var(--terracotta);
+            font-size: 1.1rem
+        }
+
+        .booking-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 32px;
+            gap: 16px
+        }
+
+        /* Calendar */
+        .calendar {
+            margin-bottom: 24px
+        }
+
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px
+        }
+
+        .calendar-header h4 {
+            font-size: 1.1rem;
+            font-style: normal;
+            font-family: 'Playfair Display', serif;
+            color: var(--moss)
+        }
+
+        .calendar-nav {
+            background: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(45, 74, 62, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            color: var(--moss)
+        }
+
+        .calendar-nav:hover {
+            background: var(--moss);
+            color: var(--ivory);
+            border-color: var(--moss)
+        }
+
+        .calendar-nav svg {
+            width: 16px;
+            height: 16px
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            text-align: center;
+            margin-bottom: 8px
+        }
+
+        .calendar-days span {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            padding: 8px 0;
+            letter-spacing: 1px;
+            text-transform: uppercase
+        }
+
+        .calendar-dates {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px
+        }
+
+        .cal-date {
+            width: 100%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+            color: var(--text)
+        }
+
+        .cal-date:hover:not(.disabled):not(.empty) {
+            background: rgba(138, 171, 150, 0.15)
+        }
+
+        .cal-date.selected {
+            background: var(--moss) !important;
+            color: var(--ivory) !important
+        }
+
+        .cal-date.today {
+            border: 1.5px solid var(--sage)
+        }
+
+        .cal-date.disabled {
+            color: rgba(0, 0, 0, 0.15);
+            cursor: default
+        }
+
+        .cal-date.empty {
+            cursor: default
+        }
+
+        .time-slots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px
+        }
+
+        .time-slot {
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            border: 1.5px solid rgba(138, 171, 150, 0.15);
+            background: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text)
+        }
+
+        .time-slot:hover {
+            border-color: var(--sage)
+        }
+
+        .time-slot.selected {
+            background: var(--moss);
+            color: var(--ivory);
+            border-color: var(--moss)
+        }
+
+        /* Form fields */
+        .form-group {
+            margin-bottom: 24px;
+            position: relative
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            letter-spacing: 0.3px
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1.5px solid rgba(138, 171, 150, 0.2);
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.6);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text);
+            transition: all 0.3s;
+            outline: none
+        }
+
+        .form-input:focus {
+            border-color: var(--moss);
+            box-shadow: 0 0 0 3px rgba(45, 74, 62, 0.08)
+        }
+
+        .form-input.error {
+            border-color: #c47d5a
+        }
+
+        .form-error {
+            font-size: 0.75rem;
+            color: var(--terracotta);
+            margin-top: 6px;
+            display: none
+        }
+
+        .form-error.show {
+            display: block
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px
+        }
+
+        /* Floating label variant */
+        .float-group {
+            position: relative;
+            margin-bottom: 24px
+        }
+
+        .float-group .form-input {
+            padding: 20px 18px 8px
+        }
+
+        .float-group label {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.95rem;
+            color: var(--text-light);
+            transition: all 0.3s;
+            pointer-events: none;
+            margin: 0
+        }
+
+        .float-group .form-input:focus+label,
+        .float-group .form-input:not(:placeholder-shown)+label {
+            top: 14px;
+            transform: translateY(0);
+            font-size: 0.7rem;
+            letter-spacing: 0.3px
+        }
+
+        /* ===== THERAPISTS ===== */
+        .therapists-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 28px
+        }
+
+        .therapist-card {
+            text-align: center;
+            cursor: pointer
+        }
+
+        .therapist-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            overflow: hidden;
+            border: 3px solid rgba(138, 171, 150, 0.2);
+            transition: all 0.4s
+        }
+
+        .therapist-card:hover .therapist-avatar {
+            border-color: var(--sage);
+            transform: scale(1.05)
+        }
+
+        .therapist-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .therapist-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 4px
+        }
+
+        .therapist-specialty {
+            font-size: 0.8rem;
+            color: var(--terracotta);
+            margin-bottom: 12px;
+            letter-spacing: 0.3px
+        }
+
+        .therapist-bio {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s;
+            opacity: 0;
+            line-height: 1.7
+        }
+
+        .therapist-card.expanded .therapist-bio {
+            max-height: 200px;
+            opacity: 1
+        }
+
+        /* ===== TESTIMONIALS ===== */
+        .testimonials-masonry {
+            columns: 2;
+            column-gap: 24px
+        }
+
+        .testimonial-card {
+            break-inside: avoid;
+            margin-bottom: 24px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(138, 171, 150, 0.1);
+            border-radius: var(--radius);
+            padding: 32px
+        }
+
+        .stars {
+            display: flex;
+            gap: 3px;
+            margin-bottom: 16px
+        }
+
+        .stars svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--terracotta)
+        }
+
+        .testimonial-card blockquote {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--moss);
+            margin-bottom: 20px
+        }
+
+        .testimonial-author {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            letter-spacing: 0.3px
+        }
+
+        .testimonial-author strong {
+            color: var(--text);
+            font-weight: 500
+        }
+
+        /* ===== LOCATION ===== */
+        .location-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: start
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 400px;
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, #d4e4d9, #8aab96, #3a5f50);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden
+        }
+
+        .map-placeholder::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255, 255, 255, 0.05) 40px, rgba(255, 255, 255, 0.05) 41px), repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255, 255, 255, 0.05) 40px, rgba(255, 255, 255, 0.05) 41px)
+        }
+
+        .map-pin {
+            width: 48px;
+            height: 48px;
+            background: var(--terracotta);
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(196, 125, 90, 0.4);
+            z-index: 2
+        }
+
+        .map-pin svg {
+            transform: rotate(45deg);
+            width: 20px;
+            height: 20px;
+            fill: var(--ivory)
+        }
+
+        .map-address {
+            margin-top: 20px;
+            color: var(--ivory);
+            text-align: center;
+            z-index: 2;
+            font-size: 0.9rem;
+            line-height: 1.8
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column
+        }
+
+        .contact-form textarea.form-input {
+            min-height: 120px;
+            resize: vertical
+        }
+
+        .btn-submit {
+            background: var(--moss);
+            color: var(--ivory);
+            padding: 16px 36px;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            align-self: flex-start;
+            margin-top: 8px
+        }
+
+        .btn-submit:hover {
+            background: var(--moss-light);
+            transform: translateY(-2px)
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--moss);
+            color: rgba(250, 247, 242, 0.7);
+            padding: 80px 24px 32px;
+            position: relative
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 48px;
+            margin-bottom: 48px
+        }
+
+        .footer h5 {
+            color: var(--ivory);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            font-style: normal;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500
+        }
+
+        .footer p {
+            font-size: 0.9rem;
+            line-height: 1.8
+        }
+
+        .footer-links {
+            list-style: none
+        }
+
+        .footer-links li {
+            margin-bottom: 12px
+        }
+
+        .footer-links a {
+            font-size: 0.9rem;
+            transition: color 0.3s
+        }
+
+        .footer-links a:hover {
+            color: var(--ivory)
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 14px 18px;
+            border-radius: 100px;
+            border: 1.5px solid rgba(250, 247, 242, 0.15);
+            background: rgba(250, 247, 242, 0.08);
+            color: var(--ivory);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color 0.3s
+        }
+
+        .newsletter-input::placeholder {
+            color: rgba(250, 247, 242, 0.35)
+        }
+
+        .newsletter-input:focus {
+            border-color: var(--sage)
+        }
+
+        .newsletter-btn {
+            padding: 14px 24px;
+            border-radius: 100px;
+            background: var(--terracotta);
+            color: var(--ivory);
+            font-size: 0.8rem;
+            letter-spacing: 0.3px;
+            transition: background 0.3s
+        }
+
+        .newsletter-btn:hover {
+            background: #b36e4d
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(250, 247, 242, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s
+        }
+
+        .social-link:hover {
+            background: rgba(250, 247, 242, 0.1);
+            border-color: rgba(250, 247, 242, 0.3)
+        }
+
+        .social-link svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--ivory);
+            opacity: 0.7
+        }
+
+        .social-link:hover svg {
+            opacity: 1
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 32px;
+            border-top: 1px solid rgba(250, 247, 242, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 0.75rem
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            background: var(--moss);
+            color: var(--ivory);
+            padding: 16px 28px;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            z-index: 3000;
+            transform: translateY(120%);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 8px 30px rgba(45, 74, 62, 0.3)
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media(max-width:1024px) {
+            .philosophy-grid {
+                grid-template-columns: 1fr;
+                max-width: 480px;
+                margin: 0 auto
+            }
+
+            .therapists-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .footer-inner {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 200px 200px 200px
+            }
+
+            .g1,
+            .g5 {
+                grid-column: span 1
+            }
+        }
+
+        @media(max-width:768px) {
+            .header-nav {
+                display: none
+            }
+
+            .hamburger {
+                display: flex
+            }
+
+            .header {
+                padding: 18px 24px
+            }
+
+            .header.scrolled {
+                padding: 12px 24px
+            }
+
+            .section {
+                padding: 72px 20px
+            }
+
+            .treatments-grid {
+                grid-template-columns: 1fr
+            }
+
+            .location-grid {
+                grid-template-columns: 1fr
+            }
+
+            .form-row {
+                grid-template-columns: 1fr
+            }
+
+            .testimonials-masonry {
+                columns: 1
+            }
+
+            .therapists-grid {
+                grid-template-columns: 1fr;
+                max-width: 320px;
+                margin: 0 auto
+            }
+
+            .footer-inner {
+                grid-template-columns: 1fr;
+                gap: 36px
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto
+            }
+
+            .gallery-item {
+                min-height: 200px
+            }
+
+            .retreat-card {
+                min-width: 290px
+            }
+
+            .booking-progress .progress-label {
+                display: none
+            }
+        }
+
+        @media(prefers-reduced-motion:reduce) {
+            .reveal {
+                opacity: 1;
+                transform: none;
+                transition: none
+            }
+
+            * {
+                animation: none !important;
+                transition-duration: 0.01ms !important
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header" id="header">
+        <a href="#" class="header-logo">Sōkai <span>Wellness</span></a>
+        <nav class="header-nav">
+            <a href="#philosophy">Philosophy</a>
+            <a href="#treatments">Treatments</a>
+            <a href="#retreats">Retreats</a>
+            <a href="#space">The Space</a>
+            <a href="#therapists">Therapists</a>
+            <a href="#contact">Contact</a>
+            <a href="#booking" class="header-cta">Book Now</a>
+        </nav>
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+    </header>
+
+    <!-- MOBILE DRAWER -->
+    <div class="mobile-drawer" id="mobileDrawer">
+        <div class="mobile-drawer-backdrop" id="drawerBackdrop"></div>
+        <div class="mobile-drawer-panel">
+            <a href="#philosophy" class="drawer-link">Philosophy</a>
+            <a href="#treatments" class="drawer-link">Treatments</a>
+            <a href="#retreats" class="drawer-link">Retreats</a>
+            <a href="#space" class="drawer-link">The Space</a>
+            <a href="#therapists" class="drawer-link">Therapists</a>
+            <a href="#contact" class="drawer-link">Contact</a>
+            <a href="#booking" class="header-cta drawer-link">Book Now</a>
+        </div>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero organic-texture" id="hero">
+        <!-- Botanical SVG right -->
+        <svg class="hero-svg" viewBox="0 0 400 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M200 680 C200 680 200 350 200 20" stroke="#8aab96" stroke-width="1.5" opacity="0.6" />
+            <path d="M200 620 Q170 600 130 620 Q170 590 200 575" fill="#8aab96" opacity="0.3" />
+            <path d="M200 560 Q230 540 270 555 Q235 530 200 520" fill="#8aab96" opacity="0.25" />
+            <path d="M200 480 Q160 460 115 480 Q165 445 200 430" fill="#8aab96" opacity="0.3" />
+            <path d="M200 410 Q240 390 280 405 Q245 380 200 365" fill="#8aab96" opacity="0.2" />
+            <path d="M200 345 Q165 325 125 345 Q168 315 200 300" fill="#8aab96" opacity="0.28" />
+            <path d="M200 280 Q235 260 275 278 Q240 252 200 238" fill="#8aab96" opacity="0.22" />
+            <path d="M200 215 Q170 198 135 215 Q172 188 200 175" fill="#8aab96" opacity="0.25" />
+            <path d="M200 155 Q225 138 260 152 Q232 130 200 118" fill="#8aab96" opacity="0.2" />
+            <path d="M200 95 Q178 80 150 95 Q180 72 200 60" fill="#8aab96" opacity="0.18" />
+            <!-- Smaller side fronds -->
+            <path d="M200 600 Q175 588 148 600" fill="none" stroke="#8aab96" stroke-width="0.8" opacity="0.2" />
+            <path d="M200 440 Q225 428 255 440" fill="none" stroke="#8aab96" stroke-width="0.8" opacity="0.2" />
+            <path d="M200 320 Q175 308 145 320" fill="none" stroke="#8aab96" stroke-width="0.8" opacity="0.2" />
+            <path d="M200 190 Q220 178 248 190" fill="none" stroke="#8aab96" stroke-width="0.8" opacity="0.2" />
+        </svg>
+        <!-- Botanical SVG left (mirrored) -->
+        <svg class="hero-svg left" viewBox="0 0 400 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M200 680 C200 680 200 350 200 20" stroke="#c47d5a" stroke-width="1.5" opacity="0.4" />
+            <path d="M200 620 Q170 600 130 620 Q170 590 200 575" fill="#c47d5a" opacity="0.15" />
+            <path d="M200 560 Q230 540 270 555 Q235 530 200 520" fill="#c47d5a" opacity="0.12" />
+            <path d="M200 480 Q160 460 115 480 Q165 445 200 430" fill="#c47d5a" opacity="0.15" />
+            <path d="M200 410 Q240 390 280 405 Q245 380 200 365" fill="#c47d5a" opacity="0.1" />
+            <path d="M200 345 Q165 325 125 345 Q168 315 200 300" fill="#c47d5a" opacity="0.13" />
+            <path d="M200 280 Q235 260 275 278 Q240 252 200 238" fill="#c47d5a" opacity="0.1" />
+            <path d="M200 215 Q170 198 135 215 Q172 188 200 175" fill="#c47d5a" opacity="0.12" />
+        </svg>
+        <!-- Blobs -->
+        <div class="blob blob-moss" style="width:500px;height:500px;top:-10%;right:-5%"></div>
+        <div class="blob blob-terra" style="width:400px;height:400px;bottom:5%;left:-8%"></div>
+
+        <h1 class="reveal">Find Your Still</h1>
+        <p class="hero-subtitle reveal reveal-delay-1">A Japanese-inspired sanctuary where ancient ritual meets modern
+            restoration, nestled among ancient forests.</p>
+        <div class="hero-buttons reveal reveal-delay-2">
+            <a href="#booking" class="btn-primary">Book a Stay</a>
+            <a href="#treatments" class="btn-secondary">Explore Treatments</a>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- PHILOSOPHY -->
+    <section class="section organic-texture" id="philosophy">
+        <div class="blob blob-sage" style="width:350px;height:350px;top:20%;left:50%;transform:translateX(-50%)"></div>
+        <div class="section-inner">
+            <p class="section-label reveal">Our Philosophy</p>
+            <h2 class="section-title reveal">The Way of Sōkai</h2>
+            <p class="section-desc reveal">Three pillars drawn from the wisdom of slow living, guiding every touch,
+                breath, and moment you spend with us.</p>
+            <div class="philosophy-grid">
+                <div class="philosophy-card reveal">
+                    <div class="philosophy-icon"
+                        style="background:linear-gradient(135deg,rgba(138,171,150,0.2),rgba(138,171,150,0.05))">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#8aab96" stroke-width="1.5" stroke-linecap="round">
+                            <path d="M12 3C7 8 4 12 4 15a8 8 0 0016 0c0-3-3-7-8-12z" />
+                        </svg>
+                    </div>
+                    <h3>Restore</h3>
+                    <p>Through touch and botanical alchemy, we coax the body back to its natural rhythm of ease and
+                        vitality.</p>
+                </div>
+                <div class="philosophy-card reveal reveal-delay-1">
+                    <div class="philosophy-icon"
+                        style="background:linear-gradient(135deg,rgba(196,125,90,0.2),rgba(196,125,90,0.05))">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#c47d5a" stroke-width="1.5" stroke-linecap="round">
+                            <circle cx="12" cy="12" r="9" />
+                            <path d="M12 8v4l3 3" />
+                        </svg>
+                    </div>
+                    <h3>Reconnect</h3>
+                    <p>In the quiet between breaths, find the thread that ties you to yourself, to nature, to the
+                        present moment.</p>
+                </div>
+                <div class="philosophy-card reveal reveal-delay-2">
+                    <div class="philosophy-icon"
+                        style="background:linear-gradient(135deg,rgba(45,74,62,0.15),rgba(45,74,62,0.03))">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#2d4a3e" stroke-width="1.5" stroke-linecap="round">
+                            <path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8S2 12 2 12z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                    </div>
+                    <h3>Renew</h3>
+                    <p>Leave not just rested, but remade — carrying a new clarity that extends far beyond your time with
+                        us.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TREATMENTS -->
+    <section class="section organic-texture" id="treatments" style="background:var(--ivory-dark)">
+        <div class="blob blob-terra" style="width:300px;height:300px;top:-5%;right:5%"></div>
+        <div class="section-inner">
+            <p class="section-label reveal">Treatments</p>
+            <h2 class="section-title reveal">The Menu</h2>
+            <p class="section-desc reveal">Each treatment is a ritual — slow, intentional, and attuned to your body's
+                own intelligence.</p>
+            <div class="tabs reveal" id="treatmentTabs">
+                <button class="tab-btn active" data-tab="body">Body</button>
+                <button class="tab-btn" data-tab="face">Face</button>
+                <button class="tab-btn" data-tab="mind">Mind & Breath</button>
+            </div>
+            <!-- Body -->
+            <div class="tab-content active" id="tab-body">
+                <div class="treatments-grid">
+                    <div class="treatment-card reveal">
+                        <h4>Hot Stone Therapy</h4>
+                        <div class="treatment-meta"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path d="M12 8v4l3 3" />
+                                </svg> 90 min</span><span>Deep Tissue</span></div>
+                        <p>Volcanic basalt stones glide across the body, melting tension layers with radiant heat and
+                            essential oil blends.</p>
+                        <div class="treatment-price">&yen;18,000</div>
+                        <button class="btn-book-sm" onclick="scrollToBooking('Hot Stone Therapy')">Book Now</button>
+                    </div>
+                    <div class="treatment-card reveal reveal-delay-1">
+                        <h4>Shiatsu Massage</h4>
+                        <div class="treatment-meta"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path d="M12 8v4l3 3" />
+                                </svg> 60 min</span><span>Traditional</span></div>
+                        <p>Precision thumb and palm pressure along meridian pathways to unblock energy and restore
+                            structural balance.</p>
+                        <div class="treatment-price">&yen;12,000</div>
+                        <button class="btn-book-sm" onclick="scrollToBooking('Shiatsu Massage')">Book Now</button>
+                    </div>
+                    <div class="treatment-card reveal reveal-delay-2">
+                        <h4>Herbal Compress</h4>
+                        <div class="treatment-meta"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path d="M12 8v4l3 3" />
+                                </svg> 75 min</span><span>Aromatherapy</span></div>
+                        <p>Warm poultices of lemongrass, ginger, and kaffir lime are pressed into muscles, releasing
+                            their healing vapours.</p>
+                        <div class="treatment-price">&yen;15,000</div>
+                        <button class="btn-book-sm" onclick="scrollToBooking('Herbal Compress')">Book Now</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Face -->
+            <div class="tab-content" id="tab-face">
+                <div class="treatments-grid">
+                    <div class="treatment-card reveal">
+                        <h4>Kaizen Facial</h4>
+                        <div class="treatment-meta"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path d="M12 8v4l3 3" />
+                                </svg> 60 min</span><span>Anti-Aging</span></div>
+                        <p>A continuous-improvement approach to skincare — lifting massage, botanical serums, and
+                            lymphatic drainage combined.</p>
+                        <div class="treatment-price">&yen;14,000</div>
+                        <button class="btn-book-sm" onclick="scrollToBooking('Kaizen Facial')">Book Now</button>
+                    </div>
+                    <div class="treatment-card reveal reveal-delay-1">
+                        <h4>Crystal Gua Sha</h4>
+                        <div class="treatment-meta"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path d="M12 8v4l3 3" />
+                                </svg> 45 min</span><span>Sculpting</span></div>
+                        <p>Polished jade strokes sculpt facial contours while boosting microcirculation for a natural,
+                            lifted glow.</p>
+                        <div class="treatment-price">&yen;10,000</div>
+                        <button class="btn-book-sm" onclick="scrollToBooking('Crystal Gua Sha')">Book Now</button>
+                    </div>
+                    <div class="treatment-card reveal reveal-delay-2">
+                        <h4>Matcha Enzyme Peel</h4>
+                        <div class="treatment-meta"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path d="M12 8v4l3 3" />
+                                </svg> 50 min</span><span>Brightening</span></div>
+                        <p>Fermented matcha enzymes gently dissolve dull surface cells, revealing luminous, even-toned
+                            skin beneath.</p>
+                        <div class="treatment-price">&yen;13,000</div>
+                        <button class="btn-book-sm" onclick="scrollToBooking('Matcha Enzyme Peel')">Book Now</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Mind & Breath -->
+            <div class="tab-content" id="tab-mind">
+                <div class="treatments-grid">
+                    <div class="treatment-card reveal">
+                        <h4>Zen Meditation</h4>
+                        <div class="treatment-meta"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path d="M12 8v4l3 3" />
+                                </svg> 45 min</span><span>Guided</span></div>
+                        <p>A one-on-one guided zazen session in our cedar meditation room, designed to anchor your
+                            awareness in the present.</p>
+                        <div class="treatment-price">&yen;8,000</div>
+                        <button class="btn-book-sm" onclick="scrollToBooking('Zen Meditation')">Book Now</button>
+                    </div>
+                    <div class="treatment-card reveal reveal-delay-1">
+                        <h4>Forest Bathing Guide</h4>
+                        <div class="treatment-meta"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path d="M12 8v4l3 3" />
+                                </svg> 120 min</span><span>Shinrin-yoku</span></div>
+                        <p>A slow, sensory walk through our private forest grove with a certified guide, opening your
+                            senses to the living world.</p>
+                        <div class="treatment-price">&yen;16,000</div>
+                        <button class="btn-book-sm" onclick="scrollToBooking('Forest Bathing Guide')">Book Now</button>
+                    </div>
+                    <div class="treatment-card reveal reveal-delay-2">
+                        <h4>Sound Healing</h4>
+                        <div class="treatment-meta"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path d="M12 8v4l3 3" />
+                                </svg> 60 min</span><span>Vibrational</span></div>
+                        <p>Tibetan singing bowls and tuning forks wash through the body's energy field, dissolving
+                            deep-held tension patterns.</p>
+                        <div class="treatment-price">&yen;11,000</div>
+                        <button class="btn-book-sm" onclick="scrollToBooking('Sound Healing')">Book Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RETREAT PACKAGES -->
+    <section class="section organic-texture" id="retreats">
+        <div class="blob blob-moss" style="width:400px;height:400px;bottom:-10%;left:-5%"></div>
+        <div class="section-inner">
+            <p class="section-label reveal">Retreats</p>
+            <h2 class="section-title reveal">Immersive Packages</h2>
+            <p class="section-desc reveal">Multi-day journeys designed to unravel, rebuild, and return you to wholeness.
+                All inclusive.</p>
+            <div class="retreat-scroll reveal">
+                <div class="retreat-card">
+                    <h4>Forest Immersion</h4>
+                    <p class="retreat-nights">2 Nights &middot; Solo or Couple</p>
+                    <ul class="retreat-inclusions">
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Daily morning meditation</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Two 90-min body treatments</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Private forest bathing session</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Kaiseki dinner both evenings</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Organic breakfast daily</li>
+                    </ul>
+                    <div class="retreat-price"><span class="from">From</span><span class="amount">&yen;98,000</span>
+                    </div>
+                </div>
+                <div class="retreat-card featured">
+                    <h4>Deep Renewal</h4>
+                    <p class="retreat-nights">4 Nights &middot; Solo or Couple</p>
+                    <ul class="retreat-inclusions">
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Daily sunrise yoga & meditation</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Five treatments of your choice</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Private onsen soak each evening</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Sound healing ceremony</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Full-board kaiseki cuisine</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Herbal tea ceremony</li>
+                    </ul>
+                    <div class="retreat-price"><span class="from">From</span><span class="amount">&yen;218,000</span>
+                    </div>
+                </div>
+                <div class="retreat-card">
+                    <h4>Sōkai Signature</h4>
+                    <p class="retreat-nights">7 Nights &middot; Solo or Couple</p>
+                    <ul class="retreat-inclusions">
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Full daily wellness programme</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Ten treatments across all modalities</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Private onsen & outdoor bath</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Personalised consultation</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>All meals & ceremonial teas</li>
+                    </ul>
+                    <div class="retreat-price"><span class="from">From</span><span class="amount">&yen;385,000</span>
+                    </div>
+                </div>
+                <div class="retreat-card">
+                    <h4>Solo Silence</h4>
+                    <p class="retreat-nights">3 Nights &middot; Solo Only</p>
+                    <ul class="retreat-inclusions">
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Structured noble silence</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Three guided meditation sessions</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Two restorative body treatments</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Private garden & tea pavilion</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Simple vegetarian meals</li>
+                    </ul>
+                    <div class="retreat-price"><span class="from">From</span><span class="amount">&yen;128,000</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THE SPACE -->
+    <section class="section organic-texture" id="space" style="background:var(--ivory-dark)">
+        <div class="blob blob-moss" style="width:350px;height:350px;top:10%;left:-5%"></div>
+        <div class="section-inner">
+            <p class="section-label reveal">Environment</p>
+            <h2 class="section-title reveal">The Space</h2>
+            <p class="section-desc reveal">Every room, pathway, and garden corner has been shaped to hold stillness.
+                Architecture that breathes.</p>
+            <div class="gallery-grid reveal">
+                <div class="gallery-item g1" data-gradient="linear-gradient(135deg,#3a5f50,#8aab96,#d4e4d9)"
+                    onclick="openLightbox(this)">
+                    <span class="gallery-item-label">Main Treatment Hall</span>
+                </div>
+                <div class="gallery-item g2" data-gradient="linear-gradient(135deg,#c47d5a,#e8b89d,#f0ebe3)"
+                    onclick="openLightbox(this)">
+                    <span class="gallery-item-label">Onsen Garden</span>
+                </div>
+                <div class="gallery-item g3" data-gradient="linear-gradient(135deg,#8aab96,#b8d1c2,#faf7f2)"
+                    onclick="openLightbox(this)">
+                    <span class="gallery-item-label">Meditation Room</span>
+                </div>
+                <div class="gallery-item g4" data-gradient="linear-gradient(135deg,#2d4a3e,#5a8a70,#a8c8b0)"
+                    onclick="openLightbox(this)">
+                    <span class="gallery-item-label">Forest Path</span>
+                </div>
+                <div class="gallery-item g5" data-gradient="linear-gradient(135deg,#c47d5a,#d4a88a,#e8d5c4)"
+                    onclick="openLightbox(this)">
+                    <span class="gallery-item-label">Guest Suite</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+        <div class="lightbox-backdrop"></div>
+        <div class="lightbox-content" id="lightboxContent">
+            <button class="lightbox-close" onclick="closeLightbox(event)" aria-label="Close lightbox">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- BOOKING FLOW -->
+    <section class="section organic-texture" id="booking">
+        <div class="blob blob-sage" style="width:300px;height:300px;top:-5%;right:5%"></div>
+        <div class="section-inner">
+            <p class="section-label reveal">Reservation</p>
+            <h2 class="section-title reveal">Begin Your Journey</h2>
+            <p class="section-desc reveal">Three simple steps to reserve your time at Sōkai. We'll confirm every detail
+                personally.</p>
+            <div class="booking-container reveal">
+                <!-- Progress -->
+                <div class="booking-progress">
+                    <div class="progress-step active" data-step="1">
+                        <div class="progress-circle">1</div>
+                        <span class="progress-label">Select</span>
+                    </div>
+                    <div class="progress-line" id="progLine1"></div>
+                    <div class="progress-step" data-step="2">
+                        <div class="progress-circle">2</div>
+                        <span class="progress-label">Schedule</span>
+                    </div>
+                    <div class="progress-line" id="progLine2"></div>
+                    <div class="progress-step" data-step="3">
+                        <div class="progress-circle">3</div>
+                        <span class="progress-label">Details</span>
+                    </div>
+                </div>
+
+                <!-- Step 1 -->
+                <div class="booking-step active" id="bookingStep1">
+                    <h3 style="font-size:1.3rem;margin-bottom:8px">Choose Your Experience</h3>
+                    <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:24px">Select a treatment or retreat
+                        package to continue.</p>
+                    <div class="booking-options" id="bookingOptions">
+                        <div class="booking-option" data-name="Hot Stone Therapy" data-meta="90 min"
+                            data-price="¥18,000" onclick="selectBookingOption(this)">
+                            <div>
+                                <h4>Hot Stone Therapy</h4><span class="opt-meta">90 min &middot; Body</span>
+                            </div>
+                            <span class="opt-price">&yen;18,000</span>
+                        </div>
+                        <div class="booking-option" data-name="Shiatsu Massage" data-meta="60 min" data-price="¥12,000"
+                            onclick="selectBookingOption(this)">
+                            <div>
+                                <h4>Shiatsu Massage</h4><span class="opt-meta">60 min &middot; Body</span>
+                            </div>
+                            <span class="opt-price">&yen;12,000</span>
+                        </div>
+                        <div class="booking-option" data-name="Kaizen Facial" data-meta="60 min" data-price="¥14,000"
+                            onclick="selectBookingOption(this)">
+                            <div>
+                                <h4>Kaizen Facial</h4><span class="opt-meta">60 min &middot; Face</span>
+                            </div>
+                            <span class="opt-price">&yen;14,000</span>
+                        </div>
+                        <div class="booking-option" data-name="Forest Bathing Guide" data-meta="120 min"
+                            data-price="¥16,000" onclick="selectBookingOption(this)">
+                            <div>
+                                <h4>Forest Bathing Guide</h4><span class="opt-meta">120 min &middot; Mind &
+                                    Breath</span>
+                            </div>
+                            <span class="opt-price">&yen;16,000</span>
+                        </div>
+                        <div class="booking-option" data-name="Deep Renewal Retreat" data-meta="4 nights"
+                            data-price="¥218,000" onclick="selectBookingOption(this)">
+                            <div>
+                                <h4>Deep Renewal Retreat</h4><span class="opt-meta">4 nights &middot; Package</span>
+                            </div>
+                            <span class="opt-price">&yen;218,000</span>
+                        </div>
+                        <div class="booking-option" data-name="Sōkai Signature Retreat" data-meta="7 nights"
+                            data-price="¥385,000" onclick="selectBookingOption(this)">
+                            <div>
+                                <h4>Sōkai Signature Retreat</h4><span class="opt-meta">7 nights &middot; Package</span>
+                            </div>
+                            <span class="opt-price">&yen;385,000</span>
+                        </div>
+                    </div>
+                    <div class="form-error" id="step1Error">Please select an experience to continue.</div>
+                    <div class="booking-nav">
+                        <div></div>
+                        <button class="btn-primary" onclick="bookingNext(1)">Continue</button>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="booking-step" id="bookingStep2">
+                    <h3 style="font-size:1.3rem;margin-bottom:8px">Pick a Date & Time</h3>
+                    <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:24px" id="step2Subtitle">Select
+                        your preferred date and time slot.</p>
+                    <div class="calendar" id="calendarWidget">
+                        <div class="calendar-header">
+                            <button class="calendar-nav" id="calPrev" aria-label="Previous month"><svg
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round">
+                                    <polyline points="15 18 9 12 15 6" />
+                                </svg></button>
+                            <h4 id="calMonthYear"></h4>
+                            <button class="calendar-nav" id="calNext" aria-label="Next month"><svg viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                    <polyline points="9 18 15 12 9 6" />
+                                </svg></button>
+                        </div>
+                        <div class="calendar-days">
+                            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                        </div>
+                        <div class="calendar-dates" id="calDates"></div>
+                    </div>
+                    <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:8px">Available time slots:</p>
+                    <div class="time-slots" id="timeSlots">
+                        <button class="time-slot" onclick="selectTime(this)">09:00</button>
+                        <button class="time-slot" onclick="selectTime(this)">10:30</button>
+                        <button class="time-slot" onclick="selectTime(this)">12:00</button>
+                        <button class="time-slot" onclick="selectTime(this)">14:00</button>
+                        <button class="time-slot" onclick="selectTime(this)">15:30</button>
+                        <button class="time-slot" onclick="selectTime(this)">17:00</button>
+                    </div>
+                    <div class="form-error" id="step2Error">Please select both a date and a time slot.</div>
+                    <div class="booking-nav">
+                        <button class="btn-secondary" onclick="bookingPrev(2)">Back</button>
+                        <button class="btn-primary" onclick="bookingNext(2)">Continue</button>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="booking-step" id="bookingStep3">
+                    <h3 style="font-size:1.3rem;margin-bottom:8px">Your Details</h3>
+                    <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:24px">Almost there. Tell us a
+                        little about yourself.</p>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bookFirstName">First Name</label>
+                            <input type="text" id="bookFirstName" class="form-input" placeholder="e.g. Yuki"
+                                oninput="validateField(this,'name')">
+                            <div class="form-error" id="errFirstName">Please enter your first name.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookLastName">Last Name</label>
+                            <input type="text" id="bookLastName" class="form-input" placeholder="e.g. Tanaka"
+                                oninput="validateField(this,'name')">
+                            <div class="form-error" id="errLastName">Please enter your last name.</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookEmail">Email Address</label>
+                        <input type="email" id="bookEmail" class="form-input" placeholder="you@example.com"
+                            oninput="validateField(this,'email')">
+                        <div class="form-error" id="errEmail">Please enter a valid email address.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookPhone">Phone Number</label>
+                        <input type="tel" id="bookPhone" class="form-input" placeholder="+81 90 1234 5678"
+                            oninput="validateField(this,'phone')">
+                        <div class="form-error" id="errPhone">Please enter a valid phone number.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookNotes">Special Requests <span
+                                style="font-weight:300;color:var(--text-light)">(optional)</span></label>
+                        <textarea id="bookNotes" class="form-input"
+                            placeholder="Any allergies, preferences, or questions..." rows="3"></textarea>
+                    </div>
+                    <!-- Summary -->
+                    <div
+                        style="background:rgba(138,171,150,0.08);border-radius:var(--radius-sm);padding:24px;margin-bottom:24px">
+                        <p
+                            style="font-size:0.8rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">
+                            Booking Summary</p>
+                        <p style="font-family:'Playfair Display',serif;color:var(--moss);font-size:1.1rem"
+                            id="summaryName">—</p>
+                        <p style="font-size:0.9rem;color:var(--text-light)" id="summaryDateTime">—</p>
+                        <p style="font-family:'Playfair Display',serif;color:var(--terracotta);font-size:1.2rem;margin-top:8px"
+                            id="summaryPrice">—</p>
+                    </div>
+                    <div class="booking-nav">
+                        <button class="btn-secondary" onclick="bookingPrev(3)">Back</button>
+                        <button class="btn-primary" onclick="submitBooking()">Confirm Reservation</button>
+                    </div>
+                </div>
+
+                <!-- Success -->
+                <div class="booking-step" id="bookingSuccess" style="text-align:center;padding:48px 0">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#8aab96" stroke-width="1.5"
+                        style="margin:0 auto 24px">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M8 12l2.5 2.5L16 9" />
+                    </svg>
+                    <h3 style="font-size:1.6rem;margin-bottom:12px">Reservation Received</h3>
+                    <p style="color:var(--text-light);max-width:420px;margin:0 auto;line-height:1.8">Thank you. We'll
+                        review your request and send a confirmation to your email within 24 hours. We look forward to
+                        welcoming you to Sōkai.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THERAPISTS -->
+    <section class="section organic-texture" id="therapists" style="background:var(--ivory-dark)">
+        <div class="blob blob-terra" style="width:300px;height:300px;bottom:10%;right:-3%"></div>
+        <div class="section-inner">
+            <p class="section-label reveal">Practitioners</p>
+            <h2 class="section-title reveal">Meet the Therapists</h2>
+            <p class="section-desc reveal">Each therapist brings decades of practice and a deeply personal approach to
+                their craft.</p>
+            <div class="therapists-grid">
+                <div class="therapist-card reveal" onclick="toggleTherapist(this)">
+                    <div class="therapist-avatar"><img src="https://picsum.photos/seed/yuki-sokai/240/240.jpg"
+                            alt="Yuki Tanaka" loading="lazy"></div>
+                    <h4>Yuki Tanaka</h4>
+                    <p class="therapist-specialty">Shiatsu & Traditional Bodywork</p>
+                    <div class="therapist-bio">Trained in Kyoto for twelve years under a third-generation shiatsu
+                        master. Yuki's touch is described as "listening hands" — she reads the body's story and works
+                        with it rather than against it.</div>
+                </div>
+                <div class="therapist-card reveal reveal-delay-1" onclick="toggleTherapist(this)">
+                    <div class="therapist-avatar"><img src="https://picsum.photos/seed/haruki-sokai/240/240.jpg"
+                            alt="Haruki Sato" loading="lazy"></div>
+                    <h4>Haruki Sato</h4>
+                    <p class="therapist-specialty">Holistic Facial Therapy</p>
+                    <div class="therapist-bio">A former dermatologist who found her true calling in holistic facial
+                        work. Haruki combines clinical knowledge with Japanese facial massage traditions for
+                        transformative results.</div>
+                </div>
+                <div class="therapist-card reveal reveal-delay-2" onclick="toggleTherapist(this)">
+                    <div class="therapist-avatar"><img src="https://picsum.photos/seed/mei-sokai/240/240.jpg"
+                            alt="Mei Lin Chen" loading="lazy"></div>
+                    <h4>Mei Lin Chen</h4>
+                    <p class="therapist-specialty">Breathwork & Meditation</p>
+                    <div class="therapist-bio">Certified in both Zen and Vipassana traditions, Mei Lin has guided over
+                        two thousand people through their first meditation experience with remarkable gentleness and
+                        clarity.</div>
+                </div>
+                <div class="therapist-card reveal reveal-delay-3" onclick="toggleTherapist(this)">
+                    <div class="therapist-avatar"><img src="https://picsum.photos/seed/kenji-sokai/240/240.jpg"
+                            alt="Kenji Ota" loading="lazy"></div>
+                    <h4>Kenji Ota</h4>
+                    <p class="therapist-specialty">Deep Tissue & Sports Recovery</p>
+                    <div class="therapist-bio">Former physiotherapist for Japan's national rowing team. Kenji
+                        understands the mechanics of the body at an elite level and brings that precision to every
+                        session.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="section organic-texture" id="testimonials">
+        <div class="blob blob-sage" style="width:350px;height:350px;top:5%;left:40%"></div>
+        <div class="section-inner">
+            <p class="section-label reveal">Reflections</p>
+            <h2 class="section-title reveal">What Guests Say</h2>
+            <p class="section-desc reveal">Unsolicited words from those who've walked through our doors and found
+                something unexpected.</p>
+            <div class="testimonials-masonry reveal">
+                <div class="testimonial-card">
+                    <div class="stars">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                    </div>
+                    <blockquote>I came burned out from a year of relentless work. After four nights at Sōkai, I felt
+                        like I'd been reassembled — not fixed, but genuinely renewed from the inside out.</blockquote>
+                    <p class="testimonial-author"><strong>Akira M.</strong> &middot; Deep Renewal Retreat</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                    </div>
+                    <blockquote>The forest bathing experience was unlike anything I've done. Our guide Mei Lin helped me
+                        notice things I've walked past a thousand times — the sound of wind through cedar, the smell of
+                        damp earth. Profoundly simple.</blockquote>
+                    <p class="testimonial-author"><strong>Sarah L.</strong> &middot; Forest Bathing Guide</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                    </div>
+                    <blockquote>Yuki's shiatsu was extraordinary. She found tension I didn't know I was carrying. I left
+                        feeling two inches taller and somehow lighter. The space itself is a healer — every detail is
+                        considered.</blockquote>
+                    <p class="testimonial-author"><strong>David K.</strong> &middot; Shiatsu Massage</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01z" />
+                        </svg>
+                    </div>
+                    <blockquote>The Solo Silence retreat changed something fundamental in me. Three days without
+                        speaking, without screens, just being. It was uncomfortable at first, then extraordinary. I've
+                        been back three times now.</blockquote>
+                    <p class="testimonial-author"><strong>Elena R.</strong> &middot; Solo Silence Retreat</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LOCATION & CONTACT -->
+    <section class="section organic-texture" id="contact" style="background:var(--ivory-dark)">
+        <div class="blob blob-moss" style="width:400px;height:400px;bottom:-10%;right:-5%"></div>
+        <div class="section-inner">
+            <p class="section-label reveal">Visit Us</p>
+            <h2 class="section-title reveal">Location & Contact</h2>
+            <div class="location-grid">
+                <div class="reveal">
+                    <div class="map-placeholder">
+                        <div class="map-pin">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z" />
+                            </svg>
+                        </div>
+                        <div class="map-address">
+                            <strong style="color:white;font-weight:500">Sōkai Wellness</strong><br>
+                            2340 Hinoki-michi, Hakone<br>
+                            Kanagawa 250-0403, Japan<br><br>
+                            <span style="opacity:0.7">45 min from Odawara Station<br>Complimentary shuttle
+                                available</span>
+                        </div>
+                    </div>
+                    <div style="margin-top:24px;display:flex;flex-direction:column;gap:12px">
+                        <p style="font-size:0.9rem"><strong style="color:var(--moss)">Hours:</strong>&nbsp; Treatments
+                            9:00 – 19:00 daily &middot; Check-in from 14:00</p>
+                        <p style="font-size:0.9rem"><strong style="color:var(--moss)">Phone:</strong>&nbsp; +81 460 837
+                            2200</p>
+                        <p style="font-size:0.9rem"><strong style="color:var(--moss)">Email:</strong>&nbsp;
+                            hello@sokaiwellness.jp</p>
+                    </div>
+                </div>
+                <div class="contact-form reveal reveal-delay-1">
+                    <div class="float-group">
+                        <input type="text" id="contactName" class="form-input" placeholder=" "
+                            oninput="validateField(this,'name')">
+                        <label for="contactName">Full Name</label>
+                        <div class="form-error" id="errContactName">Please enter your name.</div>
+                    </div>
+                    <div class="float-group">
+                        <input type="email" id="contactEmail" class="form-input" placeholder=" "
+                            oninput="validateField(this,'email')">
+                        <label for="contactEmail">Email Address</label>
+                        <div class="form-error" id="errContactEmail">Please enter a valid email.</div>
+                    </div>
+                    <div class="float-group">
+                        <input type="tel" id="contactPhone" class="form-input" placeholder=" ">
+                        <label for="contactPhone">Phone <span
+                                style="font-weight:300;color:var(--text-light)">(optional)</span></label>
+                    </div>
+                    <div class="float-group">
+                        <textarea id="contactMessage" class="form-input" placeholder=" " rows="4"></textarea>
+                        <label for="contactMessage" style="top:20px;transform:translateY(0)">Your Message</label>
+                        <div class="form-error" id="errContactMessage">Please enter a message.</div>
+                    </div>
+                    <button class="btn-submit" onclick="submitContact()">Send Message</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div>
+                <h5
+                    style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:var(--ivory);margin-bottom:16px">
+                    Sōkai <span style="color:var(--terracotta)">Wellness</span></h5>
+                <p>A Japanese-inspired sanctuary dedicated to the art of slowing down. Nestled in the ancient forests of
+                    Hakone, we offer a path back to yourself.</p>
+            </div>
+            <div>
+                <h5>Explore</h5>
+                <ul class="footer-links">
+                    <li><a href="#philosophy">Philosophy</a></li>
+                    <li><a href="#treatments">Treatments</a></li>
+                    <li><a href="#retreats">Retreats</a></li>
+                    <li><a href="#space">The Space</a></li>
+                    <li><a href="#therapists">Therapists</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5>Information</h5>
+                <ul class="footer-links">
+                    <li><a href="#">Getting Here</a></li>
+                    <li><a href="#">Gift Vouchers</a></li>
+                    <li><a href="#">Cancellation Policy</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5>Stay Connected</h5>
+                <p style="font-size:0.85rem;margin-bottom:4px">Seasonal updates, new treatments, and quiet wisdom
+                    delivered to your inbox.</p>
+                <form class="newsletter-form" onsubmit="return subscribeNewsletter(event)">
+                    <input type="email" class="newsletter-input" placeholder="Your email" id="newsletterEmail" required>
+                    <button type="submit" class="newsletter-btn">Join</button>
+                </form>
+                <div class="social-links">
+                    <a href="#" class="social-link" aria-label="Instagram"><svg viewBox="0 0 24 24">
+                            <rect x="2" y="2" width="20" height="20" rx="5" fill="none" stroke="white"
+                                stroke-width="1.5" />
+                            <circle cx="12" cy="12" r="5" fill="none" stroke="white" stroke-width="1.5" />
+                            <circle cx="17.5" cy="6.5" r="1.2" fill="white" />
+                        </svg></a>
+                    <a href="#" class="social-link" aria-label="Pinterest"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12c0 4.08 2.46 7.58 5.97 9.12-.08-.72-.16-1.82.03-2.6.17-.72 1.12-4.76 1.12-4.76s-.29-.57-.29-1.42c0-1.33.77-2.33 1.73-2.33.81 0 1.21.61 1.21 1.34 0 .82-.52 2.04-.79 3.17-.22.95.47 1.72 1.41 1.72 1.69 0 2.99-1.78 2.99-4.35 0-2.27-1.63-3.86-3.96-3.86-2.7 0-4.28 2.02-4.28 4.12 0 .82.31 1.69.71 2.17.08.09.09.17.06.27-.07.29-.23.95-.26 1.08-.04.17-.14.21-.31.12-1.16-.54-1.89-2.24-1.89-3.6 0-2.93 2.13-5.63 6.14-5.63 3.22 0 5.73 2.3 5.73 5.37 0 3.2-2.02 5.78-4.83 5.78-.94 0-1.83-.49-2.13-1.07l-.58 2.22c-.21.81-.78 1.83-1.16 2.45.87.27 1.79.42 2.75.42 5.52 0 10-4.48 10-10S17.52 2 12 2z" />
+                        </svg></a>
+                    <a href="#" class="social-link" aria-label="YouTube"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19.1c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.25 29 29 0 00-.46-5.43z" />
+                            <polygon points="9.75,15.02 15.5,11.75 9.75,8.48" fill="#2d4a3e" />
+                        </svg></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2025 Sōkai Wellness. All rights reserved.</span>
+            <span>Designed with stillness in mind.</span>
+        </div>
+    </footer>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        /* ===== UTILITY ===== */
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3500);
+        }
+
+        /* ===== HEADER SCROLL ===== */
+        function initHeader() {
+            const h = document.getElementById('header');
+            let ticking = false;
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    requestAnimationFrame(() => {
+                        h.classList.toggle('scrolled', window.scrollY > 60);
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        }
+
+        /* ===== MOBILE MENU ===== */
+        function initMobileMenu() {
+            const btn = document.getElementById('hamburger');
+            const drawer = document.getElementById('mobileDrawer');
+            const backdrop = document.getElementById('drawerBackdrop');
+            const links = drawer.querySelectorAll('.drawer-link');
+
+            function toggle(open) {
+                btn.classList.toggle('active', open);
+                drawer.classList.toggle('open', open);
+                document.body.style.overflow = open ? 'hidden' : '';
+            }
+
+            btn.addEventListener('click', () => toggle(!drawer.classList.contains('open')));
+            backdrop.addEventListener('click', () => toggle(false));
+            links.forEach(l => l.addEventListener('click', () => toggle(false)));
+        }
+
+        /* ===== PARALLAX ===== */
+        function initParallax() {
+            const hero = document.getElementById('hero');
+            const svgs = hero.querySelectorAll('.hero-svg');
+            let ticking = false;
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    requestAnimationFrame(() => {
+                        const s = window.scrollY;
+                        if (s < window.innerHeight) {
+                            svgs.forEach((svg, i) => {
+                                svg.style.transform = `translateY(${s * (0.15 + i * 0.05)}px)${i === 1 ? ' scaleX(-1)' : ''}`;
+                            });
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        }
+
+        /* ===== SCROLL REVEAL ===== */
+        function initScrollReveal() {
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('visible');
+                        obs.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+            document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+        }
+
+        /* ===== SMOOTH SCROLL (internal links) ===== */
+        function initSmoothScroll() {
+            document.querySelectorAll('a[href^="#"]').forEach(a => {
+                a.addEventListener('click', e => {
+                    const target = document.querySelector(a.getAttribute('href'));
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        }
+
+        /* ===== TABS ===== */
+        function initTabs() {
+            const btns = document.querySelectorAll('#treatmentTabs .tab-btn');
+            btns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+                });
+            });
+        }
+
+        /* ===== LIGHTBOX ===== */
+        function openLightbox(el) {
+            const lb = document.getElementById('lightbox');
+            const content = document.getElementById('lightboxContent');
+            const gradient = el.dataset.gradient;
+            const label = el.querySelector('.gallery-item-label').textContent;
+            // Build lightbox inner
+            content.innerHTML = `
+    <div style="width:100%;height:100%;background:${gradient};display:flex;align-items:flex-end;padding:40px;position:relative">
+      <span style="color:white;font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;text-shadow:0 2px 12px rgba(0,0,0,0.3)">${label}</span>
+    </div>
+    <button class="lightbox-close" onclick="closeLightbox(event)" aria-label="Close lightbox">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>`;
+            lb.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox(e) {
+            if (e.target.closest('.lightbox-close') || e.target.closest('.lightbox-backdrop') || e.target === document.getElementById('lightbox')) {
+                document.getElementById('lightbox').classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        }
+
+        /* ===== BOOKING FLOW ===== */
+        let bookingData = { selection: null, date: null, time: null };
+        let calMonth, calYear, selectedCalDate, selectedTimeSlot;
+
+        function initBookingFlow() {
+            const now = new Date();
+            calMonth = now.getMonth();
+            calYear = now.getFullYear();
+            selectedCalDate = null;
+            selectedTimeSlot = null;
+
+            document.getElementById('calPrev').addEventListener('click', () => { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCalendar(); });
+            document.getElementById('calNext').addEventListener('click', () => { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCalendar(); });
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('calMonthYear').textContent = months[calMonth] + ' ' + calYear;
+
+            const firstDay = new Date(calYear, calMonth, 1).getDay();
+            const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let html = '';
+            // Empty cells
+            for (let i = 0; i < firstDay; i++) html += '<button class="cal-date empty" disabled></button>';
+            // Date cells
+            for (let d = 1; d <= daysInMonth; d++) {
+                const date = new Date(calYear, calMonth, d);
+                const isPast = date < today;
+                const isToday = date.getTime() === today.getTime();
+                const isSelected = selectedCalDate && date.getTime() === selectedCalDate.getTime();
+                let cls = 'cal-date';
+                if (isPast) cls += ' disabled';
+                if (isToday) cls += ' today';
+                if (isSelected) cls += ' selected';
+                html += `<button class="${cls}" ${isPast ? 'disabled' : ''} onclick="selectCalDate(${calYear},${calMonth},${d})">${d}</button>`;
+            }
+            document.getElementById('calDates').innerHTML = html;
+        }
+
+        function selectCalDate(y, m, d) {
+            selectedCalDate = new Date(y, m, d);
+            renderCalendar();
+            document.getElementById('step2Error').classList.remove('show');
+        }
+
+        function selectTime(btn) {
+            document.querySelectorAll('.time-slot').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedTimeSlot = btn.textContent;
+            document.getElementById('step2Error').classList.remove('show');
+        }
+
+        function selectBookingOption(el) {
+            document.querySelectorAll('.booking-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            bookingData.selection = {
+                name: el.dataset.name,
+                meta: el.dataset.meta,
+                price: el.dataset.price
+            };
+            document.getElementById('step1Error').classList.remove('show');
+        }
+
+        function scrollToBooking(treatmentName) {
+            // Pre-select the treatment
+            document.querySelectorAll('.booking-option').forEach(o => {
+                if (o.dataset.name === treatmentName) {
+                    selectBookingOption(o);
+                }
+            });
+            document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateProgress(current) {
+            document.querySelectorAll('.progress-step').forEach(s => {
+                const step = parseInt(s.dataset.step);
+                s.classList.remove('active', 'done');
+                if (step === current) s.classList.add('active');
+                if (step < current) s.classList.add('done');
+            });
+            document.getElementById('progLine1').classList.toggle('done', current > 1);
+            document.getElementById('progLine2').classList.toggle('done', current > 2);
+        }
+
+        function bookingNext(from) {
+            if (from === 1) {
+                if (!bookingData.selection) {
+                    document.getElementById('step1Error').classList.add('show');
+                    return;
+                }
+                const sub = document.getElementById('step2Subtitle');
+                sub.textContent = `Scheduling: ${bookingData.selection.name} (${bookingData.selection.meta})`;
+            }
+            if (from === 2) {
+                if (!selectedCalDate || !selectedTimeSlot) {
+                    document.getElementById('step2Error').classList.add('show');
+                    return;
+                }
+                // Update summary
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                document.getElementById('summaryName').textContent = bookingData.selection.name;
+                document.getElementById('summaryDateTime').textContent = `${selectedCalDate.getDate()} ${months[selectedCalDate.getMonth()]} ${selectedCalDate.getFullYear()} at ${selectedTimeSlot}`;
+                document.getElementById('summaryPrice').textContent = bookingData.selection.price;
+            }
+            document.getElementById('bookingStep' + from).classList.remove('active');
+            document.getElementById('bookingStep' + (from + 1)).classList.add('active');
+            updateProgress(from + 1);
+        }
+
+        function bookingPrev(from) {
+            document.getElementById('bookingStep' + from).classList.remove('active');
+            document.getElementById('bookingStep' + (from - 1)).classList.add('active');
+            updateProgress(from - 1);
+        }
+
+        function submitBooking() {
+            const fn = document.getElementById('bookFirstName');
+            const ln = document.getElementById('bookLastName');
+            const em = document.getElementById('bookEmail');
+            const ph = document.getElementById('bookPhone');
+            let valid = true;
+
+            if (!validateField(fn, 'name')) valid = false;
+            if (!validateField(ln, 'name')) valid = false;
+            if (!validateField(em, 'email')) valid = false;
+            if (!validateField(ph, 'phone')) valid = false;
+
+            if (!valid) return;
+
+            document.getElementById('bookingStep3').classList.remove('active');
+            document.getElementById('bookingSuccess').classList.add('active');
+            // Hide progress
+            document.querySelector('.booking-progress').style.display = 'none';
+            showToast('Reservation submitted successfully.');
+        }
+
+        /* ===== FORM VALIDATION ===== */
+        function validateField(input, type) {
+            let valid = true;
+            const val = input.value.trim();
+
+            if (type === 'name') {
+                valid = val.length >= 1;
+            } else if (type === 'email') {
+                valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+            } else if (type === 'phone') {
+                valid = val.length >= 7;
+            }
+
+            input.classList.toggle('error', !valid);
+            // Find sibling error
+            const errId = input.closest('.form-group')?.querySelector('.form-error')?.id ||
+                input.closest('.float-group')?.querySelector('.form-error')?.id;
+            if (errId) {
+                const errEl = document.getElementById(errId);
+                if (errEl) errEl.classList.toggle('show', !valid && val.length > 0);
+            }
+            return valid;
+        }
+
+        /* ===== THERAPISTS ===== */
+        function toggleTherapist(card) {
+            const wasExpanded = card.classList.contains('expanded');
+            document.querySelectorAll('.therapist-card').forEach(c => c.classList.remove('expanded'));
+            if (!wasExpanded) card.classList.add('expanded');
+        }
+
+        /* ===== CONTACT FORM ===== */
+        function submitContact() {
+            const name = document.getElementById('contactName');
+            const email = document.getElementById('contactEmail');
+            const msg = document.getElementById('contactMessage');
+            let valid = true;
+
+            if (!validateField(name, 'name')) valid = false;
+            if (!validateField(email, 'email')) valid = false;
+
+            const msgVal = msg.value.trim();
+            const msgErr = document.getElementById('errContactMessage');
+            if (msgVal.length < 1) {
+                msgErr.classList.add('show');
+                valid = false;
+            } else {
+                msgErr.classList.remove('show');
+            }
+
+            if (!valid) return;
+
+            showToast('Message sent. We\'ll reply within 24 hours.');
+            name.value = '';
+            email.value = '';
+            document.getElementById('contactPhone').value = '';
+            msg.value = '';
+        }
+
+        /* ===== NEWSLETTER ===== */
+        function subscribeNewsletter(e) {
+            e.preventDefault();
+            const email = document.getElementById('newsletterEmail');
+            if (!email.value.trim()) return false;
+            showToast('Welcome to the Sōkai circle. Check your inbox.');
+            email.value = '';
+            return false;
+        }
+
+        /* ===== INIT ===== */
+        document.addEventListener('DOMContentLoaded', () => {
+            initHeader();
+            initMobileMenu();
+            initParallax();
+            initScrollReveal();
+            initTabs();
+            initBookingFlow();
+            initSmoothScroll();
+        });
+    </script>
+</body>
+
+</html>

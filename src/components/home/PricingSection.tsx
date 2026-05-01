@@ -15,7 +15,7 @@ const PLANS = [
     name: "Business",
     price: "LKR 120,000",
     desc: "Best for businesses and companies.",
-    features: ["Up to 10 Pages", "Responsive Design", "SEO Optimized", "Contact Form", "Social Media Integration"],
+    features: ["Up to 10 Pages", "Responsive Design", "SEO Optimized", "Contact Form", "Custom Domain Setup"],
     timeline: "2-4 weeks",
     popular: true,
     delay: 100,

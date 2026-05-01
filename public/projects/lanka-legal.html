@@ -1,0 +1,1056 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lanka Legal — Premier Law Firm in Sri Lanka</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ["Playfair Display", "serif"],
+              sans: ["Inter", "sans-serif"],
+              elegant: ["Cormorant Garamond", "serif"],
+            },
+            colors: {
+              navy: "#1a2744",
+              gold: "#C9A227",
+              slate: "#4A5568",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background: #fafafa;
+        color: #1a1a1a;
+        overflow-x: hidden;
+      }
+
+      .fade-up {
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          opacity 0.7s ease,
+          transform 0.7s ease;
+      }
+      .fade-up.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .attorney-card:hover .attorney-img {
+        transform: scale(1.05);
+      }
+      .attorney-card .attorney-img {
+        transition: transform 0.5s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #1a2744 0%, #2d3f5f 100%);
+        transition: all 0.3s ease;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(26, 39, 68, 0.3);
+      }
+
+      @keyframes fadeInRight {
+        from {
+          opacity: 0;
+          transform: translateX(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .animate-right {
+        animation: fadeInRight 0.8s ease forwards;
+      }
+
+      .stat-card {
+        background: linear-gradient(135deg, #1a2744 0%, #2d3f5f 100%);
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #fafafa;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1a2744;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top Bar -->
+    <div class="bg-navy text-white text-sm">
+      <div
+        class="max-w-7xl mx-auto px-6 py-3 flex flex-col md:flex-row items-center justify-between gap-2"
+      >
+        <div class="flex items-center gap-6">
+          <span class="flex items-center gap-2">
+            <i data-lucide="phone" class="w-4 h-4 text-gold"></i>
+            +94 11 234 5678
+          </span>
+          <span class="flex items-center gap-2">
+            <i data-lucide="mail" class="w-4 h-4 text-gold"></i>
+            info@lankalegal.lk
+          </span>
+        </div>
+        <div class="flex items-center gap-6">
+          <span class="flex items-center gap-2">
+            <i data-lucide="clock" class="w-4 h-4 text-gold"></i>
+            Mon - Fri: 9:00 AM - 6:00 PM
+          </span>
+          <div class="flex items-center gap-3">
+            <a href="#" class="hover:text-gold transition-colors"
+              ><i data-lucide="linkedin" class="w-4 h-4"></i
+            ></a>
+            <a href="#" class="hover:text-gold transition-colors"
+              ><i data-lucide="facebook" class="w-4 h-4"></i
+            ></a>
+            <a href="#" class="hover:text-gold transition-colors"
+              ><i data-lucide="twitter" class="w-4 h-4"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-gray-100 sticky top-0 z-50">
+      <div
+        class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between"
+      >
+        <a href="#" class="flex items-center gap-3">
+          <div
+            class="w-12 h-12 rounded-lg bg-navy flex items-center justify-center"
+          >
+            <i data-lucide="scale" class="w-6 h-6 text-gold"></i>
+          </div>
+          <div>
+            <span class="font-serif text-xl text-navy">Lanka Legal</span>
+            <span
+              class="block text-[10px] uppercase tracking-[0.2em] text-slate"
+              >Attorneys at Law</span
+            >
+          </div>
+        </a>
+
+        <div class="hidden lg:flex items-center gap-8">
+          <a
+            href="#about"
+            class="text-sm text-slate hover:text-navy transition-colors font-medium"
+            >About</a
+          >
+          <div class="relative group">
+            <a
+              href="#practice"
+              class="text-sm text-slate hover:text-navy transition-colors font-medium flex items-center gap-1"
+            >
+              Practice Areas
+              <i data-lucide="chevron-down" class="w-4 h-4"></i>
+            </a>
+            <div
+              class="absolute top-full left-0 mt-2 w-48 bg-white shadow-xl rounded-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300"
+            >
+              <a
+                href="#"
+                class="block px-4 py-2 text-sm text-slate hover:bg-navy/5 hover:text-navy"
+                >Corporate Law</a
+              >
+              <a
+                href="#"
+                class="block px-4 py-2 text-sm text-slate hover:bg-navy/5 hover:text-navy"
+                >Litigation</a
+              >
+              <a
+                href="#"
+                class="block px-4 py-2 text-sm text-slate hover:bg-navy/5 hover:text-navy"
+                >Intellectual Property</a
+              >
+              <a
+                href="#"
+                class="block px-4 py-2 text-sm text-slate hover:bg-navy/5 hover:text-navy"
+                >Real Estate</a
+              >
+              <a
+                href="#"
+                class="block px-4 py-2 text-sm text-slate hover:bg-navy/5 hover:text-navy"
+                >Employment Law</a
+              >
+            </div>
+          </div>
+          <a
+            href="#attorneys"
+            class="text-sm text-slate hover:text-navy transition-colors font-medium"
+            >Our Team</a
+          >
+          <a
+            href="#testimonials"
+            class="text-sm text-slate hover:text-navy transition-colors font-medium"
+            >Testimonials</a
+          >
+          <a
+            href="#contact"
+            class="text-sm text-slate hover:text-navy transition-colors font-medium"
+            >Contact</a
+          >
+        </div>
+
+        <div class="flex items-center gap-4">
+          <a
+            href="#contact"
+            class="btn-primary px-6 py-3 rounded-lg text-white text-sm font-medium hidden md:inline-flex items-center gap-2"
+          >
+            Free Consultation
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section
+      class="relative min-h-[85vh] flex items-center bg-navy overflow-hidden"
+    >
+      <div class="absolute inset-0">
+        <div
+          class="absolute inset-0 bg-gradient-to-br from-navy via-navy/95 to-navy/80"
+        ></div>
+        <div class="absolute top-0 right-0 w-1/2 h-full opacity-10">
+          <svg viewBox="0 0 400 400" class="w-full h-full" fill="none">
+            <circle
+              cx="200"
+              cy="200"
+              r="180"
+              stroke="#C9A227"
+              stroke-width="1"
+            />
+            <circle
+              cx="200"
+              cy="200"
+              r="150"
+              stroke="#C9A227"
+              stroke-width="0.5"
+            />
+            <circle
+              cx="200"
+              cy="200"
+              r="120"
+              stroke="#C9A227"
+              stroke-width="0.5"
+            />
+            <path
+              d="M200 20 L200 380 M20 200 L380 200 M50 50 L350 350 M350 50 L50 350"
+              stroke="#C9A227"
+              stroke-width="0.3"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <div
+        class="relative max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-16 items-center"
+      >
+        <div class="fade-up">
+          <span
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold/10 text-gold text-xs uppercase tracking-[0.2em] mb-6"
+          >
+            <span class="w-2 h-2 rounded-full bg-gold"></span>
+            Established 1998
+          </span>
+
+          <h1 class="text-4xl md:text-6xl font-serif leading-tight text-white">
+            Excellence in<br />
+            <span class="text-gold italic">Legal Excellence</span>
+          </h1>
+
+          <p class="mt-6 text-lg text-white/70 max-w-lg leading-relaxed">
+            Lanka Legal is one of Sri Lanka's most respected law firms,
+            providing exceptional legal services with integrity, expertise, and
+            dedication to our clients' success.
+          </p>
+
+          <div class="mt-10 flex flex-wrap gap-4">
+            <a
+              href="#contact"
+              class="btn-primary px-8 py-4 rounded-lg text-white font-medium inline-flex items-center gap-2"
+            >
+              Schedule Consultation
+              <i data-lucide="calendar" class="w-4 h-4"></i>
+            </a>
+            <a
+              href="tel:+94112345678"
+              class="px-8 py-4 rounded-lg border-2 border-white/20 text-white font-medium hover:border-white/40 transition-colors inline-flex items-center gap-2"
+            >
+              <i data-lucide="phone" class="w-4 h-4"></i>
+              Call Now
+            </a>
+          </div>
+
+          <div class="mt-16 flex flex-wrap gap-8">
+            <div>
+              <span class="block text-4xl font-serif text-gold">25+</span>
+              <span class="text-sm text-white/60 uppercase tracking-wider"
+                >Years Experience</span
+              >
+            </div>
+            <div class="w-px h-16 bg-white/20"></div>
+            <div>
+              <span class="block text-4xl font-serif text-gold">500+</span>
+              <span class="text-sm text-white/60 uppercase tracking-wider"
+                >Cases Won</span
+              >
+            </div>
+            <div class="w-px h-16 bg-white/20"></div>
+            <div>
+              <span class="block text-4xl font-serif text-gold">98%</span>
+              <span class="text-sm text-white/60 uppercase tracking-wider"
+                >Client Satisfaction</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="hidden lg:block fade-up" style="transition-delay: 0.2s">
+          <div class="relative">
+            <img
+              src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=80"
+              class="rounded-2xl shadow-2xl"
+              alt="Legal Office"
+            />
+            <div
+              class="absolute -bottom-8 -left-8 bg-white p-6 rounded-xl shadow-xl"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center"
+                >
+                  <i data-lucide="award" class="w-5 h-5 text-gold"></i>
+                </div>
+                <div>
+                  <span class="block font-serif text-lg text-navy"
+                    >Top Rated Firm</span
+                  >
+                  <span class="text-sm text-slate"
+                    >Chambers Asia Pacific 2024</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Practice Areas -->
+    <section id="practice" class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16 fade-up">
+          <span class="text-xs uppercase tracking-[0.3em] text-gold"
+            >What We Do</span
+          >
+          <h2 class="mt-3 text-3xl md:text-4xl font-serif text-navy">
+            Practice Areas
+          </h2>
+          <p class="mt-4 text-slate max-w-2xl mx-auto">
+            Our team of experienced attorneys provides comprehensive legal
+            services across multiple practice areas.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-children">
+          <div
+            class="fade-up group p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 hover:border-gold/30 hover:shadow-xl transition-all duration-300"
+          >
+            <div
+              class="w-14 h-14 rounded-xl bg-navy/5 flex items-center justify-center mb-6 group-hover:bg-navy transition-colors duration-300"
+            >
+              <i
+                data-lucide="building-2"
+                class="w-6 h-6 text-navy group-hover:text-white transition-colors"
+              ></i>
+            </div>
+            <h3 class="text-xl font-serif text-navy mb-3">Corporate Law</h3>
+            <p class="text-slate text-sm leading-relaxed">
+              Expert guidance on mergers, acquisitions, corporate governance,
+              and commercial transactions.
+            </p>
+            <a
+              href="#"
+              class="inline-flex items-center gap-2 text-gold text-sm font-medium mt-4 hover:gap-3 transition-all"
+            >
+              Learn More <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+
+          <div
+            class="fade-up group p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 hover:border-gold/30 hover:shadow-xl transition-all duration-300"
+          >
+            <div
+              class="w-14 h-14 rounded-xl bg-navy/5 flex items-center justify-center mb-6 group-hover:bg-navy transition-colors duration-300"
+            >
+              <i
+                data-lucide="gavel"
+                class="w-6 h-6 text-navy group-hover:text-white transition-colors"
+              ></i>
+            </div>
+            <h3 class="text-xl font-serif text-navy mb-3">Litigation</h3>
+            <p class="text-slate text-sm leading-relaxed">
+              Aggressive and effective representation in civil and commercial
+              dispute resolution.
+            </p>
+            <a
+              href="#"
+              class="inline-flex items-center gap-2 text-gold text-sm font-medium mt-4 hover:gap-3 transition-all"
+            >
+              Learn More <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+
+          <div
+            class="fade-up group p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 hover:border-gold/30 hover:shadow-xl transition-all duration-300"
+          >
+            <div
+              class="w-14 h-14 rounded-xl bg-navy/5 flex items-center justify-center mb-6 group-hover:bg-navy transition-colors duration-300"
+            >
+              <i
+                data-lucide="lightbulb"
+                class="w-6 h-6 text-navy group-hover:text-white transition-colors"
+              ></i>
+            </div>
+            <h3 class="text-xl font-serif text-navy mb-3">
+              Intellectual Property
+            </h3>
+            <p class="text-slate text-sm leading-relaxed">
+              Protection and enforcement of patents, trademarks, copyrights, and
+              trade secrets.
+            </p>
+            <a
+              href="#"
+              class="inline-flex items-center gap-2 text-gold text-sm font-medium mt-4 hover:gap-3 transition-all"
+            >
+              Learn More <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+
+          <div
+            class="fade-up group p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 hover:border-gold/30 hover:shadow-xl transition-all duration-300"
+          >
+            <div
+              class="w-14 h-14 rounded-xl bg-navy/5 flex items-center justify-center mb-6 group-hover:bg-navy transition-colors duration-300"
+            >
+              <i
+                data-lucide="home"
+                class="w-6 h-6 text-navy group-hover:text-white transition-colors"
+              ></i>
+            </div>
+            <h3 class="text-xl font-serif text-navy mb-3">Real Estate</h3>
+            <p class="text-slate text-sm leading-relaxed">
+              Comprehensive legal services for property transactions,
+              development projects, and land disputes.
+            </p>
+            <a
+              href="#"
+              class="inline-flex items-center gap-2 text-gold text-sm font-medium mt-4 hover:gap-3 transition-all"
+            >
+              Learn More <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+
+          <div
+            class="fade-up group p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 hover:border-gold/30 hover:shadow-xl transition-all duration-300"
+          >
+            <div
+              class="w-14 h-14 rounded-xl bg-navy/5 flex items-center justify-center mb-6 group-hover:bg-navy transition-colors duration-300"
+            >
+              <i
+                data-lucide="users"
+                class="w-6 h-6 text-navy group-hover:text-white transition-colors"
+              ></i>
+            </div>
+            <h3 class="text-xl font-serif text-navy mb-3">Employment Law</h3>
+            <p class="text-slate text-sm leading-relaxed">
+              Counsel for employers and employees on workplace rights,
+              contracts, and disputes.
+            </p>
+            <a
+              href="#"
+              class="inline-flex items-center gap-2 text-gold text-sm font-medium mt-4 hover:gap-3 transition-all"
+            >
+              Learn More <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+
+          <div
+            class="fade-up group p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 hover:border-gold/30 hover:shadow-xl transition-all duration-300"
+          >
+            <div
+              class="w-14 h-14 rounded-xl bg-navy/5 flex items-center justify-center mb-6 group-hover:bg-navy transition-colors duration-300"
+            >
+              <i
+                data-lucide="file-text"
+                class="w-6 h-6 text-navy group-hover:text-white transition-colors"
+              ></i>
+            </div>
+            <h3 class="text-xl font-serif text-navy mb-3">Tax Law</h3>
+            <p class="text-slate text-sm leading-relaxed">
+              Strategic tax planning and representation in disputes with revenue
+              authorities.
+            </p>
+            <a
+              href="#"
+              class="inline-flex items-center gap-2 text-gold text-sm font-medium mt-4 hover:gap-3 transition-all"
+            >
+              Learn More <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 bg-navy">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div class="text-center fade-up">
+            <span class="block text-5xl md:text-6xl font-serif text-gold"
+              >25+</span
+            >
+            <span
+              class="text-sm text-white/60 uppercase tracking-wider mt-2 block"
+              >Years of Excellence</span
+            >
+          </div>
+          <div class="text-center fade-up">
+            <span class="block text-5xl md:text-6xl font-serif text-gold"
+              >50+</span
+            >
+            <span
+              class="text-sm text-white/60 uppercase tracking-wider mt-2 block"
+              >Expert Attorneys</span
+            >
+          </div>
+          <div class="text-center fade-up">
+            <span class="block text-5xl md:text-6xl font-serif text-gold"
+              >500+</span
+            >
+            <span
+              class="text-sm text-white/60 uppercase tracking-wider mt-2 block"
+              >Cases Handled</span
+            >
+          </div>
+          <div class="text-center fade-up">
+            <span class="block text-5xl md:text-6xl font-serif text-gold"
+              >98%</span
+            >
+            <span
+              class="text-sm text-white/60 uppercase tracking-wider mt-2 block"
+              >Success Rate</span
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Our Attorneys -->
+    <section id="attorneys" class="py-20 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16 fade-up">
+          <span class="text-xs uppercase tracking-[0.3em] text-gold"
+            >Meet the Team</span
+          >
+          <h2 class="mt-3 text-3xl md:text-4xl font-serif text-navy">
+            Our Attorneys
+          </h2>
+          <p class="mt-4 text-slate max-w-2xl mx-auto">
+            Meet our team of dedicated legal professionals committed to
+            achieving the best outcomes for our clients.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 stagger-children">
+          <div class="attorney-card fade-up group">
+            <div class="relative aspect-[3/4] rounded-2xl overflow-hidden mb-6">
+              <img
+                src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80"
+                class="attorney-img w-full h-full object-cover"
+                alt="Senior Partner"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-navy/80 to-transparent"
+              ></div>
+              <div class="absolute bottom-6 left-6 right-6">
+                <h3 class="text-xl font-serif text-white">Anura Fernando</h3>
+                <span class="text-sm text-gold">Senior Partner</span>
+              </div>
+            </div>
+            <p class="text-slate text-sm">
+              Corporate Law specialist with 20+ years experience in major
+              transactions.
+            </p>
+          </div>
+
+          <div class="attorney-card fade-up group">
+            <div class="relative aspect-[3/4] rounded-2xl overflow-hidden mb-6">
+              <img
+                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80"
+                class="attorney-img w-full h-full object-cover"
+                alt="Partner"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-navy/80 to-transparent"
+              ></div>
+              <div class="absolute bottom-6 left-6 right-6">
+                <h3 class="text-xl font-serif text-white">
+                  Dilini Wickramasinghe
+                </h3>
+                <span class="text-sm text-gold">Partner</span>
+              </div>
+            </div>
+            <p class="text-slate text-sm">
+              Leading litigation attorney known for securing landmark verdicts.
+            </p>
+          </div>
+
+          <div class="attorney-card fade-up group">
+            <div class="relative aspect-[3/4] rounded-2xl overflow-hidden mb-6">
+              <img
+                src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80"
+                class="attorney-img w-full h-full object-cover"
+                alt="Senior Associate"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-navy/80 to-transparent"
+              ></div>
+              <div class="absolute bottom-6 left-6 right-6">
+                <h3 class="text-xl font-serif text-white">Rajith Perera</h3>
+                <span class="text-sm text-gold">Senior Associate</span>
+              </div>
+            </div>
+            <p class="text-slate text-sm">
+              Intellectual property expert with deep tech industry experience.
+            </p>
+          </div>
+
+          <div class="attorney-card fade-up group">
+            <div class="relative aspect-[3/4] rounded-2xl overflow-hidden mb-6">
+              <img
+                src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80"
+                class="attorney-img w-full h-full object-cover"
+                alt="Associate"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-navy/80 to-transparent"
+              ></div>
+              <div class="absolute bottom-6 left-6 right-6">
+                <h3 class="text-xl font-serif text-white">Nimali Jayasuriya</h3>
+                <span class="text-sm text-gold">Associate</span>
+              </div>
+            </div>
+            <p class="text-slate text-sm">
+              Real estate and property law specialist serving clients
+              nationwide.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16 fade-up">
+          <span class="text-xs uppercase tracking-[0.3em] text-gold"
+            >Client Reviews</span
+          >
+          <h2 class="mt-3 text-3xl md:text-4xl font-serif text-navy">
+            What Our Clients Say
+          </h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 stagger-children">
+          <div class="fade-up bg-gray-50 p-8 rounded-2xl">
+            <div class="flex items-center gap-1 text-gold mb-4">★★★★★</div>
+            <p class="text-slate leading-relaxed italic">
+              "Lanka Legal guided us through a complex acquisition with
+              exceptional professionalism. Their expertise was invaluable."
+            </p>
+            <div class="flex items-center gap-4 mt-6">
+              <img
+                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80"
+                class="w-12 h-12 rounded-full object-cover"
+                alt="Client"
+              />
+              <div>
+                <span class="block font-medium text-navy">Chandra Silva</span>
+                <span class="text-sm text-slate">CEO, TechCorp Lanka</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="fade-up bg-gray-50 p-8 rounded-2xl">
+            <div class="flex items-center gap-1 text-gold mb-4">★★★★★</div>
+            <p class="text-slate leading-relaxed italic">
+              "Their litigation team secured an outcome we never thought
+              possible. True advocates who care about their clients."
+            </p>
+            <div class="flex items-center gap-4 mt-6">
+              <img
+                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80"
+                class="w-12 h-12 rounded-full object-cover"
+                alt="Client"
+              />
+              <div>
+                <span class="block font-medium text-navy">Priya Mahindra</span>
+                <span class="text-sm text-slate">Business Owner</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="fade-up bg-gray-50 p-8 rounded-2xl">
+            <div class="flex items-center gap-1 text-gold mb-4">★★★★★</div>
+            <p class="text-slate leading-relaxed italic">
+              "Professional, responsive, and results-driven. Lanka Legal has
+              been our trusted legal partner for over a decade."
+            </p>
+            <div class="flex items-center gap-4 mt-6">
+              <img
+                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80"
+                class="w-12 h-12 rounded-full object-cover"
+                alt="Client"
+              />
+              <div>
+                <span class="block font-medium text-navy">Michael Chen</span>
+                <span class="text-sm text-slate"
+                  >Director, Global Investments</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid lg:grid-cols-2 gap-16">
+          <div class="fade-up">
+            <span class="text-xs uppercase tracking-[0.3em] text-gold"
+              >Get in Touch</span
+            >
+            <h2 class="mt-3 text-3xl md:text-4xl font-serif text-navy">
+              Schedule a Consultation
+            </h2>
+            <p class="mt-4 text-slate leading-relaxed">
+              Take the first step towards resolving your legal matters. Contact
+              us today for a confidential consultation.
+            </p>
+
+            <div class="mt-10 space-y-6">
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-12 h-12 rounded-lg bg-navy/5 flex items-center justify-center flex-shrink-0"
+                >
+                  <i data-lucide="map-pin" class="w-5 h-5 text-navy"></i>
+                </div>
+                <div>
+                  <h4 class="font-medium text-navy">Office Address</h4>
+                  <p class="text-slate text-sm mt-1">
+                    Level 12, Liberty Square<br />Colombo 03, Sri Lanka
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-12 h-12 rounded-lg bg-navy/5 flex items-center justify-center flex-shrink-0"
+                >
+                  <i data-lucide="phone" class="w-5 h-5 text-navy"></i>
+                </div>
+                <div>
+                  <h4 class="font-medium text-navy">Phone Number</h4>
+                  <p class="text-slate text-sm mt-1">
+                    +94 11 234 5678<br />+94 77 123 4567
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-12 h-12 rounded-lg bg-navy/5 flex items-center justify-center flex-shrink-0"
+                >
+                  <i data-lucide="mail" class="w-5 h-5 text-navy"></i>
+                </div>
+                <div>
+                  <h4 class="font-medium text-navy">Email Address</h4>
+                  <p class="text-slate text-sm mt-1">
+                    info@lankalegal.lk<br />consult@lankalegal.lk
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fade-up bg-white p-8 rounded-2xl shadow-xl">
+            <h3 class="text-xl font-serif text-navy mb-6">
+              Request a Consultation
+            </h3>
+            <form class="space-y-5">
+              <div class="grid md:grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-sm font-medium text-slate mb-2"
+                    >Full Name</label
+                  >
+                  <input
+                    type="text"
+                    class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-gold transition-colors"
+                    placeholder="Your name"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-slate mb-2"
+                    >Phone Number</label
+                  >
+                  <input
+                    type="tel"
+                    class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-gold transition-colors"
+                    placeholder="+94 XX XXX XXXX"
+                  />
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate mb-2"
+                  >Email Address</label
+                >
+                <input
+                  type="email"
+                  class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-gold transition-colors"
+                  placeholder="you@example.com"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate mb-2"
+                  >Practice Area</label
+                >
+                <select
+                  class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-gold transition-colors"
+                >
+                  <option>Select a practice area</option>
+                  <option>Corporate Law</option>
+                  <option>Litigation</option>
+                  <option>Intellectual Property</option>
+                  <option>Real Estate</option>
+                  <option>Employment Law</option>
+                  <option>Tax Law</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate mb-2"
+                  >Message</label
+                >
+                <textarea
+                  rows="4"
+                  class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-gold transition-colors resize-none"
+                  placeholder="Briefly describe your legal matter..."
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                class="w-full btn-primary py-4 rounded-lg text-white font-medium"
+              >
+                Submit Consultation Request
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-navy text-white py-16">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid md:grid-cols-4 gap-12 mb-12">
+          <div>
+            <div class="flex items-center gap-3 mb-6">
+              <div
+                class="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center"
+              >
+                <i data-lucide="scale" class="w-6 h-6 text-gold"></i>
+              </div>
+              <span class="font-serif text-xl">Lanka Legal</span>
+            </div>
+            <p class="text-white/60 text-sm leading-relaxed">
+              Sri Lanka's premier law firm, providing exceptional legal services
+              since 1998.
+            </p>
+            <div class="flex items-center gap-3 mt-6">
+              <a
+                href="#"
+                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-gold transition-colors"
+              >
+                <i data-lucide="linkedin" class="w-4 h-4"></i>
+              </a>
+              <a
+                href="#"
+                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-gold transition-colors"
+              >
+                <i data-lucide="facebook" class="w-4 h-4"></i>
+              </a>
+              <a
+                href="#"
+                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-gold transition-colors"
+              >
+                <i data-lucide="twitter" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+          <div>
+            <h4 class="font-medium mb-4">Practice Areas</h4>
+            <ul class="space-y-2 text-white/60 text-sm">
+              <li>
+                <a href="#" class="hover:text-gold transition-colors"
+                  >Corporate Law</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-gold transition-colors"
+                  >Litigation</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-gold transition-colors"
+                  >Intellectual Property</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-gold transition-colors"
+                  >Real Estate</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-gold transition-colors"
+                  >Employment Law</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-medium mb-4">Quick Links</h4>
+            <ul class="space-y-2 text-white/60 text-sm">
+              <li>
+                <a href="#" class="hover:text-gold transition-colors"
+                  >About Us</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-gold transition-colors"
+                  >Our Team</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-gold transition-colors"
+                  >Case Studies</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-gold transition-colors"
+                  >Careers</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-gold transition-colors"
+                  >Contact</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-medium mb-4">Contact Info</h4>
+            <ul class="space-y-3 text-white/60 text-sm">
+              <li class="flex items-start gap-2">
+                <i data-lucide="map-pin" class="w-4 h-4 mt-0.5 text-gold"></i>
+                Level 12, Liberty Square<br />Colombo 03, Sri Lanka
+              </li>
+              <li class="flex items-center gap-2">
+                <i data-lucide="phone" class="w-4 h-4 text-gold"></i>
+                +94 11 234 5678
+              </li>
+              <li class="flex items-center gap-2">
+                <i data-lucide="mail" class="w-4 h-4 text-gold"></i>
+                info@lankalegal.lk
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4"
+        >
+          <p class="text-sm text-white/50">
+            © 2024 Lanka Legal. All rights reserved.
+          </p>
+          <div class="flex items-center gap-6 text-sm text-white/50">
+            <a href="#" class="hover:text-white transition-colors"
+              >Privacy Policy</a
+            >
+            <a href="#" class="hover:text-white transition-colors"
+              >Terms of Service</a
+            >
+            <a href="#" class="hover:text-white transition-colors">Sitemap</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Scroll animations
+      const observerOptions = {
+        threshold: 0.15,
+        rootMargin: "0px 0px -50px 0px",
+      };
+      const fadeObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      }, observerOptions);
+      document
+        .querySelectorAll(".fade-up")
+        .forEach((el) => fadeObserver.observe(el));
+
+      // Stagger children
+      document.querySelectorAll(".stagger-children").forEach((parent) => {
+        const children = parent.children;
+        Array.from(children).forEach((child, i) => {
+          child.style.transitionDelay = `${i * 100}ms`;
+        });
+      });
+
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

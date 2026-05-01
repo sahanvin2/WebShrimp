@@ -1,8 +1,14 @@
 import SiteLayout from "@/components/SiteLayout";
+import Seo from "@/components/Seo";
 
 const CookiePolicy = () => {
   return (
     <SiteLayout>
+      <Seo
+        title="Cookie Policy | Loopingon"
+        description="See how Loopingon uses cookies to improve site performance, preferences, and analytics."
+        path="/cookie-policy"
+      />
       <div className="container-x py-20 lg:py-32">
         <div className="max-w-3xl mx-auto">
           <span className="section-label">Legal</span>

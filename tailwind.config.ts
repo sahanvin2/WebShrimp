@@ -12,8 +12,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Sora", "system-ui", "sans-serif"],
-        sans: ["DM Sans", "system-ui", "sans-serif"],
+        display: ["Quicksand", "system-ui", "sans-serif"],
+        sans: ["Quicksand", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       colors: {

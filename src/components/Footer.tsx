@@ -1,97 +1,81 @@
 import { Link } from "react-router-dom";
-import { Facebook, Instagram, Linkedin, Youtube, Phone, Mail, MapPin, Clock } from "lucide-react";
 import Logo from "./Logo";
+import { siteConfig } from "@/lib/site";
+import DotWave from "./DotWave";
 
 const Footer = () => {
-  const phoneDisplay = "+94 70 303 1636";
-  const phoneHref = "tel:+94703031636";
-  const email = "sahannawarathne2004@gmail.com";
+  const quickLinks = [
+    ["Home", "/"],
+    ["Services", "/services"],
+    ["Portfolio", "/portfolio"],
+    ["Pricing", "/pricing"],
+    ["About Us", "/about"],
+    ["Contact", "/contact"],
+  ] as const;
+
+  const serviceLinks = [
+    ["Business Websites", "/services/business-websites"],
+    ["E-Commerce", "/services/e-commerce-websites"],
+    ["Landing Pages", "/services/landing-pages"],
+    ["Custom Software", "/services/custom-software"],
+  ] as const;
 
   return (
-    <footer className="bg-brand-navy text-white/80 mt-24">
-      <div className="container-x py-16 grid gap-12 grid-cols-2 lg:grid-cols-4">
-        <div className="col-span-2 lg:col-span-1">
-          <Logo withTagline inverted />
-          <p className="mt-5 text-sm text-white/65 max-w-xs">
-            A creative web & software agency from Colombo, Sri Lanka — building digital products that grow your business.
-          </p>
-          <div className="mt-6 flex gap-3">
-            {[
-              { Icon: Facebook, label: "Facebook", href: "https://www.facebook.com", base: "bg-[#1877F2]", hover: "hover:bg-[#2d88ff]" },
-              { Icon: Instagram, label: "Instagram", href: "https://www.instagram.com", base: "bg-gradient-to-br from-[#f58529] via-[#dd2a7b] to-[#8134af]", hover: "hover:brightness-110" },
-              { Icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com", base: "bg-[#0A66C2]", hover: "hover:bg-[#1d74cb]" },
-              { Icon: Youtube, label: "YouTube", href: "https://www.youtube.com", base: "bg-[#FF0000]", hover: "hover:bg-[#ff3333]" },
-            ].map(({ Icon, label, href, base, hover }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                className={`h-10 w-10 inline-flex items-center justify-center rounded-full text-white transition-colors ${base} ${hover}`}
+    <footer className="relative mt-20 border-t border-border bg-[#050505] text-white pt-20 pb-8 overflow-hidden">
+      <DotWave />
+      <div className="container-x relative z-10">
+        {/* Top Section */}
+        <div className="flex flex-col md:flex-row md:justify-between items-start gap-12 mb-20 pointer-events-none">
+          <h2 className="text-3xl md:text-4xl font-medium tracking-tight text-white max-w-sm">
+            Let's build the future.
+          </h2>
+          
+          <div className="grid grid-cols-2 sm:flex sm:flex-row gap-12 sm:gap-16 md:gap-24 pointer-events-auto w-full sm:w-auto">
+            <div className="flex flex-col gap-4">
+              {quickLinks.map(([label, to]) => (
+                <Link key={to} to={to} className="text-[15px] font-medium text-white hover:opacity-70 transition-opacity">
+                  {label}
+                </Link>
+              ))}
+            </div>
+            <div className="flex flex-col gap-4">
+              {serviceLinks.map(([label, to]) => (
+                <Link key={to} to={to} className="text-[15px] font-medium text-white hover:opacity-70 transition-opacity">
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Huge Text Section with Letter by Letter Animation */}
+        <div className="w-full mb-12 flex justify-center pointer-events-none">
+          <h1 
+            className="text-white font-bold tracking-tighter leading-none select-none text-center flex pb-10 pt-4"
+            style={{ fontSize: "clamp(4rem, 15vw, 16rem)" }}
+          >
+            {"Loopingon".split("").map((char, index) => (
+              <span 
+                key={index} 
+                className="animate-letter-reveal inline-block" 
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <Icon className="h-4 w-4 text-white" />
-              </a>
+                {char}
+              </span>
             ))}
-          </div>
+          </h1>
         </div>
 
-        <div className="col-span-1">
-          <h3 className="font-display text-white text-base mb-5">Quick Links</h3>
-          <ul className="space-y-3 text-sm">
-            {[
-              ["Home", "/"],
-              ["About Us", "/about"],
-              ["Services", "/services"],
-              ["Portfolio", "/portfolio"],
-              ["Pricing", "/pricing"],
-              ["Contact", "/contact"],
-            ].map(([label, to]) => (
-              <li key={to}>
-                <Link to={to} className="hover:text-brand-orange transition-colors">{label}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="col-span-1">
-          <h3 className="font-display text-white text-base mb-5">Our Services</h3>
-          <ul className="space-y-3 text-sm">
-            {[
-              ["E-Commerce Websites", "/services/e-commerce-websites"],
-              ["Business Websites", "/services/business-websites"],
-              ["Portfolio Websites", "/services/portfolio-websites"],
-              ["Landing Pages", "/services/landing-pages"],
-              ["Social Media Content", "/services/social-media-content"],
-              ["Website Maintenance", "/services/website-maintenance"],
-            ].map(([label, to]) => (
-              <li key={to}>
-                <Link to={to} className="hover:text-brand-orange transition-colors">{label}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="col-span-2 lg:col-span-1">
-          <h3 className="font-display text-white text-base mb-5">Get In Touch</h3>
-          <ul className="space-y-3 text-sm">
-            <li className="flex items-start gap-3"><Phone className="h-4 w-4 mt-0.5 text-brand-orange shrink-0" /> <a href={phoneHref} className="hover:text-brand-yellow transition-colors">{phoneDisplay}</a></li>
-            <li className="flex items-start gap-3"><Mail className="h-4 w-4 mt-0.5 text-brand-orange shrink-0" /> <a href={`mailto:${email}`} className="hover:text-brand-yellow transition-colors">{email}</a></li>
-            <li className="flex items-start gap-3"><MapPin className="h-4 w-4 mt-0.5 text-brand-orange shrink-0" /> Colombo, Sri Lanka</li>
-            <li className="flex items-start gap-3"><Clock className="h-4 w-4 mt-0.5 text-brand-orange shrink-0" /> Available 24/7</li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="border-t border-white/10">
-        <div className="container-x py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/55">
-          <p>© {new Date().getFullYear()} Web Shrimp. All Rights Reserved.</p>
-          <div className="flex items-center gap-4">
+        {/* Bottom Section */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-6 pointer-events-auto relative z-20">
+          <Logo inverted />
+          
+          <div className="flex flex-wrap justify-center gap-6 text-[13px] font-medium text-white/80">
+            <Link to="/about" className="hover:text-white transition-colors">About {siteConfig.brandName}</Link>
+            <Link to="/services" className="hover:text-white transition-colors">Services</Link>
             <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link to="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
-            <Link to="/cookie-policy" className="hover:text-white transition-colors">Cookie Policy</Link>
+            <Link to="/terms-of-service" className="hover:text-white transition-colors">Terms</Link>
           </div>
-          <p>Made with <span className="text-brand-orange">❤</span> in Sri Lanka</p>
         </div>
       </div>
     </footer>

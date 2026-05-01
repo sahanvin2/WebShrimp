@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { siteConfig } from "@/lib/site";
 
 interface LogoProps {
   withTagline?: boolean;
@@ -7,26 +8,15 @@ interface LogoProps {
 
 const Logo = ({ withTagline = false, inverted = false }: LogoProps) => {
   return (
-    <Link to="/" className="inline-flex items-center gap-2.5 group" aria-label="Web Shrimp home">
-      <span className="text-2xl" aria-hidden="true">🦐</span>
-      <div className="leading-none">
-        <span
-          className={`font-display font-extrabold text-xl tracking-tight ${
-            inverted ? "text-white" : "text-brand-navy"
-          }`}
-        >
-          Web<span className="text-brand-orange">Shrimp</span>
+    <Link to="/" className="group inline-flex flex-col items-start" aria-label={`${siteConfig.brandName} home`}>
+      <span className={`font-display font-bold text-3xl tracking-tight transition-colors duration-300 ${inverted ? "text-white" : "text-foreground"}`}>
+        loopingon
+      </span>
+      {withTagline && (
+        <span className={`mt-0.5 block font-mono text-[10px] tracking-wider ${inverted ? "text-white/60" : "text-muted-foreground"}`}>
+          {siteConfig.tagline}
         </span>
-        {withTagline && (
-          <span
-            className={`block font-mono text-[10px] mt-1 tracking-wider ${
-              inverted ? "text-white/60" : "text-muted-foreground"
-            }`}
-          >
-            We Design. You Grow.
-          </span>
-        )}
-      </div>
+      )}
     </Link>
   );
 };

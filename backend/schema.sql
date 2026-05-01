@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS pricing_plans (
   price VARCHAR(50) NOT NULL,
   description TEXT,
   features JSONB,
+  timeline VARCHAR(50),
   is_popular BOOLEAN DEFAULT FALSE,
   button_text VARCHAR(50) DEFAULT 'Choose Plan'
 );
@@ -12,8 +13,32 @@ CREATE TABLE IF NOT EXISTS portfolio_works (
   id SERIAL PRIMARY KEY,
   title VARCHAR(100) NOT NULL,
   category VARCHAR(50) NOT NULL,
+  summary TEXT,
+  stack JSONB,
   image_url TEXT NOT NULL,
-  link TEXT
+  link TEXT,
+  tag VARCHAR(80)
+);
+
+CREATE TABLE IF NOT EXISTS service_offerings (
+  slug VARCHAR(80) PRIMARY KEY,
+  title VARCHAR(120) NOT NULL,
+  summary TEXT NOT NULL,
+  description TEXT NOT NULL,
+  starting_at VARCHAR(80) NOT NULL,
+  timeline VARCHAR(80) NOT NULL,
+  support TEXT NOT NULL,
+  includes JSONB NOT NULL DEFAULT '[]'::jsonb,
+  best_for JSONB NOT NULL DEFAULT '[]'::jsonb,
+  optional_extras JSONB NOT NULL DEFAULT '[]'::jsonb,
+  faqs JSONB NOT NULL DEFAULT '[]'::jsonb
+);
+
+CREATE TABLE IF NOT EXISTS site_faqs (
+  id SERIAL PRIMARY KEY,
+  category VARCHAR(80) NOT NULL,
+  question TEXT NOT NULL,
+  answer TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS testimonials (
@@ -39,15 +64,32 @@ CREATE TABLE IF NOT EXISTS contacts (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   email VARCHAR(100) NOT NULL,
+  phone VARCHAR(50),
+  service VARCHAR(100),
+  budget VARCHAR(100),
   message TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert dummy data to populate the frontend
-INSERT INTO pricing_plans (name, price, description, features, is_popular)
-VALUES 
-('Starter', 'LKR 25,000', 'Perfect for personal or small projects.', '["5 Pages Website", "Responsive Design", "Basic SEO", "Contact Form"]', false),
-('Business', 'LKR 60,000', 'Best for businesses and companies.', '["Up to 10 Pages", "Responsive Design", "SEO Optimized", "Contact Form", "Social Media Integration"]', true),
-('E-Commerce', 'LKR 120,000', 'Complete solution for online stores.', '["Up to 20 Products", "Payment Gateway", "Order Management", "SEO Optimized", "Support & Training"]', false),
-('Custom', 'Contact Us', 'Need something unique? We got you!', '["Unlimited Pages", "Custom Features", "Advanced Functionality", "Priority Support"]', false)
-ON CONFLICT DO NOTHING;
+CREATE TABLE IF NOT EXISTS chat_sessions (
+  id VARCHAR(100) PRIMARY KEY,
+  last_user_message TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS chat_messages (
+  id BIGSERIAL PRIMARY KEY,
+  session_id VARCHAR(100) NOT NULL REFERENCES chat_sessions(id) ON DELETE CASCADE,
+  role VARCHAR(20) NOT NULL,
+  content TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE pricing_plans ADD COLUMN IF NOT EXISTS timeline VARCHAR(50);
+ALTER TABLE portfolio_works ADD COLUMN IF NOT EXISTS summary TEXT;
+ALTER TABLE portfolio_works ADD COLUMN IF NOT EXISTS stack JSONB;
+ALTER TABLE portfolio_works ADD COLUMN IF NOT EXISTS tag VARCHAR(80);
+ALTER TABLE contacts ADD COLUMN IF NOT EXISTS phone VARCHAR(50);
+ALTER TABLE contacts ADD COLUMN IF NOT EXISTS service VARCHAR(100);
+ALTER TABLE contacts ADD COLUMN IF NOT EXISTS budget VARCHAR(100);

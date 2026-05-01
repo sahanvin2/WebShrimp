@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BetterFit — Transform Your Fitness Journey</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              display: ["Space Grotesk", "sans-serif"],
+            },
+            colors: {
+              electric: "#6366F1",
+              cyan: "#06B6D4",
+              lime: "#84CC16",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background: #0a0a0f;
+        color: #fff;
+        overflow-x: hidden;
+      }
+
+      .gradient-bg {
+        background:
+          radial-gradient(
+            ellipse at top,
+            rgba(99, 102, 241, 0.15) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at bottom right,
+            rgba(6, 182, 212, 0.1) 0%,
+            transparent 50%
+          ),
+          #0a0a0f;
+      }
+
+      .fade-up {
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          opacity 0.7s ease,
+          transform 0.7s ease;
+      }
+      .fade-up.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .feature-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(99, 102, 241, 0.4);
+      }
+      .feature-card {
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        transition: all 0.3s ease;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4);
+      }
+
+      .btn-secondary {
+        border: 1.5px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+      }
+      .btn-secondary:hover {
+        border-color: rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+      .float {
+        animation: float 6s ease-in-out infinite;
+      }
+      .float-delay {
+        animation: float 6s ease-in-out 2s infinite;
+      }
+
+      @keyframes pulse-glow {
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+        50% {
+          box-shadow: 0 0 40px rgba(99, 102, 241, 0.6);
+        }
+      }
+      .pulse-glow {
+        animation: pulse-glow 2s ease-in-out infinite;
+      }
+
+      .pricing-card:hover {
+        transform: scale(1.02);
+        border-color: rgba(99, 102, 241, 0.5);
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0a0a0f;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #6366f1;
+        border-radius: 4px;
+      }
+
+      .text-gradient {
+        background: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    </style>
+  </head>
+  <body class="gradient-bg">
+    <!-- Navigation -->
+    <nav
+      class="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg bg-black/50 border-b border-white/5"
+    >
+      <div
+        class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between"
+      >
+        <a href="#" class="flex items-center gap-2">
+          <div
+            class="w-8 h-8 rounded-lg bg-gradient-to-br from-electric to-cyan flex items-center justify-center"
+          >
+            <i data-lucide="activity" class="w-4 h-4 text-white"></i>
+          </div>
+          <span class="font-display font-bold text-xl">BetterFit</span>
+        </a>
+
+        <div class="hidden md:flex items-center gap-8">
+          <a
+            href="#features"
+            class="text-sm text-white/60 hover:text-white transition-colors"
+            >Features</a
+          >
+          <a
+            href="#how-it-works"
+            class="text-sm text-white/60 hover:text-white transition-colors"
+            >How It Works</a
+          >
+          <a
+            href="#pricing"
+            class="text-sm text-white/60 hover:text-white transition-colors"
+            >Pricing</a
+          >
+          <a
+            href="#testimonials"
+            class="text-sm text-white/60 hover:text-white transition-colors"
+            >Reviews</a
+          >
+        </div>
+
+        <div class="flex items-center gap-4">
+          <a
+            href="#"
+            class="text-sm text-white/60 hover:text-white transition-colors hidden md:block"
+            >Log In</a
+          >
+          <a
+            href="#pricing"
+            class="btn-primary px-5 py-2.5 rounded-full text-white text-sm font-medium"
+          >
+            Get Started Free
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section
+      class="relative min-h-[90vh] flex items-center pt-16 overflow-hidden"
+    >
+      <div class="absolute inset-0">
+        <div
+          class="absolute top-1/4 left-1/4 w-96 h-96 bg-electric/20 rounded-full blur-[120px] float"
+        ></div>
+        <div
+          class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan/15 rounded-full blur-[100px] float-delay"
+        ></div>
+        <div
+          class="absolute inset-0 opacity-[0.02]"
+          style="
+            background-image:
+              linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+              linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0.1) 1px,
+                transparent 1px
+              );
+            background-size: 60px 60px;
+          "
+        ></div>
+      </div>
+
+      <div
+        class="relative max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-16 items-center"
+      >
+        <div class="fade-up">
+          <div
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-electric/10 border border-electric/20 text-electric text-xs uppercase tracking-widest mb-6"
+          >
+            <span class="w-2 h-2 rounded-full bg-electric pulse-glow"></span>
+            Over 50,000 Active Users
+          </div>
+
+          <h1
+            class="text-4xl md:text-6xl lg:text-7xl font-display leading-[1.1] tracking-tight"
+          >
+            Transform Your <span class="text-gradient">Fitness</span> Journey
+          </h1>
+
+          <p class="mt-6 text-lg text-white/60 max-w-lg leading-relaxed">
+            Personalized workout plans, AI-powered coaching, and a supportive
+            community to help you achieve your fitness goals — faster than ever.
+          </p>
+
+          <div class="mt-10 flex flex-wrap gap-4">
+            <a
+              href="#pricing"
+              class="btn-primary px-8 py-4 rounded-full text-white font-medium inline-flex items-center gap-2"
+            >
+              Start Free Trial
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+            <a
+              href="#how-it-works"
+              class="btn-secondary px-8 py-4 rounded-full text-white font-medium inline-flex items-center gap-2"
+            >
+              <i data-lucide="play-circle" class="w-4 h-4"></i>
+              Watch Demo
+            </a>
+          </div>
+
+          <div class="mt-12 flex items-center gap-8">
+            <div class="flex -space-x-3">
+              <img
+                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80"
+                class="w-10 h-10 rounded-full border-2 border-black"
+                alt="User"
+              />
+              <img
+                src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&q=80"
+                class="w-10 h-10 rounded-full border-2 border-black"
+                alt="User"
+              />
+              <img
+                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80"
+                class="w-10 h-10 rounded-full border-2 border-black"
+                alt="User"
+              />
+              <img
+                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80"
+                class="w-10 h-10 rounded-full border-2 border-black"
+                alt="User"
+              />
+            </div>
+            <div>
+              <div class="flex items-center gap-1 text-lime">
+                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+              </div>
+              <p class="text-sm text-white/60 mt-1">
+                4.9/5 from 12,000+ reviews
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative fade-up" style="transition-delay: 0.2s">
+          <div class="relative">
+            <img
+              src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80"
+              class="rounded-3xl shadow-2xl float"
+              alt="Fitness App"
+            />
+            <div
+              class="absolute -bottom-6 -left-6 bg-zinc-900 p-5 rounded-2xl border border-white/10 shadow-xl"
+            >
+              <div class="flex items-center gap-4">
+                <div
+                  class="w-14 h-14 rounded-full bg-lime/20 flex items-center justify-center"
+                >
+                  <i data-lucide="flame" class="w-6 h-6 text-lime"></i>
+                </div>
+                <div>
+                  <span class="block text-2xl font-display font-bold text-white"
+                    >2,847</span
+                  >
+                  <span class="text-sm text-white/60"
+                    >Calories burned today</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div
+              class="absolute -top-4 -right-4 bg-zinc-900 p-4 rounded-2xl border border-white/10 shadow-xl"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-full bg-electric/20 flex items-center justify-center"
+                >
+                  <i data-lucide="trophy" class="w-5 h-5 text-electric"></i>
+                </div>
+                <div>
+                  <span class="block text-sm font-medium text-white"
+                    >7 Day Streak!</span
+                  >
+                  <span class="text-xs text-white/60">Keep it up 👏</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Logos -->
+    <section class="py-12 border-t border-b border-white/5">
+      <div class="max-w-7xl mx-auto px-6">
+        <p
+          class="text-center text-sm uppercase tracking-[0.3em] text-white/40 mb-8"
+        >
+          Featured In
+        </p>
+        <div
+          class="flex flex-wrap justify-center items-center gap-12 opacity-50"
+        >
+          <span class="text-2xl font-bold text-white/60">TechCrunch</span>
+          <span class="text-2xl font-serif text-white/60 italic">Forbes</span>
+          <span class="text-2xl font-bold text-white/60">WIRED</span>
+          <span class="text-2xl font-display text-white/60">Men's Health</span>
+          <span class="text-2xl font-serif text-white/60">Vogue</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="py-24">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16 fade-up">
+          <span class="text-xs uppercase tracking-[0.3em] text-electric"
+            >Powerful Features</span
+          >
+          <h2 class="mt-3 text-3xl md:text-5xl font-display text-white">
+            Everything You Need to <span class="text-gradient">Succeed</span>
+          </h2>
+          <p class="mt-4 text-white/60 max-w-2xl mx-auto">
+            Our app is packed with features designed by fitness experts to help
+            you reach your goals faster.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
+          <div
+            class="feature-card fade-up bg-zinc-900/50 border border-white/10 rounded-2xl p-8"
+          >
+            <div
+              class="w-14 h-14 rounded-2xl bg-electric/20 flex items-center justify-center mb-6"
+            >
+              <i data-lucide="brain" class="w-6 h-6 text-electric"></i>
+            </div>
+            <h3 class="text-xl font-display font-semibold text-white mb-3">
+              AI-Powered Coaching
+            </h3>
+            <p class="text-sm text-white/60 leading-relaxed">
+              Get personalized workout recommendations and meal plans tailored
+              to your goals, fitness level, and schedule.
+            </p>
+          </div>
+
+          <div
+            class="feature-card fade-up bg-zinc-900/50 border border-white/10 rounded-2xl p-8"
+          >
+            <div
+              class="w-14 h-14 rounded-2xl bg-cyan/20 flex items-center justify-center mb-6"
+            >
+              <i data-lucide="target" class="w-6 h-6 text-cyan"></i>
+            </div>
+            <h3 class="text-xl font-display font-semibold text-white mb-3">
+              500+ Exercises
+            </h3>
+            <p class="text-sm text-white/60 leading-relaxed">
+              Access our comprehensive library of exercises with video
+              demonstrations and form corrections.
+            </p>
+          </div>
+
+          <div
+            class="feature-card fade-up bg-zinc-900/50 border border-white/10 rounded-2xl p-8"
+          >
+            <div
+              class="w-14 h-14 rounded-2xl bg-lime/20 flex items-center justify-center mb-6"
+            >
+              <i data-lucide="pie-chart" class="w-6 h-6 text-lime"></i>
+            </div>
+            <h3 class="text-xl font-display font-semibold text-white mb-3">
+              Progress Tracking
+            </h3>
+            <p class="text-sm text-white/60 leading-relaxed">
+              Track your workouts, measurements, and body composition changes
+              with detailed analytics.
+            </p>
+          </div>
+
+          <div
+            class="feature-card fade-up bg-zinc-900/50 border border-white/10 rounded-2xl p-8"
+          >
+            <div
+              class="w-14 h-14 rounded-2xl bg-pink-500/20 flex items-center justify-center mb-6"
+            >
+              <i data-lucide="utensils" class="w-6 h-6 text-pink-400"></i>
+            </div>
+            <h3 class="text-xl font-display font-semibold text-white mb-3">
+              Meal Planning
+            </h3>
+            <p class="text-sm text-white/60 leading-relaxed">
+              Get delicious, nutritionist-approved recipes and automatic grocery
+              list generation.
+            </p>
+          </div>
+
+          <div
+            class="feature-card fade-up bg-zinc-900/50 border border-white/10 rounded-2xl p-8"
+          >
+            <div
+              class="w-14 h-14 rounded-2xl bg-amber-500/20 flex items-center justify-center mb-6"
+            >
+              <i data-lucide="users" class="w-6 h-6 text-amber-400"></i>
+            </div>
+            <h3 class="text-xl font-display font-semibold text-white mb-3">
+              Community Support
+            </h3>
+            <p class="text-sm text-white/60 leading-relaxed">
+              Join our vibrant community of fitness enthusiasts for motivation,
+              tips, and accountability.
+            </p>
+          </div>
+
+          <div
+            class="feature-card fade-up bg-zinc-900/50 border border-white/10 rounded-2xl p-8"
+          >
+            <div
+              class="w-14 h-14 rounded-2xl bg-violet-500/20 flex items-center justify-center mb-6"
+            >
+              <i data-lucide="watch" class="w-6 h-6 text-violet-400"></i>
+            </div>
+            <h3 class="text-xl font-display font-semibold text-white mb-3">
+              Apple Watch & Fitbit
+            </h3>
+            <p class="text-sm text-white/60 leading-relaxed">
+              Seamlessly sync with your favorite wearables for accurate calorie
+              and activity tracking.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-24 bg-zinc-900/50">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16 fade-up">
+          <span class="text-xs uppercase tracking-[0.3em] text-electric"
+            >Simple Process</span
+          >
+          <h2 class="mt-3 text-3xl md:text-5xl font-display text-white">
+            How BetterFit Works
+          </h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 stagger-children">
+          <div class="fade-up text-center">
+            <div
+              class="w-20 h-20 rounded-full bg-gradient-to-br from-electric to-cyan flex items-center justify-center mx-auto mb-6 text-3xl font-display font-bold text-white"
+            >
+              1
+            </div>
+            <h3 class="text-xl font-display font-semibold text-white mb-3">
+              Create Your Profile
+            </h3>
+            <p class="text-white/60">
+              Tell us about your fitness goals, current level, and any
+              preferences. Takes just 2 minutes.
+            </p>
+          </div>
+
+          <div class="fade-up text-center">
+            <div
+              class="w-20 h-20 rounded-full bg-gradient-to-br from-cyan to-lime flex items-center justify-center mx-auto mb-6 text-3xl font-display font-bold text-white"
+            >
+              2
+            </div>
+            <h3 class="text-xl font-display font-semibold text-white mb-3">
+              Get Your Plan
+            </h3>
+            <p class="text-white/60">
+              Receive a personalized workout and nutrition plan designed by
+              certified experts.
+            </p>
+          </div>
+
+          <div class="fade-up text-center">
+            <div
+              class="w-20 h-20 rounded-full bg-gradient-to-br from-lime to-electric flex items-center justify-center mx-auto mb-6 text-3xl font-display font-bold text-white"
+            >
+              3
+            </div>
+            <h3 class="text-xl font-display font-semibold text-white mb-3">
+              Track & Transform
+            </h3>
+            <p class="text-white/60">
+              Log your workouts, watch your progress, and watch the results come
+              in.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="py-24">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16 fade-up">
+          <span class="text-xs uppercase tracking-[0.3em] text-electric"
+            >Simple Pricing</span
+          >
+          <h2 class="mt-3 text-3xl md:text-5xl font-display text-white">
+            Choose Your Plan
+          </h2>
+          <p class="mt-4 text-white/60">
+            Start free and upgrade when you're ready.
+          </p>
+        </div>
+
+        <div
+          class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto stagger-children"
+        >
+          <!-- Free Plan -->
+          <div
+            class="pricing-card fade-up bg-zinc-900/50 border border-white/10 rounded-2xl p-8"
+          >
+            <span class="text-sm text-white/60 uppercase tracking-wider"
+              >Free</span
+            >
+            <div class="mt-4 mb-6">
+              <span class="text-5xl font-display font-bold text-white">$0</span>
+              <span class="text-white/60">/month</span>
+            </div>
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-center gap-3 text-sm text-white/80">
+                <i data-lucide="check" class="w-5 h-5 text-lime"></i>
+                Basic workout library
+              </li>
+              <li class="flex items-center gap-3 text-sm text-white/80">
+                <i data-lucide="check" class="w-5 h-5 text-lime"></i>
+                Progress tracking
+              </li>
+              <li class="flex items-center gap-3 text-sm text-white/80">
+                <i data-lucide="check" class="w-5 h-5 text-lime"></i>
+                Community access
+              </li>
+              <li class="flex items-center gap-3 text-sm text-white/40">
+                <i data-lucide="x" class="w-5 h-5"></i>
+                AI coaching
+              </li>
+              <li class="flex items-center gap-3 text-sm text-white/40">
+                <i data-lucide="x" class="w-5 h-5"></i>
+                Meal planning
+              </li>
+            </ul>
+            <button
+              class="w-full btn-secondary py-3 rounded-full text-white font-medium"
+            >
+              Get Started
+            </button>
+          </div>
+
+          <!-- Pro Plan -->
+          <div
+            class="pricing-card fade-up bg-gradient-to-b from-electric/20 to-cyan/10 border border-electric/30 rounded-2xl p-8 relative"
+          >
+            <div
+              class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-electric rounded-full text-xs font-medium text-white uppercase tracking-wider"
+            >
+              Most Popular
+            </div>
+            <span class="text-sm text-electric uppercase tracking-wider"
+              >Pro</span
+            >
+            <div class="mt-4 mb-6">
+              <span class="text-5xl font-display font-bold text-white"
+                >$19</span
+              >
+              <span class="text-white/60">/month</span>
+            </div>
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-center gap-3 text-sm text-white/80">
+                <i data-lucide="check" class="w-5 h-5 text-lime"></i>
+                Full workout library (500+)
+              </li>
+              <li class="flex items-center gap-3 text-sm text-white/80">
+                <i data-lucide="check" class="w-5 h-5 text-lime"></i>
+                Advanced analytics
+              </li>
+              <li class="flex items-center gap-3 text-sm text-white/80">
+                <i data-lucide="check" class="w-5 h-5 text-lime"></i>
+                AI workout coaching
+              </li>
+              <li class="flex items-center gap-3 text-sm text-white/80">
+                <i data-lucide="check" class="w-5 h-5 text-lime"></i>
+                Meal planning
+              </li>
+              <li class="flex items-center gap-3 text-sm text-white/80">
+                <i data-lucide="check" class="w-5 h-5 text-lime"></i>
+                Priority support
+              </li>
+            </ul>
+            <button
+              class="w-full btn-primary py-3 rounded-full text-white font-medium"
+            >
+              Start 7-Day Free Trial
+            </button>
+          </div>
+
+          <!-- Elite Plan -->
+          <div
+            class="pricing-card fade-up bg-zinc-900/50 border border-white/10 rounded-2xl p-8"
+          >
+            <span class="text-sm text-white/60 uppercase tracking-wider"
+              >Elite</span
+            >
+            <div class="mt-4 mb-6">
+              <span class="text-5xl font-display font-bold text-white"
+                >$49</span
+              >
+              <span class="text-white/60">/month</span>
+            </div>
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-center gap-3 text-sm text-white/80">
+                <i data-lucide="check" class="w-5 h-5 text-lime"></i>
+                Everything in Pro
+              </li>
+              <li class="flex items-center gap-3 text-sm text-white/80">
+                <i data-lucide="check" class="w-5 h-5 text-lime"></i>
+                1-on-1 coaching call
+              </li>
+              <li class="flex items-center gap-3 text-sm text-white/80">
+                <i data-lucide="check" class="w-5 h-5 text-lime"></i>
+                Custom meal plans
+              </li>
+              <li class="flex items-center gap-3 text-sm text-white/80">
+                <i data-lucide="check" class="w-5 h-5 text-lime"></i>
+                Supplement guidance
+              </li>
+              <li class="flex items-center gap-3 text-sm text-white/80">
+                <i data-lucide="check" class="w-5 h-5 text-lime"></i>
+                VIP community
+              </li>
+            </ul>
+            <button
+              class="w-full btn-secondary py-3 rounded-full text-white font-medium"
+            >
+              Go Elite
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="py-24 bg-zinc-900/50">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16 fade-up">
+          <span class="text-xs uppercase tracking-[0.3em] text-electric"
+            >Success Stories</span
+          >
+          <h2 class="mt-3 text-3xl md:text-4xl font-display text-white">
+            Real Results from Real Users
+          </h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 stagger-children">
+          <div
+            class="fade-up bg-zinc-900/50 border border-white/10 rounded-2xl p-8"
+          >
+            <div class="flex items-center gap-1 text-lime mb-4">
+              <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+            </div>
+            <p class="text-white/70 italic leading-relaxed">
+              "Lost 25 lbs in 3 months! The AI coaching feature adapts to my
+              progress and keeps me challenged. Best fitness app I've ever
+              used."
+            </p>
+            <div class="flex items-center gap-4 mt-6">
+              <img
+                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80"
+                class="w-12 h-12 rounded-full object-cover"
+                alt="User"
+              />
+              <div>
+                <span class="block font-medium text-white">Sarah M.</span>
+                <span class="text-sm text-white/50">Lost 25 lbs</span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="fade-up bg-zinc-900/50 border border-white/10 rounded-2xl p-8"
+          >
+            <div class="flex items-center gap-1 text-lime mb-4">
+              <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+            </div>
+            <p class="text-white/70 italic leading-relaxed">
+              "As a busy dad, I needed something efficient. BetterFit's
+              20-minute workouts are perfect for my schedule. Down 40 lbs and
+              counting!"
+            </p>
+            <div class="flex items-center gap-4 mt-6">
+              <img
+                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80"
+                class="w-12 h-12 rounded-full object-cover"
+                alt="User"
+              />
+              <div>
+                <span class="block font-medium text-white">Marcus J.</span>
+                <span class="text-sm text-white/50">Lost 40 lbs</span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="fade-up bg-zinc-900/50 border border-white/10 rounded-2xl p-8"
+          >
+            <div class="flex items-center gap-1 text-lime mb-4">
+              <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+            </div>
+            <p class="text-white/70 italic leading-relaxed">
+              "The meal planning feature alone is worth it. I've learned so much
+              about nutrition. Finally achieved the six-pack I've always
+              wanted!"
+            </p>
+            <div class="flex items-center gap-4 mt-6">
+              <img
+                src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&q=80"
+                class="w-12 h-12 rounded-full object-cover"
+                alt="User"
+              />
+              <div>
+                <span class="block font-medium text-white">David K.</span>
+                <span class="text-sm text-white/50">Gained muscle</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="py-24">
+      <div class="max-w-4xl mx-auto px-6 text-center">
+        <div class="fade-up">
+          <h2
+            class="text-4xl md:text-6xl font-display text-white leading-tight"
+          >
+            Ready to start your
+            <span class="text-gradient">transformation</span>?
+          </h2>
+          <p class="mt-6 text-lg text-white/60 max-w-xl mx-auto">
+            Join over 50,000 people who have already transformed their lives
+            with BetterFit.
+          </p>
+          <div class="mt-10 flex flex-wrap justify-center gap-4">
+            <a
+              href="#pricing"
+              class="btn-primary px-10 py-4 rounded-full text-white font-medium inline-flex items-center gap-2"
+            >
+              Start Your Free Trial
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+          <p class="mt-6 text-sm text-white/40">
+            No credit card required • Cancel anytime
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-zinc-900 py-12">
+      <div class="max-w-7xl mx-auto px-6">
+        <div
+          class="flex flex-col md:flex-row items-center justify-between gap-6"
+        >
+          <div class="flex items-center gap-2">
+            <div
+              class="w-8 h-8 rounded-lg bg-gradient-to-br from-electric to-cyan flex items-center justify-center"
+            >
+              <i data-lucide="activity" class="w-4 h-4 text-white"></i>
+            </div>
+            <span class="font-display font-bold text-xl text-white"
+              >BetterFit</span
+            >
+          </div>
+          <div class="flex items-center gap-6 text-sm text-white/50">
+            <a href="#" class="hover:text-white transition-colors">Privacy</a>
+            <a href="#" class="hover:text-white transition-colors">Terms</a>
+            <a href="#" class="hover:text-white transition-colors">Contact</a>
+          </div>
+          <p class="text-sm text-white/40">
+            © 2024 BetterFit. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Scroll animations
+      const observerOptions = {
+        threshold: 0.15,
+        rootMargin: "0px 0px -50px 0px",
+      };
+      const fadeObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      }, observerOptions);
+      document
+        .querySelectorAll(".fade-up")
+        .forEach((el) => fadeObserver.observe(el));
+
+      // Stagger children
+      document.querySelectorAll(".stagger-children").forEach((parent) => {
+        Array.from(parent.children).forEach((child, i) => {
+          child.style.transitionDelay = `${i * 100}ms`;
+        });
+      });
+
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

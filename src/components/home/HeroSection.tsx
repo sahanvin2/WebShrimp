@@ -1,198 +1,268 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Star, Sparkles, Zap, ShieldCheck, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { siteConfig } from "@/lib/site";
 
 const HeroSection = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [framesLoaded, setFramesLoaded] = useState(0);
-  const [isAnimationReady, setIsAnimationReady] = useState(false);
-  const [totalFrames, setTotalFrames] = useState(1);
-  
-  const framesRef = useRef<HTMLImageElement[]>([]);
-  const currentFrameIndexRef = useRef(-1);
 
   useEffect(() => {
-    // Dynamically load all frames from the src/assets directory using Vite's glob import
-    const frameUrlsObj = import.meta.glob('../../assets/Hero Section/ezgif-frame-*.jpg', { eager: true, import: 'default' });
-    
-    // Sort to ensure ezgif-frame-001 comes before ezgif-frame-002
-    const urls = Object.keys(frameUrlsObj).sort().map(k => frameUrlsObj[k] as string);
-    const numFramesActual = urls.length;
-    
-    setTotalFrames(numFramesActual > 0 ? numFramesActual : 1);
-
-    if (numFramesActual === 0) {
-      console.warn("No frames found in src/assets/Hero Section!");
-      setIsAnimationReady(true);
-      return;
-    }
-
-    let loaded = 0;
-    const frames: HTMLImageElement[] = [];
-    
-    urls.forEach((url) => {
-      const img = new Image();
-      img.src = url;
-      img.onload = () => {
-        loaded++;
-        setFramesLoaded(loaded);
-        if (loaded === numFramesActual) {
-          setIsAnimationReady(true);
-        }
-      };
-      img.onerror = () => {
-        console.warn("Failed to load frame:", url);
-        loaded++;
-        if (loaded === numFramesActual) setIsAnimationReady(true);
-      };
-      frames.push(img);
-    });
-    
-    framesRef.current = frames;
-  }, []);
-
-  useEffect(() => {
-    if (!isAnimationReady || !canvasRef.current || framesRef.current.length === 0) return;
-    
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d', { alpha: false });
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const drawFrame = (index: number) => {
-      const img = framesRef.current[index];
-      if (!img || !img.complete || img.naturalWidth === 0) return;
+    const TARGET_DOTS = 4000;
+    const MOUSE_RADIUS = 150;
+    const BASE_SPEED = 0.008;
 
-      if (canvas.width !== img.naturalWidth || canvas.height !== img.naturalHeight) {
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-      }
+    const PALETTE = [
+      [0, 212, 255],
+      [0, 110, 255],
+      [255, 0, 80],
+      [255, 69, 0],
+      [255, 140, 0],
+    ];
 
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const getGradientColor = (value: number) => {
+      const clamped = Math.max(0, Math.min(1, value));
+      const scaled = clamped * (PALETTE.length - 1);
+      const index = Math.floor(scaled);
+      const nextIndex = Math.min(index + 1, PALETTE.length - 1);
+      const fraction = scaled - index;
+
+      const c1 = PALETTE[index];
+      const c2 = PALETTE[nextIndex];
+
+      const r = Math.round(c1[0] + (c2[0] - c1[0]) * fraction);
+      const g = Math.round(c1[1] + (c2[1] - c1[1]) * fraction);
+      const b = Math.round(c1[2] + (c2[2] - c1[2]) * fraction);
+
+      return `${r}, ${g}, ${b}`;
     };
 
-    let ticking = false;
+    let dots: Dot[] = [];
+    let mouse = { x: -1000, y: -1000 };
+    let animationFrameId = 0;
 
-    const updateScroll = () => {
-      const scrollY = window.scrollY;
-      const maxScroll = window.innerHeight * 0.6; 
-      
-      const progress = Math.max(0, Math.min(1, scrollY / maxScroll));
-      let frameIndex = Math.floor(progress * totalFrames);
-      frameIndex = Math.min(totalFrames - 1, frameIndex);
-      
-      if (frameIndex !== currentFrameIndexRef.current) {
-        currentFrameIndexRef.current = frameIndex;
-        drawFrame(frameIndex);
+    class Dot {
+      baseX: number;
+      baseY: number;
+      baseRadius: number;
+      activeRadius: number;
+      baseAlpha: number;
+      activeAlpha: number;
+      sx: number;
+      sy: number;
+      color: string;
+      localTime: number;
+      speedMultiplier: number;
+      x: number;
+      y: number;
+      drawRadius: number;
+      drawAlpha: number;
+
+      constructor(x: number, y: number) {
+        this.baseX = x;
+        this.baseY = y;
+        this.baseRadius = Math.random() * 1.5 + 1.2;
+        this.activeRadius = this.baseRadius;
+        this.baseAlpha = Math.random() * 0.4 + 0.6;
+        this.activeAlpha = this.baseAlpha;
+        this.sx = x * 0.0015;
+        this.sy = y * 0.003;
+        const colorPhase = (Math.sin(this.sx * 1.5 - this.sy * 1.5) + 1) / 2;
+        this.color = getGradientColor(colorPhase);
+        this.localTime = x * 0.002 + y * 0.002;
+        this.speedMultiplier = 1;
+        this.x = x;
+        this.y = y;
+        this.drawRadius = 0;
+        this.drawAlpha = 0;
       }
-      ticking = false;
+
+      update() {
+        const dx = mouse.x - this.baseX;
+        const dy = mouse.y - this.baseY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        let intensity = 0;
+        if (dist < MOUSE_RADIUS) {
+          intensity = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
+          intensity = Math.pow(intensity, 1.5);
+        }
+
+        const targetRadius = this.baseRadius + intensity * 2.5;
+        const targetAlpha = this.baseAlpha + intensity * (1 - this.baseAlpha);
+        const targetSpeedMultiplier = 1 + intensity * 4;
+
+        this.activeRadius += (targetRadius - this.activeRadius) * 0.1;
+        this.activeAlpha += (targetAlpha - this.activeAlpha) * 0.1;
+        this.speedMultiplier += (targetSpeedMultiplier - this.speedMultiplier) * 0.05;
+
+        this.localTime += BASE_SPEED * this.speedMultiplier;
+
+        const zPhase = this.localTime * 1.2 + this.sx * 3.0 - this.sy * 2.5;
+        const z = Math.sin(zPhase);
+        const depth = (z + 1) / 2;
+
+        this.drawRadius = this.activeRadius * (0.3 + depth * 0.9);
+        this.drawAlpha = this.activeAlpha * (0.1 + depth * 0.9);
+
+        const waveX = Math.cos(this.localTime * 0.7 + this.sy * 2.2) * 80;
+        const waveY = Math.sin(this.localTime * 0.8 + this.sx * 2.5) * 80;
+
+        this.x = this.baseX + waveX * (0.7 + depth * 0.5);
+        this.y = this.baseY + waveY * (0.7 + depth * 0.5);
+      }
+
+      draw(context: CanvasRenderingContext2D) {
+        if (this.drawAlpha < 0.01) return;
+        context.fillStyle = `rgba(${this.color}, ${this.drawAlpha})`;
+        const size = this.drawRadius * 2;
+        context.fillRect(this.x - this.drawRadius, this.y - this.drawRadius, size, size);
+      }
+    }
+
+    const initGrid = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      dots = [];
+
+      const overscan = 120;
+      const computeWidth = canvas.width + overscan * 2;
+      const computeHeight = canvas.height + overscan * 2;
+      const area = computeWidth * computeHeight;
+      const spacing = Math.sqrt(area / TARGET_DOTS);
+
+      const cols = Math.floor(computeWidth / spacing);
+      const rows = Math.floor(computeHeight / spacing);
+
+      const marginX = -overscan + (computeWidth - cols * spacing) / 2 + spacing / 2;
+      const marginY = -overscan + (computeHeight - rows * spacing) / 2 + spacing / 2;
+
+      for (let xIndex = 0; xIndex < cols; xIndex += 1) {
+        for (let yIndex = 0; yIndex < rows; yIndex += 1) {
+          dots.push(new Dot(marginX + xIndex * spacing, marginY + yIndex * spacing));
+        }
+      }
     };
 
-    const onScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(updateScroll);
-        ticking = true;
-      }
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      dots.forEach((dot) => {
+        dot.update();
+        dot.draw(ctx);
+      });
+
+      animationFrameId = requestAnimationFrame(animate);
     };
 
-    drawFrame(0);
-    currentFrameIndexRef.current = 0;
-    updateScroll();
+    const handleResize = () => {
+      cancelAnimationFrame(animationFrameId);
+      initGrid();
+      animate();
+    };
 
-    window.addEventListener('scroll', onScroll, { passive: true });
-    
+    const handleMouseMove = (event: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = event.clientX - rect.left;
+      mouse.y = event.clientY - rect.top;
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (event.touches.length === 0) return;
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = event.touches[0].clientX - rect.left;
+      mouse.y = event.touches[0].clientY - rect.top;
+    };
+
+    const handlePointerLeave = () => {
+      mouse = { x: -1000, y: -1000 };
+    };
+
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("mouseleave", handlePointerLeave);
+    window.addEventListener("touchend", handlePointerLeave);
+
+    initGrid();
+    animate();
+
     return () => {
-      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("mouseleave", handlePointerLeave);
+      window.removeEventListener("touchend", handlePointerLeave);
+      cancelAnimationFrame(animationFrameId);
     };
-  }, [isAnimationReady, totalFrames]);
+  }, []);
 
   return (
-    <section className="relative overflow-hidden bg-hero min-h-[100svh] flex flex-col justify-center">
-      
-      {/* Floating blobs for light theme */}
-      <div className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-brand-blue/20 blur-3xl animate-float-slow z-0" />
-      <div className="pointer-events-none absolute top-40 right-0 h-80 w-80 rounded-full bg-brand-orange/15 blur-3xl animate-float-slower z-0" />
+    <section className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden bg-white">
+      <canvas ref={canvasRef} className="absolute inset-0 z-0 h-full w-full" />
+      <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(circle_at_center,hsl(0_0%_100%/0.88),hsl(0_0%_100%/0.62)_42%,transparent_72%)]" />
+      <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-white via-white/35 to-transparent" />
 
-      {/* Absolute Canvas Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        {!isAnimationReady && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-20 backdrop-blur-sm">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-10 h-10 border-4 border-brand-blue/30 border-t-brand-blue rounded-full animate-spin"></div>
-              <p className="text-brand-navy text-sm font-medium">Loading sequence ({Math.floor((framesLoaded / totalFrames) * 100)}%)</p>
-            </div>
-          </div>
-        )}
-        
-        {/* mix-blend-multiply perfectly blends the white background into the light theme */}
-        {/* object-[100%_20%] shifts the rocket slightly up so the smoke doesn't hide behind the bottom pills */}
-        <canvas 
-          ref={canvasRef} 
-          className="absolute top-0 left-0 w-full h-full object-cover object-[80%_20%] md:object-[100%_20%] mix-blend-multiply opacity-100 -translate-y-12 md:-translate-y-16"
-        />
-        
-        {/* Gradients to ensure text readability, but reduced opacity to make right side more visible */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/50 to-transparent z-10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent z-10" />
-        
-      </div>
-
-      <div className="container-x relative z-20 pt-32 pb-12">
-        <div className="max-w-2xl">
-          <span className="section-label animate-fade-up" style={{ animationDelay: "0.05s" }}>
-            <Sparkles className="inline h-3 w-3 mr-1.5 -mt-0.5" />
-            Web & Software Agency · Sri Lanka
+      <div className="container-x relative z-20 pt-32 pb-16">
+        <div className="pointer-events-auto mx-auto flex max-w-4xl flex-col items-center text-center">
+          <span className="section-label mx-auto animate-fade-up border-border bg-white" style={{ animationDelay: "0.05s" }}>
+            <Sparkles className="mr-1.5 inline h-3 w-3 -mt-0.5 text-brand-blue" />
+            {siteConfig.heroLabel}
           </span>
 
-          <h1 className="mt-5 text-4xl sm:text-5xl lg:text-7xl font-bold leading-[1.05] text-brand-navy animate-fade-up" style={{ animationDelay: "0.1s" }}>
-            We Build{" "}
-            <span className="text-brand-blue">Websites</span>
+          <h1
+            className="mt-5 animate-fade-up text-4xl font-bold leading-[1.05] text-brand-navy sm:text-5xl lg:text-7xl"
+            style={{ animationDelay: "0.1s" }}
+          >
+            We Build <span className="text-brand-blue">Websites</span>
             <br />
             That <span className="text-gradient-orange">Grow Your Business.</span>
           </h1>
 
-          <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-xl animate-fade-up" style={{ animationDelay: "0.2s" }}>
-            From stunning websites to powerful web applications, we build digital experiences that help your business stand out and succeed online.
+          <p
+            className="mt-6 max-w-2xl animate-fade-up text-lg text-muted-foreground sm:text-xl"
+            style={{ animationDelay: "0.2s" }}
+          >
+            From stunning websites to powerful web applications, we build digital experiences that help your business
+            stand out and succeed online.
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-4 animate-fade-up" style={{ animationDelay: "0.3s" }}>
-            <Button asChild variant="hero" size="lg" className="h-14 px-8 text-base">
+          <div className="mt-8 flex flex-wrap justify-center gap-4 animate-fade-up" style={{ animationDelay: "0.3s" }}>
+            <Button asChild variant="hero" size="lg" className="h-14 px-8 text-base shadow-lg shadow-brand-blue/20">
               <Link to="/services">Explore Services</Link>
             </Button>
-            <Button asChild variant="heroOutline" size="lg" className="h-14 px-8 text-base bg-white/50 backdrop-blur-sm">
+            <Button
+              asChild
+              variant="heroOutline"
+              size="lg"
+              className="h-14 bg-white/50 px-8 text-base backdrop-blur-sm"
+            >
               <Link to="/portfolio">
-                View Our Work <ArrowRight className="h-5 w-5 ml-2" />
+                View Our Work <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
           </div>
 
-          {/* Trust badge */}
-          <div className="mt-12 inline-flex items-center gap-4 rounded-2xl bg-white/80 backdrop-blur-md border border-border px-6 py-4 shadow-card animate-fade-up" style={{ animationDelay: "0.4s" }}>
-            <div className="flex">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="h-5 w-5 fill-brand-yellow text-brand-yellow" />
-              ))}
-            </div>
-            <div className="text-sm">
-              <span className="font-semibold text-brand-navy block">5.0 Customer Rating</span>
-              <span className="text-muted-foreground">Trusted by 200+ Businesses</span>
-            </div>
-          </div>
         </div>
 
-        {/* Feature pills */}
-        <div className="mt-24 grid sm:grid-cols-3 gap-6 relative z-20">
+        <div className="relative z-20 mx-auto mt-20 grid max-w-5xl gap-6 pointer-events-auto sm:grid-cols-3">
           {[
-            { Icon: Palette, title: "Modern Design", desc: "Beautiful & user-friendly" },
-            { Icon: Zap, title: "High Performance", desc: "Fast & SEO optimized" },
+            { Icon: Palette, title: "Modern Design", desc: "Beautiful and user-friendly" },
+            { Icon: Zap, title: "High Performance", desc: "Fast and SEO optimized" },
             { Icon: ShieldCheck, title: "Reliable Support", desc: "We are here for you" },
-          ].map(({ Icon, title, desc }, i) => (
+          ].map(({ Icon, title, desc }, index) => (
             <div
               key={title}
-              className="reveal flex items-center gap-4 rounded-2xl bg-white/90 backdrop-blur-md border border-border px-6 py-5 shadow-card hover:shadow-lg transition-all card-lift"
-              style={{ transitionDelay: `${i * 80}ms` }}
+              className="reveal flex items-center gap-4 rounded-2xl border border-border bg-white/90 px-6 py-5 shadow-card transition-all hover:shadow-lg card-lift backdrop-blur-md"
+              style={{ transitionDelay: `${index * 80}ms` }}
             >
-              <div className="h-12 w-12 rounded-xl bg-brand-blue-soft flex items-center justify-center text-brand-blue">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-blue-soft text-brand-blue">
                 <Icon className="h-6 w-6" />
               </div>
               <div>

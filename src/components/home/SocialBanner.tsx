@@ -2,8 +2,19 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getPublicAssetUrl } from "@/lib/site";
 
-const IMAGES = Array.from({ length: 9 }, (_, i) => `/social/img_${i + 1}.webp`);
+const IMAGES = [
+  getPublicAssetUrl("/portfolio_thumbs/Design & Develop.webp"),
+  getPublicAssetUrl("/portfolio_thumbs/Business Websites.webp"),
+  getPublicAssetUrl("/portfolio_thumbs/E-Commerce Websites.webp"),
+  getPublicAssetUrl("/portfolio_thumbs/Portfolio Websites.webp"),
+  getPublicAssetUrl("/portfolio_thumbs/Landing Pages.webp"),
+  getPublicAssetUrl("/portfolio_thumbs/Design & Develop.webp"),
+  getPublicAssetUrl("/portfolio_thumbs/Business Websites.webp"),
+  getPublicAssetUrl("/portfolio_thumbs/E-Commerce Websites.webp"),
+  getPublicAssetUrl("/portfolio_thumbs/Portfolio Websites.webp"),
+];
 const TOTAL = IMAGES.length;
 
 /* ─── Easing helpers ─────────────────────────────────────────────────────── */
@@ -155,24 +166,24 @@ const SocialBanner = () => {
               className="inline-block text-[11px] font-extrabold tracking-[0.22em] uppercase"
               style={{ color: "rgba(255,255,255,0.65)" }}
             >
-              WE ALSO CREATE STUNNING
+              WE ALSO BUILD POWERFUL
             </span>
 
             <h2
               className="mt-4 font-bold leading-[1.06] tracking-tight"
               style={{ fontSize: "clamp(2rem,4.5vw,3rem)" }}
             >
-              Posters &amp; Videos
+              Web Apps &amp; Custom
               <span
                 className="block"
                 style={{ color: "#FFB800" }}
               >
-                for Social Media
+                Software Solutions
               </span>
             </h2>
 
             <p className="mt-4 text-base sm:text-lg leading-relaxed max-w-lg mx-auto lg:mx-0" style={{ color: "rgba(255,255,255,0.82)" }}>
-              Boost your brand with creative designs and engaging videos that get results.
+              Elevate your business with bespoke software tailored to streamline your operations and scale your impact.
             </p>
 
             <Button
@@ -260,8 +271,9 @@ const ReelStrip = ({
           >
             <img
               src={IMAGES[imgIdx]}
-              alt={`Social media work ${imgIdx + 1}`}
+              alt={`Software and web development work ${imgIdx + 1}`}
               loading="eager"
+              decoding="async"
             />
           </div>
         );

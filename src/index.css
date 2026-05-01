@@ -9,14 +9,14 @@
 @layer base {
   :root {
     /* Brand */
-    --brand-blue: 217 100% 55%;          /* #1A6BFF */
-    --brand-blue-dark: 217 100% 45%;
-    --brand-blue-soft: 222 100% 97%;     /* light bg */
-    --brand-orange: 25 100% 50%;         /* #FF6B00 */
-    --brand-orange-soft: 25 100% 95%;
-    --brand-yellow: 43 100% 50%;         /* #FFB800 */
-    --brand-navy: 224 71% 15%;           /* #0B1B3F */
-    --brand-navy-deep: 224 71% 10%;
+    --brand-blue: 0 0% 0%;          /* #000000 */
+    --brand-blue-dark: 0 0% 10%;
+    --brand-blue-soft: 0 0% 96%;     /* light bg */
+    --brand-orange: 0 0% 20%;         /* #333333 */
+    --brand-orange-soft: 0 0% 90%;
+    --brand-yellow: 0 0% 40%;         /* #666666 */
+    --brand-navy: 0 0% 5%;           /* #0a0a0a */
+    --brand-navy-deep: 0 0% 0%;
 
     /* Semantic */
     --background: 0 0% 100%;
@@ -29,7 +29,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 220 26% 23%;
 
-    --primary: 217 100% 55%;
+    --primary: 0 0% 0%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 222 100% 97%;
@@ -38,31 +38,31 @@
     --muted: 222 100% 97%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 25 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 222 100% 97%;
+    --accent-foreground: 220 26% 23%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 220 20% 91%;
     --input: 220 20% 91%;
-    --ring: 217 100% 55%;
+    --ring: 0 0% 0%;
 
     --radius: 1rem;
 
     /* Gradients */
-    --gradient-hero: radial-gradient(ellipse at top left, hsl(var(--brand-blue) / 0.18), transparent 55%),
-                     radial-gradient(ellipse at bottom right, hsl(var(--brand-orange) / 0.12), transparent 50%),
-                     linear-gradient(180deg, hsl(var(--brand-blue-soft)), hsl(0 0% 100%));
-    --gradient-blue: linear-gradient(135deg, hsl(var(--brand-blue)), hsl(var(--brand-navy)));
-    --gradient-orange: linear-gradient(135deg, hsl(var(--brand-orange)), hsl(var(--brand-yellow)));
-    --gradient-text-orange: linear-gradient(135deg, hsl(var(--brand-orange)), hsl(38 100% 55%));
+    --gradient-hero: radial-gradient(ellipse at top left, hsl(0 0% 0% / 0.05), transparent 55%),
+                     radial-gradient(ellipse at bottom right, hsl(0 0% 0% / 0.03), transparent 50%),
+                     linear-gradient(180deg, hsl(0 0% 96%), hsl(0 0% 100%));
+    --gradient-blue: linear-gradient(135deg, hsl(0 0% 20%), hsl(0 0% 0%));
+    --gradient-orange: linear-gradient(135deg, hsl(0 0% 40%), hsl(0 0% 20%));
+    --gradient-text-orange: linear-gradient(135deg, hsl(0 0% 30%), hsl(0 0% 0%));
 
     /* Shadows */
-    --shadow-card: 0 4px 24px -8px hsl(var(--brand-blue) / 0.12);
-    --shadow-card-hover: 0 18px 40px -12px hsl(var(--brand-blue) / 0.25);
-    --shadow-glow: 0 10px 40px -10px hsl(var(--brand-blue) / 0.45);
-    --shadow-orange: 0 10px 30px -10px hsl(var(--brand-orange) / 0.45);
+    --shadow-card: 0 4px 24px -8px hsl(0 0% 0% / 0.08);
+    --shadow-card-hover: 0 18px 40px -12px hsl(0 0% 0% / 0.15);
+    --shadow-glow: 0 10px 40px -10px hsl(0 0% 0% / 0.2);
+    --shadow-orange: 0 10px 30px -10px hsl(0 0% 0% / 0.2);
 
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -91,11 +91,11 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: 'Quicksand', system-ui, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Sora', system-ui, sans-serif;
+    font-family: 'Quicksand', system-ui, sans-serif;
     @apply font-bold tracking-tight;
   }
 }
@@ -210,4 +210,14 @@
   /* Reveal-on-scroll */
   .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
   .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+  /* Letter Reveal */
+  @keyframes letter-reveal {
+    from { opacity: 0; transform: translateY(50px) rotate(10deg); }
+    to   { opacity: 1; transform: translateY(0) rotate(0); }
+  }
+  .animate-letter-reveal {
+    display: inline-block;
+    animation: letter-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
 }

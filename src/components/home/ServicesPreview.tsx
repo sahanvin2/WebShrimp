@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, ShoppingCart, Briefcase, Layout, Rocket, AppWindow, Settings } from "lucide-react";
+import { ArrowRight, ShoppingCart, Briefcase, Layout, Rocket, Code2, Settings } from "lucide-react";
 
 const SERVICES = [
-  { icon: <ShoppingCart className="h-6 w-6" />, title: "E-Commerce Websites", slug: "e-commerce-websites", desc: "Online stores that convert visitors into loyal customers.", color: "bg-orange-50 text-brand-orange" },
+  { icon: <ShoppingCart className="h-6 w-6" />, title: "E-Commerce Websites", slug: "e-commerce-websites", desc: "Online stores that convert visitors into loyal customers.", color: "bg-brand-blue-soft text-brand-navy" },
   { icon: <Briefcase className="h-6 w-6" />, title: "Business Websites", slug: "business-websites", desc: "Professional websites to build trust and grow your brand.", color: "bg-blue-50 text-brand-blue" },
   { icon: <Layout className="h-6 w-6" />, title: "Portfolio Websites", slug: "portfolio-websites", desc: "Showcase your work with beautiful portfolio websites.", color: "bg-purple-50 text-purple-600" },
   { icon: <Rocket className="h-6 w-6" />, title: "Landing Pages", slug: "landing-pages", desc: "High-converting pages for your marketing campaigns.", color: "bg-pink-50 text-pink-600" },
-  { icon: <AppWindow className="h-6 w-6" />, title: "Social Media Content", slug: "social-media-content", desc: "Eye-catching designs and content for your brand social presence.", color: "bg-emerald-50 text-emerald-600" },
-  { icon: <Settings className="h-6 w-6" />, title: "Website Maintenance", slug: "website-maintenance", desc: "Keep your website updated, secure and running smoothly.", color: "bg-amber-50 text-amber-600" },
+  { icon: <Code2 className="h-6 w-6" />, title: "Custom Software Solutions", slug: "custom-software", desc: "Tailored web applications and internal tools for your business.", color: "bg-emerald-50 text-emerald-600" },
+  { icon: <Settings className="h-6 w-6" />, title: "Website Maintenance", slug: "website-maintenance", desc: "Keep your website updated, secure and running smoothly.", color: "bg-brand-blue-soft text-brand-navy" },
 ];
 
 const ServicesPreview = () => {
@@ -46,7 +46,7 @@ const ServicesPreview = () => {
               className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-blue group-hover:gap-2.5 transition-all"
               aria-label={`Learn more about ${s.title}`}
             >
-              Learn More <ArrowRight className="h-4 w-4" />
+              Learn More <span className="sr-only">about {s.title}</span> <ArrowRight className="h-4 w-4" />
             </Link>
           </article>
         ))}

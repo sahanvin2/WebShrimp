@@ -6,7 +6,7 @@ const TESTIMONIALS = [
     role: "Startup Founder",
     avatar: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=120&q=80",
     quote:
-      "Web Shrimp completely transformed our online presence. Our traffic doubled in mere weeks after launch. A highly recommended agency that knows delivery.",
+      "Loopingon completely transformed our online presence. Our traffic doubled in mere weeks after launch. A highly recommended agency that knows delivery.",
     highlighted: false,
   },
   {

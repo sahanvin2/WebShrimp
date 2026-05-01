@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOSS & CRANE | Architecture & Design Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@300;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-white: #ffffff;
+            --bg-black: #0d0d0d;
+            --accent-red: #e8002d;
+            --border-width: 1px;
+            --font-main: 'Space Grotesk', sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+            --transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none !important;
+            /* Hide default cursor */
+            border-radius: 0 !important;
+        }
+
+        body {
+            background-color: var(--bg-white);
+            color: var(--bg-black);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            line-height: 1.4;
+        }
+
+        /* CUSTOM CURSOR */
+        #custom-cursor {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent-red);
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: normal;
+            transition: transform 0.1s ease-out;
+        }
+
+        .cursor-hover {
+            transform: scale(2.5);
+        }
+
+        /* GRID SYSTEM */
+        .grid-line {
+            border-top: var(--border-width) solid var(--bg-black);
+        }
+
+        .grid-line-v {
+            border-left: var(--border-width) solid var(--bg-black);
+        }
+
+        /* HEADER & NAV */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 4vw;
+            z-index: 1000;
+            mix-blend-mode: difference;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .logo-small {
+            font-weight: 900;
+            letter-spacing: -1px;
+            font-size: 1.5rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: inherit;
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* HERO SECTION */
+        #hero {
+            height: 100vh;
+            background-color: var(--bg-black);
+            color: var(--bg-white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4vw;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #hero h1 {
+            font-size: clamp(64px, 9vw, 160px);
+            font-weight: 900;
+            line-height: 0.9;
+            text-align: center;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        #hero h1 span {
+            display: inline-block;
+            transform: translateY(100%);
+            animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* SECTION HEADERS */
+        section {
+            padding: 100px 4vw;
+            border-bottom: var(--border-width) solid var(--bg-black);
+        }
+
+        .section-tag {
+            font-family: var(--font-mono);
+            color: var(--accent-red);
+            font-size: 0.8rem;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        /* SELECTED WORKS */
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 0;
+            border-top: var(--border-width) solid var(--bg-black);
+            border-left: var(--border-width) solid var(--bg-black);
+        }
+
+        .work-card {
+            grid-column: span 6;
+            border-right: var(--border-width) solid var(--bg-black);
+            border-bottom: var(--border-width) solid var(--bg-black);
+            padding: 2rem;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .work-card:nth-child(3) {
+            grid-column: span 12;
+        }
+
+        .work-card:hover {
+            background-color: #f9f9f9;
+        }
+
+        .work-num {
+            font-family: var(--font-mono);
+            color: var(--accent-red);
+            margin-bottom: 1rem;
+        }
+
+        .work-title {
+            font-size: clamp(2rem, 4vw, 4rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .work-meta {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            text-transform: uppercase;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: linear-gradient(45deg, #111, #333);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* PHILOSOPHY */
+        .philosophy-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4vw;
+        }
+
+        .philosophy-left h2 {
+            font-size: clamp(2rem, 3.5vw, 5rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        .philosophy-right {
+            font-weight: 300;
+            font-size: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* AWARDS MARQUEE */
+        .ticker-container {
+            background: var(--bg-black);
+            color: var(--bg-white);
+            padding: 40px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            border-top: var(--border-width) solid var(--bg-black);
+        }
+
+        .ticker {
+            display: inline-block;
+            animation: ticker 30s linear infinite;
+        }
+
+        .ticker span {
+            font-size: 3rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-right: 2rem;
+            font-family: var(--font-main);
+        }
+
+        @keyframes ticker {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .awards-table {
+            width: 100%;
+            margin-top: 4rem;
+            border-collapse: collapse;
+        }
+
+        .awards-table tr {
+            border-bottom: var(--border-width) solid var(--bg-black);
+        }
+
+        .awards-table td {
+            padding: 1.5rem 0;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .award-year {
+            color: var(--accent-red);
+            width: 100px;
+        }
+
+        /* SERVICES ACCORDION */
+        .accordion-item {
+            border-top: var(--border-width) solid var(--bg-black);
+        }
+
+        .accordion-header {
+            padding: 2rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4vw;
+            padding-bottom: 0;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 500px;
+            padding-bottom: 3rem;
+        }
+
+        .accordion-item.active .plus::after {
+            transform: rotate(90deg);
+            opacity: 0;
+        }
+
+        .plus {
+            position: relative;
+            width: 24px;
+            height: 24px;
+        }
+
+        .plus::before,
+        .plus::after {
+            content: '';
+            position: absolute;
+            background: var(--bg-black);
+            transition: var(--transition);
+        }
+
+        .plus::before {
+            width: 100%;
+            height: 2px;
+            top: 11px;
+            left: 0;
+        }
+
+        .plus::after {
+            height: 100%;
+            width: 2px;
+            left: 11px;
+            top: 0;
+        }
+
+        /* PROCESS STEPPER */
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .step-num {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--accent-red);
+            line-height: 1;
+        }
+
+        .step-line {
+            width: 100%;
+            height: 1px;
+            background: var(--bg-black);
+            margin: 1rem 0;
+        }
+
+        /* CLIENT LOGOS */
+        .client-wall {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .client-plate {
+            border: var(--border-width) solid var(--bg-black);
+            padding: 1rem 2rem;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .client-plate:hover {
+            background: var(--bg-black);
+            color: var(--bg-white);
+        }
+
+        /* MODAL */
+        #project-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-white);
+            z-index: 2000;
+            display: none;
+            overflow-y: auto;
+            padding: 8vw 4vw;
+        }
+
+        .modal-close {
+            position: fixed;
+            top: 40px;
+            right: 4vw;
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            background: none;
+            border: none;
+            text-transform: uppercase;
+            font-weight: 700;
+            border-bottom: 2px solid var(--accent-red);
+            padding-bottom: 4px;
+        }
+
+        .modal-content-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 4vw;
+        }
+
+        .modal-image-col {
+            grid-column: span 7;
+        }
+
+        .modal-info-col {
+            grid-column: span 5;
+        }
+
+        .modal-info-col h3 {
+            font-size: 5rem;
+            font-weight: 900;
+            line-height: 0.9;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .modal-details {
+            border-top: var(--border-width) solid var(--bg-black);
+            padding-top: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            margin-bottom: 3rem;
+        }
+
+        .modal-details div span {
+            color: var(--accent-red);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* CONTACT */
+        #contact {
+            background: var(--bg-black);
+            color: var(--bg-white);
+            border: none;
+        }
+
+        #contact h2 {
+            font-size: clamp(4rem, 10vw, 12rem);
+            font-weight: 900;
+            line-height: 0.8;
+            margin-bottom: 4rem;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4vw;
+        }
+
+        .email-link {
+            font-size: 2rem;
+            color: var(--accent-red);
+            text-decoration: none;
+            font-weight: 700;
+            margin-bottom: 4rem;
+            display: block;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        input,
+        textarea {
+            background: none;
+            border: var(--border-width) solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 1.5rem;
+            font-family: var(--font-main);
+            outline: none;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--accent-red);
+        }
+
+        button.submit-btn {
+            background: var(--bg-white);
+            color: var(--bg-black);
+            border: none;
+            padding: 1.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: var(--transition);
+        }
+
+        button.submit-btn:hover {
+            background: var(--accent-red);
+            color: var(--bg-white);
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 40px 4vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent-red);
+        }
+
+        /* ANIMATIONS ON SCROLL */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+
+            .philosophy-container,
+            .modal-content-grid,
+            .contact-grid,
+            .accordion-content {
+                grid-template-columns: 1fr;
+            }
+
+            .work-card {
+                grid-column: span 12;
+            }
+
+            .process-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="custom-cursor"></div>
+
+    <header id="main-header">
+        <div class="logo-small">V&C</div>
+        <nav>
+            <ul>
+                <li><a href="#hero">Intro</a></li>
+                <li><a href="#works">Works</a></li>
+                <li><a href="#studio">Studio</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- HERO -->
+        <section id="hero">
+            <h1 id="hero-title">
+                <span>V</span><span>O</span><span>S</span><span>S</span>
+                <span>&</span>
+                <span>C</span><span>R</span><span>A</span><span>N</span><span>E</span>
+            </h1>
+            <div class="scroll-indicator">Scroll to Explore</div>
+        </section>
+
+        <!-- SELECTED WORKS -->
+        <section id="works">
+            <span class="section-tag">01. SELECTED PROJECTS</span>
+            <div class="works-grid">
+                <div class="work-card reveal" data-project="01">
+                    <div class="work-num">01/05</div>
+                    <div class="image-placeholder" style="background-image: url('https://picsum.photos/seed/85/800/600.jpg'); background-size: cover; background-position: center;"></div>
+                    <h3 class="work-title">The Mono House</h3>
+                    <div class="work-meta">
+                        <span>Residential</span>
+                        <span>Zurich, CH</span>
+                        <span>2023</span>
+                    </div>
+                </div>
+                <div class="work-card reveal" data-project="02">
+                    <div class="work-num">02/05</div>
+                    <div class="image-placeholder" style="background-image: url('https://picsum.photos/seed/793/800/600.jpg'); background-size: cover; background-position: center;"></div>
+                    <h3 class="work-title">Axis Museum</h3>
+                    <div class="work-meta">
+                        <span>Cultural</span>
+                        <span>Berlin, DE</span>
+                        <span>2022</span>
+                    </div>
+                </div>
+                <div class="work-card reveal" data-project="03">
+                    <div class="work-num">03/05</div>
+                    <div class="image-placeholder" style="background-image: url('https://picsum.photos/seed/176/800/600.jpg'); background-size: cover; background-position: center;"></div>
+                    <h3 class="work-title">Sky-Frame Pavilion</h3>
+                    <div class="work-meta">
+                        <span>Experimental</span>
+                        <span>Milan, IT</span>
+                        <span>2024</span>
+                    </div>
+                </div>
+                <div class="work-card reveal" data-project="04">
+                    <div class="work-num">04/05</div>
+                    <div class="image-placeholder" style="background-image: url('https://picsum.photos/seed/341/800/600.jpg'); background-size: cover; background-position: center;"></div>
+                    <h3 class="work-title">Concrete Echo</h3>
+                    <div class="work-meta">
+                        <span>Industrial</span>
+                        <span>Tokyo, JP</span>
+                        <span>2021</span>
+                    </div>
+                </div>
+                <div class="work-card reveal" data-project="05">
+                    <div class="work-num">05/05</div>
+                    <div class="image-placeholder" style="background-image: url('https://picsum.photos/seed/508/800/600.jpg'); background-size: cover; background-position: center;"></div>
+                    <h3 class="work-title">Grid City Plaza</h3>
+                    <div class="work-meta">
+                        <span>Urbanism</span>
+                        <span>London, UK</span>
+                        <span>2023</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STUDIO PHILOSOPHY -->
+        <section id="studio">
+            <span class="section-tag">02. PHILOSOPHY</span>
+            <div class="philosophy-container reveal">
+                <div class="philosophy-left">
+                    <h2>"Structure is the absence of noise."</h2>
+                </div>
+                <div class="philosophy-right">
+                    <p>Voss & Crane is a multidisciplinary architecture and design studio founded on the principles of
+                        reductionism and geometric clarity. We believe that architecture should serve as a silent
+                        backdrop to the complexities of human life.</p>
+                    <p>Our methodology is rooted in the Swiss International Style—prioritizing function, legibility, and
+                        structural honesty above decorative whimsy. Every line has a purpose; every void has a voice.
+                    </p>
+                    <p>Working at the intersection of brutalism and modernism, we create spaces that feel both
+                        primordial and futuristic. We don't build trends; we build artifacts of permanence.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- AWARDS -->
+        <section id="awards" style="padding: 0;">
+            <div class="ticker-container">
+                <div class="ticker">
+                    <span>AIA Honor Award 2023</span>
+                    <span>Pritzker Nominee 2024</span>
+                    <span>Architizer A+ Winner</span>
+                    <span>Dezeen Studio of the Year</span>
+                    <span>AIA Honor Award 2023</span>
+                    <span>Pritzker Nominee 2024</span>
+                    <span>Architizer A+ Winner</span>
+                    <span>Dezeen Studio of the Year</span>
+                </div>
+            </div>
+            <div style="padding: 100px 4vw;">
+                <table class="awards-table">
+                    <tr class="reveal">
+                        <td class="award-year">2024</td>
+                        <td>Mies van der Rohe Award</td>
+                        <td>Finalist — Axis Museum</td>
+                    </tr>
+                    <tr class="reveal">
+                        <td class="award-year">2023</td>
+                        <td>AIA National Award</td>
+                        <td>Winner — Residential Design</td>
+                    </tr>
+                    <tr class="reveal">
+                        <td class="award-year">2022</td>
+                        <td>Swiss Design Award</td>
+                        <td>Innovation in Materials</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- SERVICES ACCORDION -->
+        <section id="services">
+            <span class="section-tag">03. SERVICES</span>
+            <div class="accordion">
+                <div class="accordion-item reveal">
+                    <div class="accordion-header">
+                        Urban Planning
+                        <div class="plus"></div>
+                    </div>
+                    <div class="accordion-content">
+                        <div>
+                            <p>We approach urban environments as living grids. Our planning services focus on density
+                                optimization, sustainable transit nodes, and the preservation of historical context
+                                through a modern lens.</p>
+                        </div>
+                        <div style="font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase;">
+                            <span>Sub-services:</span><br>Master planning, Zonal analysis, Infrastructure design.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item reveal">
+                    <div class="accordion-header">
+                        Residential Architecture
+                        <div class="plus"></div>
+                    </div>
+                    <div class="accordion-content">
+                        <div>
+                            <p>Bespoke living environments that harmonize private sanctuary with structural expression.
+                                We specialize in monolithic concrete forms and expansive glass integrations.</p>
+                        </div>
+                        <div style="font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase;">
+                            <span>Sub-services:</span><br>Single-family homes, Multi-unit development, Sustainable
+                            housing.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item reveal">
+                    <div class="accordion-header">
+                        Interior Environments
+                        <div class="plus"></div>
+                    </div>
+                    <div class="accordion-content">
+                        <div>
+                            <p>Interior design is not decoration; it is the final layer of architecture. We create
+                                furniture and spatial sequences that emphasize light, shadow, and materiality.</p>
+                        </div>
+                        <div style="font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase;">
+                            <span>Sub-services:</span><br>Furniture design, Lighting curation, Material research.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROCESS -->
+        <section id="process">
+            <span class="section-tag">04. PROCESS</span>
+            <div class="process-grid">
+                <div class="process-step reveal">
+                    <div class="step-num">01</div>
+                    <div class="step-line"></div>
+                    <h4 style="text-transform: uppercase; font-weight: 700;">Brief</h4>
+                    <p style="font-weight: 300; margin-top: 1rem;">Defining parameters, constraints, and the core
+                        essence of the project's utility.</p>
+                </div>
+                <div class="process-step reveal">
+                    <div class="step-num">02</div>
+                    <div class="step-line"></div>
+                    <h4 style="text-transform: uppercase; font-weight: 700;">Concept</h4>
+                    <p style="font-weight: 300; margin-top: 1rem;">Iterative sketches and structural logic exploring the
+                        purest geometry for the site.</p>
+                </div>
+                <div class="process-step reveal">
+                    <div class="step-num">03</div>
+                    <div class="step-line"></div>
+                    <h4 style="text-transform: uppercase; font-weight: 700;">Design</h4>
+                    <p style="font-weight: 300; margin-top: 1rem;">Detailed modeling, material selection, and rigorous
+                        technical execution.</p>
+                </div>
+                <div class="process-step reveal">
+                    <div class="step-num">04</div>
+                    <div class="step-line"></div>
+                    <h4 style="text-transform: uppercase; font-weight: 700;">Delivery</h4>
+                    <p style="font-weight: 300; margin-top: 1rem;">On-site management and the realization of the
+                        architectural artifact.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CLIENTS -->
+        <section id="clients">
+            <span class="section-tag">05. CLIENTS</span>
+            <div class="client-wall">
+                <div class="client-plate reveal">Vitramo</div>
+                <div class="client-plate reveal">Berlin Senate</div>
+                <div class="client-plate reveal">Nexus Development</div>
+                <div class="client-plate reveal">Studio Form</div>
+                <div class="client-plate reveal">Monolith Group</div>
+                <div class="client-plate reveal">Aether Ltd</div>
+                <div class="client-plate reveal">Bauhaus Foundation</div>
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact">
+            <div class="contact-grid">
+                <div>
+                    <h2>LET'S<br>TALK.</h2>
+                    <a href="mailto:hello@vosscrane.com" class="email-link">hello@vosscrane.com</a>
+                    <div
+                        style="font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; margin-top: 2rem;">
+                        <p>Zurich Office:<br>Bahnhofstrasse 12, 8001 Zurich</p>
+                        <br>
+                        <p>Berlin Office:<br>Torstraße 45, 10119 Berlin</p>
+                    </div>
+                </div>
+                <div style="padding-top: 2rem;">
+                    <form id="contact-form">
+                        <input type="text" placeholder="NAME / FIRM" required>
+                        <input type="email" placeholder="EMAIL" required>
+                        <textarea rows="6" placeholder="TELL US ABOUT THE PROJECT"></textarea>
+                        <button type="submit" class="submit-btn">SEND INQUIRY</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div>&copy; 2024 VOSS & CRANE STUDIO</div>
+        <div style="display: flex; gap: 2rem;">
+            <span>INSTAGRAM</span>
+            <span>LINKEDIN</span>
+            <span>BEHANCE</span>
+        </div>
+    </footer>
+
+    <!-- PROJECT MODAL -->
+    <div id="project-modal">
+        <button class="modal-close">CLOSE [ESC]</button>
+        <div class="modal-content-grid">
+            <div class="modal-image-col">
+                <div class="image-placeholder" style="background-image: url('https://picsum.photos/seed/585/800/600.jpg'); background-size: cover; background-position: center; height: 600px;"></div>
+                <div class="image-placeholder" style="background-image: url('https://picsum.photos/seed/897/800/600.jpg'); background-size: cover; background-position: center; height: 600px;"></div>
+            </div>
+            <div class="modal-info-col">
+                <h3 id="modal-title">PROJECT TITLE</h3>
+                <div class="modal-details">
+                    <div><span>Location</span><span id="modal-loc" style="color:black">Zurich, CH</span></div>
+                    <div><span>Area</span><span id="modal-area" style="color:black">450 SQM</span></div>
+                    <div><span>Year</span><span id="modal-year" style="color:black">2023</span></div>
+                    <div><span>Role</span><span id="modal-role" style="color:black">Lead Architects</span></div>
+                </div>
+                <div style="font-weight: 300; font-size: 1.1rem; line-height: 1.6;">
+                    <p id="modal-desc">Detailed project description goes here. Voss & Crane meticulously developed this
+                        structure to emphasize the dialogue between the raw landscape and geometric precision. Using
+                        site-cast concrete and custom-engineered steel frames, the building acts as a monolithic
+                        sculpture.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CUSTOM CURSOR ---
+        const cursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        const hoverElements = document.querySelectorAll('a, button, .work-card, .accordion-header, .client-plate');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('cursor-hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('cursor-hover'));
+        });
+
+        // --- REVEAL ON SCROLL ---
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // --- ACCORDION LOGIC ---
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const item = header.parentElement;
+                item.classList.toggle('active');
+            });
+        });
+
+        // --- MODAL LOGIC ---
+        const modal = document.getElementById('project-modal');
+        const modalClose = document.querySelector('.modal-close');
+        const workCards = document.querySelectorAll('.work-card');
+
+        const projectData = {
+            "01": { title: "The Mono House", loc: "Zurich, CH", area: "450 SQM", year: "2023", role: "Lead Architect", desc: "A singular volume carved from a single block of concrete. The Mono House challenges the perception of domestic weight. Its interiors are a study in gray tones and shadow-play, featuring a central void that connects three floors through light alone." },
+            "02": { title: "Axis Museum", loc: "Berlin, DE", area: "12,000 SQM", year: "2022", role: "Design Consultant", desc: "Berlin's Axis Museum is an exercise in public geometry. Three intersecting prisms create a complex series of galleries that guide visitors through an unconventional historical narrative. The facade is composed of acid-etched aluminum." },
+            "03": { title: "Sky-Frame", loc: "Milan, IT", area: "120 SQM", year: "2024", role: "Experimental Lab", desc: "Created for Milan Design Week, the Sky-Frame Pavilion is a temporary artifact designed to test the limits of structural transparency. Using glass panels of record-breaking size, the structure disappears into the surrounding park." },
+            "04": { title: "Concrete Echo", loc: "Tokyo, JP", area: "2,100 SQM", year: "2021", role: "Full Delivery", desc: "Echoing the industrial heritage of the district, this office space utilizes brutalist forms to create a quiet sanctuary. Raw concrete meets warm cedar wood in a tension-filled but balanced environment." },
+            "05": { title: "Grid City Plaza", loc: "London, UK", area: "3,500 SQM", year: "2023", role: "Urban Planner", desc: "A new public typology for London's dense core. The Plaza is built on a strict 5x5 meter grid, allowing for modular market stalls, seating, and performance spaces to be configured based on community needs." }
+        };
+
+        workCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const id = card.getAttribute('data-project');
+                const data = projectData[id];
+
+                document.getElementById('modal-title').innerText = data.title;
+                document.getElementById('modal-loc').innerText = data.loc;
+                document.getElementById('modal-area').innerText = data.area;
+                document.getElementById('modal-year').innerText = data.year;
+                document.getElementById('modal-role').innerText = data.role;
+                document.getElementById('modal-desc').innerText = data.desc;
+
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        modalClose.addEventListener('click', () => {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // --- FORM HANDLING ---
+        document.getElementById('contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = "INQUIRY RECEIVED";
+            btn.style.backgroundColor = "white";
+            btn.style.color = "#0d0d0d";
+            e.target.reset();
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.backgroundColor = "";
+                btn.style.color = "";
+            }, 3000);
+        });
+
+        // --- HERO LETTER ANIMATION DELAY ---
+        const heroSpans = document.querySelectorAll('#hero h1 span');
+        heroSpans.forEach((span, i) => {
+            span.style.animationDelay = `${i * 0.05}s`;
+        });
+    </script>
+</body>
+
+</html>

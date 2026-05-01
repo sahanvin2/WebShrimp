@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ember & Salt | Fire-Kissed. Season-Driven.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inconsolata:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --charcoal: #0e0b08;
+            --ember: #d4622a;
+            --parchment: #f0e6d3;
+            --forest: #1e3a2f;
+            --shadow: #070605;
+        }
+
+        body {
+            background-color: var(--charcoal);
+            color: var(--parchment);
+            font-family: 'Fraunces', serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .font-ui {
+            font-family: 'Inconsolata', monospace;
+        }
+
+        /* Grain Overlay */
+        .grain::after {
+            content: "";
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.04;
+            z-index: 9999;
+            pointer-events: none;
+            animation: noise 0.5s steps(2) infinite;
+        }
+
+        @keyframes noise {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            10% {
+                transform: translate(-1%, -1%);
+            }
+
+            20% {
+                transform: translate(1%, 1%);
+            }
+
+            30% {
+                transform: translate(-2%, 1%);
+            }
+
+            40% {
+                transform: translate(1%, -2%);
+            }
+
+            50% {
+                transform: translate(-1%, 1%);
+            }
+
+            60% {
+                transform: translate(-3%, 1%);
+            }
+
+            70% {
+                transform: translate(2%, 1%);
+            }
+
+            80% {
+                transform: translate(1%, -3%);
+            }
+
+            90% {
+                transform: translate(-1%, 1%);
+            }
+
+            100% {
+                transform: translate(1%, -1%);
+            }
+        }
+
+        /* Cinematic Intro */
+        #intro-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease-out, visibility 1s;
+        }
+
+        .intro-line {
+            width: 0;
+            height: 1px;
+            background: var(--ember);
+            margin-top: 1rem;
+            transition: width 2s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        /* Candle Glow Effect */
+        .candle-glow {
+            position: absolute;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, rgba(212, 98, 42, 0.1) 0%, rgba(14, 11, 8, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--charcoal);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--ember);
+        }
+
+        .btn-ember {
+            border: 1px solid var(--ember);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-ember:hover {
+            background: var(--ember);
+            color: var(--charcoal);
+            box-shadow: 0 0 20px rgba(212, 98, 42, 0.4);
+        }
+
+        /* Menu Tabs */
+        .tab-btn.active {
+            color: var(--ember);
+            border-bottom: 2px solid var(--ember);
+        }
+
+        /* Calendar Styling */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .calendar-day:hover:not(.disabled) {
+            background: rgba(212, 98, 42, 0.2);
+        }
+
+        .calendar-day.selected {
+            background: var(--ember);
+            color: var(--charcoal);
+        }
+
+        .calendar-day.disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+        }
+
+        /* Wine Scroll */
+        .wine-shelf {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            cursor: grab;
+        }
+
+        .wine-shelf:active {
+            cursor: grabbing;
+        }
+
+        .wine-shelf::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Image Placeholder Gradients */
+        .gradient-img {
+            background: linear-gradient(135deg, #1a1511 0%, #2c211a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gradient-img::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 70% 30%, rgba(212, 98, 42, 0.15) 0%, transparent 60%);
+        }
+
+        /* Badge */
+        .seasonal-badge {
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            background: var(--forest);
+            color: var(--parchment);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 2px;
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body class="grain">
+
+    <!-- Cinematic Intro Overlay -->
+    <div id="intro-overlay">
+        <h1 class="text-4xl md:text-6xl font-light tracking-[0.3em] opacity-0 animate-[fadeIn_1s_ease-in_forwards]">
+            EMBER & SALT
+        </h1>
+        <div class="intro-line" id="intro-line"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-[100] px-6 py-8 md:px-12 flex justify-between items-center bg-transparent transition-all duration-500"
+        id="main-nav">
+        <div class="font-ui text-xs tracking-[0.4em] uppercase hover:text-ember cursor-pointer transition-colors"
+            onclick="window.scrollTo(0,0)">
+            Ember <span class="text-ember">&</span> Salt
+        </div>
+        <div class="hidden md:flex space-x-12 font-ui text-[10px] tracking-[0.3em] uppercase">
+            <a href="#philosophy" class="hover:text-ember transition-colors">Philosophy</a>
+            <a href="#menu" class="hover:text-ember transition-colors">Menu</a>
+            <a href="#reservations" class="hover:text-ember transition-colors">Reservations</a>
+            <a href="#cellar" class="hover:text-ember transition-colors">Cellar</a>
+            <a href="#contact" class="hover:text-ember transition-colors">Contact</a>
+        </div>
+        <button class="md:hidden text-parchment" id="mobile-menu-toggle">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8h16M4 16h16"></path>
+            </svg>
+        </button>
+    </nav>
+
+    <!-- Mobile Nav Drawer -->
+    <div id="mobile-drawer"
+        class="fixed inset-0 bg-charcoal z-[200] transform translate-x-full transition-transform duration-500 flex flex-col items-center justify-center space-y-8 font-ui tracking-[0.5em] uppercase text-sm">
+        <button class="absolute top-8 right-8" id="close-drawer">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <a href="#philosophy" class="mobile-link">Philosophy</a>
+        <a href="#menu" class="mobile-link">Menu</a>
+        <a href="#reservations" class="mobile-link">Reservations</a>
+        <a href="#cellar" class="mobile-link">Cellar</a>
+        <a href="#contact" class="mobile-link">Contact</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 gradient-img brightness-50"></div>
+        <div class="candle-glow top-1/4 -left-20"></div>
+        <div class="candle-glow bottom-1/4 -right-20"></div>
+
+        <div class="relative z-10 text-center px-4">
+            <h2 class="text-5xl md:text-8xl italic font-light mb-8 reveal" style="transition-delay: 0.2s">
+                Fire-kissed. <br> Season-driven.
+            </h2>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 reveal"
+                style="transition-delay: 0.4s">
+                <a href="#reservations" class="btn-ember px-10 py-4 font-ui text-[11px] tracking-[0.4em] uppercase">
+                    Reserve a Table
+                </a>
+                <a href="#menu"
+                    class="font-ui text-[11px] tracking-[0.4em] uppercase border-b border-parchment/20 pb-1 hover:border-ember transition-colors">
+                    Explore the Menu
+                </a>
+            </div>
+        </div>
+
+        <div class="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce opacity-40">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3">
+                </path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Chef's Philosophy -->
+    <section id="philosophy" class="relative py-24 md:py-48 overflow-hidden">
+        <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center gap-20">
+            <div class="w-full md:w-1/2 h-[60vh] md:h-[80vh] gradient-img rounded-sm parallax-img" id="philosophy-img">
+                <div class="absolute inset-0 bg-black/20"></div>
+            </div>
+            <div class="w-full md:w-1/2">
+                <h3 class="text-3xl md:text-5xl italic font-light mb-12 leading-tight reveal">
+                    "We do not tame the fire. We listen to it. Every log of birch and oak writes a different chapter on
+                    the plate."
+                </h3>
+                <div class="space-y-6 text-parchment/70 font-light leading-relaxed reveal">
+                    <p>At Ember & Salt, our kitchen is anchored by a three-ton hearth. No gas, no electric burners. Just
+                        the ancient dialogue between wood, salt, and time. We source exclusively from the rugged
+                        coastlines and forgotten forests within a 50-mile radius.</p>
+                    <p>Led by Chef Elias Thorne, our team explores the nuances of smoke—from the aggressive sear of a
+                        direct flame to the whisper-soft perfume of cold-smoking over applewood. It is primal, yet
+                        precise.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Menu -->
+    <section id="menu" class="py-24 bg-charcoal">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-parchment/10 pb-8">
+                <div>
+                    <span class="font-ui text-ember text-xs tracking-[0.3em] uppercase block mb-4">Savor the
+                        Season</span>
+                    <h2 class="text-4xl md:text-6xl font-light">The Menu</h2>
+                </div>
+                <div class="flex space-x-8 font-ui text-[10px] tracking-[0.4em] uppercase mt-8 md:mt-0" id="menu-tabs">
+                    <button class="tab-btn active" data-tab="tasting">Tasting</button>
+                    <button class="tab-btn" data-tab="alacarte">À La Carte</button>
+                    <button class="tab-btn" data-tab="drinks">Cellar List</button>
+                </div>
+            </div>
+
+            <div id="menu-content" class="grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-12">
+                <!-- Content injected by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Reservations Interactive -->
+    <section id="reservations" class="py-24 relative">
+        <div class="candle-glow top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-30"></div>
+        <div class="container mx-auto px-6 md:px-12 max-w-5xl">
+            <div class="bg-[#14110e] p-8 md:p-20 rounded-sm border border-parchment/5 relative z-10 shadow-2xl">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-light mb-4 italic">Secure Your Hearth</h2>
+                    <p class="font-ui text-[10px] tracking-[0.3em] uppercase text-parchment/50">Dinner service Tuesday —
+                        Saturday</p>
+                </div>
+
+                <div id="reservation-steps">
+                    <!-- Step 1: Details -->
+                    <div id="step-1" class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <!-- Custom Calendar -->
+                        <div>
+                            <div
+                                class="flex justify-between items-center mb-6 font-ui text-xs uppercase tracking-widest">
+                                <span id="current-month">October 2023</span>
+                                <div class="flex space-x-4">
+                                    <button id="prev-month" class="hover:text-ember">←</button>
+                                    <button id="next-month" class="hover:text-ember">→</button>
+                                </div>
+                            </div>
+                            <div
+                                class="grid grid-cols-7 gap-2 text-center mb-4 font-ui text-[9px] opacity-40 uppercase">
+                                <div>Su</div>
+                                <div>Mo</div>
+                                <div>Tu</div>
+                                <div>We</div>
+                                <div>Th</div>
+                                <div>Fr</div>
+                                <div>Sa</div>
+                            </div>
+                            <div id="calendar-days" class="calendar-grid">
+                                <!-- Generated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Time & Guests -->
+                        <div class="space-y-10">
+                            <div>
+                                <label
+                                    class="font-ui text-[10px] tracking-[0.3em] uppercase block mb-4 opacity-60">Party
+                                    Size</label>
+                                <div class="flex items-center space-x-6">
+                                    <button id="party-dec"
+                                        class="w-10 h-10 border border-parchment/20 flex items-center justify-center hover:bg-ember hover:text-charcoal transition-colors">−</button>
+                                    <span id="party-count" class="font-ui text-xl">2</span>
+                                    <button id="party-inc"
+                                        class="w-10 h-10 border border-parchment/20 flex items-center justify-center hover:bg-ember hover:text-charcoal transition-colors">+</button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label
+                                    class="font-ui text-[10px] tracking-[0.3em] uppercase block mb-4 opacity-60">Availability</label>
+                                <div class="flex flex-wrap gap-3" id="time-slots">
+                                    <!-- Generated by JS -->
+                                </div>
+                            </div>
+
+                            <button onclick="nextStep()"
+                                class="w-full btn-ember py-4 font-ui text-[11px] tracking-[0.4em] uppercase">
+                                Continue Booking
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Contact (Hidden by Default) -->
+                    <div id="step-2" class="hidden max-w-lg mx-auto space-y-8">
+                        <div class="grid grid-cols-1 gap-6">
+                            <input type="text" placeholder="FULL NAME"
+                                class="bg-transparent border-b border-parchment/20 p-3 font-ui text-xs focus:border-ember outline-none w-full transition-all">
+                            <input type="email" placeholder="EMAIL ADDRESS"
+                                class="bg-transparent border-b border-parchment/20 p-3 font-ui text-xs focus:border-ember outline-none w-full transition-all">
+                            <textarea placeholder="SPECIAL REQUESTS (ALLERGIES, OCCASIONS)"
+                                class="bg-transparent border-b border-parchment/20 p-3 font-ui text-xs focus:border-ember outline-none w-full h-32 transition-all"></textarea>
+                        </div>
+                        <div class="flex gap-4">
+                            <button onclick="prevStep()"
+                                class="w-1/3 border border-parchment/10 py-4 font-ui text-[10px] tracking-[0.3em] uppercase">Back</button>
+                            <button onclick="confirmBooking()"
+                                class="w-2/3 btn-ember py-4 font-ui text-[11px] tracking-[0.4em] uppercase">Confirm
+                                Reservation</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Success -->
+                    <div id="step-3" class="hidden text-center py-12">
+                        <div
+                            class="w-20 h-20 border-2 border-ember rounded-full flex items-center justify-center mx-auto mb-8 animate-pulse">
+                            <svg class="w-10 h-10 text-ember" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-3xl italic mb-4">Confirmed.</h3>
+                        <p class="font-ui text-parchment/60 leading-relaxed mb-8">Your table is set. A confirmation
+                            email is on its way. <br> We look forward to hosting you.</p>
+                        <button onclick="resetRes()"
+                            class="font-ui text-[10px] tracking-[0.4em] border-b border-ember pb-1">MAKE ANOTHER
+                            BOOKING</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Space / Gallery -->
+    <section id="space" class="py-24 bg-[#070605]">
+        <div class="container mx-auto px-6 md:px-12">
+            <h2 class="text-4xl font-light mb-16 text-center italic">The Setting</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 h-[100vh]">
+                <div class="gradient-img rounded-sm hover:brightness-110 transition-all cursor-pointer gallery-item"
+                    style="background: linear-gradient(to bottom, #1e1a17, #0e0b08)"></div>
+                <div class="gradient-img rounded-sm hover:brightness-110 transition-all cursor-pointer gallery-item md:row-span-2"
+                    style="background: linear-gradient(to top right, #1e3a2f, #0e0b08)"></div>
+                <div class="gradient-img rounded-sm hover:brightness-110 transition-all cursor-pointer gallery-item"
+                    style="background: linear-gradient(to bottom left, #2c211a, #0e0b08)"></div>
+                <div class="gradient-img rounded-sm hover:brightness-110 transition-all cursor-pointer gallery-item"
+                    style="background: linear-gradient(to bottom, #1a1a1a, #0e0b08)"></div>
+                <div class="gradient-img rounded-sm hover:brightness-110 transition-all cursor-pointer gallery-item"
+                    style="background: linear-gradient(to top, #3d1c0b, #0e0b08)"></div>
+                <div class="gradient-img rounded-sm hover:brightness-110 transition-all cursor-pointer gallery-item md:col-span-2"
+                    style="background: linear-gradient(to right, #1a1a1a, #111)"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wine & Cellar Horizontal Scroll -->
+    <section id="cellar" class="py-24 overflow-hidden border-t border-parchment/5">
+        <div class="container mx-auto px-6 md:px-12 mb-12">
+            <span class="font-ui text-ember text-xs tracking-[0.3em] uppercase block mb-4">Curated Selections</span>
+            <h2 class="text-4xl md:text-6xl font-light">The Cellar</h2>
+        </div>
+
+        <div class="wine-shelf flex space-x-12 px-12 overflow-x-auto pb-12 select-none" id="wine-shelf">
+            <!-- Content injected by JS -->
+        </div>
+    </section>
+
+    <!-- Awards & Press -->
+    <section class="py-24 bg-[#0a0807]">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-16 text-center">
+                <div class="reveal" style="transition-delay: 0.1s">
+                    <div
+                        class="w-24 h-24 border border-ember rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-ember font-ui text-2xl">24</span>
+                    </div>
+                    <p class="font-ui text-[10px] tracking-[0.3em] uppercase mb-4">Michelin Guide</p>
+                    <p class="text-lg italic">"A raw, unfiltered masterclass in elemental cooking."</p>
+                </div>
+                <div class="reveal" style="transition-delay: 0.2s">
+                    <div
+                        class="w-24 h-24 border border-parchment/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-parchment font-ui text-2xl">★</span>
+                    </div>
+                    <p class="font-ui text-[10px] tracking-[0.3em] uppercase mb-4">James Beard Nominee</p>
+                    <p class="text-lg italic">"Redefining the relationship between forest and plate."</p>
+                </div>
+                <div class="reveal" style="transition-delay: 0.3s">
+                    <div
+                        class="w-24 h-24 border border-parchment/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-parchment font-ui text-2xl">50</span>
+                    </div>
+                    <p class="font-ui text-[10px] tracking-[0.3em] uppercase mb-4">World's Best</p>
+                    <p class="text-lg italic">"The most intimate dining experience in the country."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location -->
+    <section id="contact" class="py-24 border-t border-parchment/5">
+        <div class="container mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-24">
+            <div class="space-y-12">
+                <div>
+                    <h3 class="font-ui text-[11px] tracking-[0.4em] uppercase text-ember mb-6">Location</h3>
+                    <p class="text-3xl font-light">42 Blackwood Lane,<br>Ember Coast, OR 97103</p>
+                    <p class="font-ui text-xs mt-4 text-parchment/50">Valet parking available via the North Hearth
+                        entrance.</p>
+                </div>
+                <div>
+                    <h3 class="font-ui text-[11px] tracking-[0.4em] uppercase text-ember mb-6">Hours</h3>
+                    <div class="space-y-2 font-ui text-xs tracking-wider">
+                        <div class="flex justify-between border-b border-parchment/10 pb-2">
+                            <span>TUE — THU</span><span>17:30 — 22:30</span>
+                        </div>
+                        <div class="flex justify-between border-b border-parchment/10 pb-2">
+                            <span>FRI — SAT</span><span>17:00 — 23:30</span>
+                        </div>
+                        <div class="flex justify-between text-parchment/30 pb-2">
+                            <span>SUN — MON</span><span>CLOSED</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="h-[400px] gradient-img rounded-sm grayscale brightness-50 opacity-80"
+                style="background: radial-gradient(circle at center, #111, #000)">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-3 h-3 bg-ember rounded-full animate-ping"></div>
+                    <div class="w-1.5 h-1.5 bg-ember rounded-full absolute"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-24 bg-charcoal border-t border-parchment/5">
+        <div class="container mx-auto px-6 md:px-12 flex flex-col items-center">
+            <h2 class="text-3xl font-light tracking-[0.3em] mb-12">EMBER & SALT</h2>
+            <div class="flex space-x-8 mb-12">
+                <a href="#" class="hover:text-ember transition-all"><svg class="w-5 h-5" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                    </svg></a>
+                <a href="#" class="hover:text-ember transition-all"><svg class="w-5 h-5" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                    </svg></a>
+            </div>
+            <div class="relative w-full max-w-sm mb-8">
+                <input type="email" placeholder="JOIN THE INNER CIRCLE"
+                    class="w-full bg-transparent border-b border-parchment/20 p-4 font-ui text-xs tracking-widest outline-none focus:border-ember transition-all">
+                <button
+                    class="absolute right-4 top-1/2 -translate-y-1/2 text-ember hover:scale-110 transition-transform">→</button>
+            </div>
+            <p class="font-ui text-[8px] tracking-[0.4em] opacity-30">© 2023 EMBER & SALT. ALL RIGHTS RESERVED.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Intro Sequence
+        window.addEventListener('DOMContentLoaded', () => {
+            const line = document.getElementById('intro-line');
+            const overlay = document.getElementById('intro-overlay');
+
+            setTimeout(() => { line.style.width = '120px'; }, 500);
+
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                overlay.style.visibility = 'hidden';
+                document.body.style.overflow = 'auto';
+            }, 3500);
+        });
+
+        // Menu Data
+        const menuData = {
+            tasting: [
+                { name: "Scorched Oyster", desc: "Wild coastal oyster, pine needle oil, ember-baked salt.", price: "$24", icons: ["fish"] },
+                { name: "Burnt Leek & Bone Marrow", desc: "Ash-crusted leek, smoky marrow butter, sourdough lace.", price: "$32", badge: "Seasonal" },
+                { name: "The Hearth Duck", desc: "Dry-aged for 14 days, glazed in hemlock honey, parsnip puree.", price: "$58", icons: ["nut"] },
+                { name: "Frozen Birch Sap", desc: "Birch sorbet, fermented honey, candied pine nuts.", price: "$18", icons: ["leaf", "nut"] }
+            ],
+            alacarte: [
+                { name: "Wild Mushroom Broth", desc: "Porcini extracted over embers, spruce vinegar.", price: "$22", icons: ["leaf"] },
+                { name: "Venison Tartare", desc: "Smoked juniper, pickled ramp bulbs, cured egg yolk.", price: "$28" },
+                { name: "Charred Turbot", desc: "Cooked on cedar plank, sea buckthorn, kelp oil.", price: "$52", icons: ["fish"] },
+                { name: "Salt-Baked Beetroot", desc: "Goat's curd, wild herbs, elderberry reduction.", price: "$26", icons: ["leaf"] }
+            ],
+            drinks: [
+                { name: "Forest Floor", desc: "Smoked gin, pine syrup, moss tincture, lemon.", price: "$19" },
+                { name: "Black Hearth", desc: "Rye, charcoal-infused vermouth, leather bitters.", price: "$22" },
+                { name: "Ember Coast Pinot Noir", desc: "2018, Private Label - notes of cherry & smoke.", price: "$24 / $110" },
+                { name: "House-Fermented Mead", desc: "Wildflower honey, aged in charred oak.", price: "$16" }
+            ]
+        };
+
+        const renderMenu = (tab) => {
+            const container = document.getElementById('menu-content');
+            container.innerHTML = '';
+            menuData[tab].forEach(item => {
+                const iconHtml = (item.icons || []).map(icon => {
+                    if (icon === 'leaf') return `<svg class="w-3 h-3 text-forest inline ml-2" fill="currentColor" viewBox="0 0 24 24"><path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,3 14,5 10,11C8.29,13.56 8.15,15.74 8.27,17.21C10.21,14.85 13,11.33 17,8Z" /></svg>`;
+                    if (icon === 'fish') return `<svg class="w-3 h-3 text-parchment/40 inline ml-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12,2C10.89,2 10,2.89 10,4C10,5.11 10.89,6 12,6C13.11,6 14,5.11 14,4C14,2.89 13.11,2 12,2M12,18C13.11,18 14,18.89 14,20C14,21.11 13.11,22 12,22C10.89,22 10,21.11 10,20C10,18.89 10.89,18 12,18M20,10C21.11,10 22,10.89 22,12C22,13.11 21.11,14 20,14C18.89,14 18,13.11 18,12C18,10.89 18.89,10 20,10M4,10C5.11,10 6,10.89 6,12C6,13.11 5.11,14 4,14C2.89,14 2,13.11 2,12C2,10.89 2.89,10 4,10M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10Z" /></svg>`;
+                    return '';
+                }).join('');
+
+                const html = `
+                    <div class="reveal visible">
+                        <div class="flex justify-between items-baseline mb-2">
+                            <h4 class="text-xl italic font-light">${item.name} ${item.badge ? `<span class="seasonal-badge ml-2">${item.badge}</span>` : ''}</h4>
+                            <span class="font-ui text-sm text-parchment/50">${item.price}</span>
+                        </div>
+                        <p class="font-ui text-[10px] tracking-wider text-parchment/40 uppercase">
+                            ${item.desc} ${iconHtml}
+                        </p>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        };
+
+        document.getElementById('menu-tabs').addEventListener('click', (e) => {
+            if (e.target.classList.contains('tab-btn')) {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                renderMenu(e.target.dataset.tab);
+            }
+        });
+
+        // Initialize Menu
+        renderMenu('tasting');
+
+        // Reservation System
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let selectedDate = null;
+        let partySize = 2;
+
+        const months = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+
+        const generateCalendar = () => {
+            const grid = document.getElementById('calendar-days');
+            const monthLabel = document.getElementById('current-month');
+            grid.innerHTML = '';
+            monthLabel.innerText = `${months[currentMonth]} ${currentYear}`;
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Fill empty slots
+            for (let i = 0; i < firstDay; i++) {
+                const div = document.createElement('div');
+                div.className = 'calendar-day disabled';
+                grid.appendChild(div);
+            }
+
+            // Fill actual days
+            for (let i = 1; i <= daysInMonth; i++) {
+                const div = document.createElement('div');
+                div.className = 'calendar-day';
+                div.innerText = i;
+
+                // Simulate some fully booked days
+                if (i % 7 === 0 || i % 8 === 0) div.classList.add('disabled');
+
+                div.onclick = () => {
+                    if (!div.classList.contains('disabled')) {
+                        document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+                        div.classList.add('selected');
+                        selectedDate = new Date(currentYear, currentMonth, i);
+                        updateTimeSlots();
+                    }
+                };
+                grid.appendChild(div);
+            }
+        };
+
+        const updateTimeSlots = () => {
+            const container = document.getElementById('time-slots');
+            container.innerHTML = '';
+            const times = ["17:30", "18:00", "18:30", "19:00", "19:45", "20:30", "21:00"];
+            times.forEach(t => {
+                const btn = document.createElement('button');
+                btn.className = "px-4 py-2 border border-parchment/10 font-ui text-[10px] tracking-widest hover:border-ember transition-all";
+                btn.innerText = t;
+                btn.onclick = () => {
+                    document.querySelectorAll('#time-slots button').forEach(b => {
+                        b.classList.remove('bg-ember', 'text-charcoal');
+                        b.style.borderColor = 'rgba(240, 230, 211, 0.1)';
+                    });
+                    btn.classList.add('bg-ember', 'text-charcoal');
+                    btn.style.borderColor = 'var(--ember)';
+                };
+                container.appendChild(btn);
+            });
+        };
+
+        document.getElementById('prev-month').onclick = () => { currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; } generateCalendar(); };
+        document.getElementById('next-month').onclick = () => { currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; } generateCalendar(); };
+
+        document.getElementById('party-inc').onclick = () => { if (partySize < 10) { partySize++; document.getElementById('party-count').innerText = partySize; } };
+        document.getElementById('party-dec').onclick = () => { if (partySize > 1) { partySize--; document.getElementById('party-count').innerText = partySize; } };
+
+        generateCalendar();
+        updateTimeSlots();
+
+        const nextStep = () => {
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.remove('hidden');
+        };
+
+        const prevStep = () => {
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-1').classList.remove('hidden');
+        };
+
+        const confirmBooking = () => {
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-3').classList.remove('hidden');
+        };
+
+        const resetRes = () => {
+            document.getElementById('step-3').classList.add('hidden');
+            document.getElementById('step-1').classList.remove('hidden');
+            selectedDate = null;
+            generateCalendar();
+        };
+
+        // Wine Shelf Scroll
+        const wines = [
+            { name: "Pinot Noir", region: "Willamette Valley", yr: "2018", notes: "Forest floor, dried rose, cherry.", price: "$120" },
+            { name: "Nebbiolo", region: "Piedmont, Italy", yr: "2016", notes: "Tar, leather, aggressive tannins.", price: "$145" },
+            { name: "Syrah", region: "Northern Rhône", yr: "2019", notes: "Black pepper, smoked meat, olive.", price: "$95" },
+            { name: "Chardonnay", region: "Chablis, France", yr: "2020", notes: "Oyster shell, lemon zest, flint.", price: "$110" },
+            { name: "Riesling", region: "Mosel, Germany", yr: "2021", notes: "Diesel, green apple, high acid.", price: "$85" },
+            { name: "Orange Wine", region: "Slovenia", yr: "2021", notes: "Apricot, tannins, wild funk.", price: "$88" }
+        ];
+
+        const shelf = document.getElementById('wine-shelf');
+        wines.forEach(w => {
+            const card = document.createElement('div');
+            card.className = "min-w-[280px] h-[400px] bg-[#1a1511] p-8 border border-parchment/5 flex flex-col justify-between";
+            card.innerHTML = `
+                <div>
+                    <span class="font-ui text-[10px] tracking-[0.3em] text-ember block mb-4">${w.yr}</span>
+                    <h4 class="text-2xl font-light italic mb-2">${w.name}</h4>
+                    <p class="font-ui text-[10px] tracking-widest opacity-40 uppercase">${w.region}</p>
+                </div>
+                <div class="mt-auto">
+                    <p class="font-light text-parchment/60 mb-6 italic">"${w.notes}"</p>
+                    <p class="font-ui text-sm">${w.price}</p>
+                </div>
+            `;
+            shelf.appendChild(card);
+        });
+
+        // Horizontal Drag Scroll
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        shelf.addEventListener('mousedown', (e) => {
+            isDown = true;
+            startX = e.pageX - shelf.offsetLeft;
+            scrollLeft = shelf.scrollLeft;
+        });
+        shelf.addEventListener('mouseleave', () => isDown = false);
+        shelf.addEventListener('mouseup', () => isDown = false);
+        shelf.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - shelf.offsetLeft;
+            const walk = (x - startX) * 2;
+            shelf.scrollLeft = scrollLeft - walk;
+        });
+
+        // Mobile Nav
+        const drawer = document.getElementById('mobile-drawer');
+        document.getElementById('mobile-menu-toggle').onclick = () => drawer.classList.remove('translate-x-full');
+        document.getElementById('close-drawer').onclick = () => drawer.classList.add('translate-x-full');
+        document.querySelectorAll('.mobile-link').forEach(l => l.onclick = () => drawer.classList.add('translate-x-full'));
+
+        // Parallax & Reveal
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('main-nav');
+            if (window.scrollY > 100) {
+                nav.style.background = 'rgba(14, 11, 8, 0.95)';
+                nav.style.padding = '1.5rem 3rem';
+            } else {
+                nav.style.background = 'transparent';
+                nav.style.padding = '2rem 3rem';
+            }
+
+            // Parallax
+            const img = document.getElementById('philosophy-img');
+            const speed = 0.15;
+            const yPos = -(window.scrollY * speed);
+            img.style.backgroundPosition = `center ${yPos}px`;
+
+            // Reveal on Scroll
+            document.querySelectorAll('.reveal').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight * 0.9) {
+                    el.classList.add('visible');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

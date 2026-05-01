@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Check, ShoppingCart, Briefcase, Image as ImageIcon, Rocket, Share2, Wrench, Smartphone, Code2, Search, Link as LinkIcon, ArrowRight } from "lucide-react";
 import SiteLayout from "@/components/SiteLayout";
+import Seo from "@/components/Seo";
 import PageHero from "@/components/PageHero";
 import StatsStrip from "@/components/StatsStrip";
 import CtaBanner from "@/components/CtaBanner";
@@ -33,7 +34,7 @@ const SERVICES = [
       "Fully responsive across devices",
       "On-page SEO foundation",
       "Contact form with email routing",
-      "Social media integration",
+      "Custom domain setup",
     ],
     timeline: "2-4 weeks",
   },
@@ -68,25 +69,25 @@ const SERVICES = [
     timeline: "1-2 weeks",
   },
   {
-    slug: "social-media-content",
-    icon: Share2,
-    title: "Social Media Content",
+    slug: "custom-software",
+    icon: Code2,
+    title: "Custom Software Solutions",
     color: "bg-emerald-50 text-emerald-600 shadow-glow",
-    desc: "Eye-catching design and motion content that stops the scroll — built around your brand and your goals.",
+    desc: "Tailored web applications, internal tools, and dashboards built to solve your unique business challenges and streamline operations.",
     features: [
-      "Posters & feed posts",
-      "Reels & short-form video",
-      "Story templates",
-      "Branded banners",
-      "Brand kits & guidelines",
+      "Custom web applications",
+      "Internal business dashboards",
+      "API development & integration",
+      "Database design & management",
+      "Automated workflows",
     ],
-    timeline: "Ongoing / 1 week setup",
+    timeline: "Ongoing / Varies by scope",
   },
   {
     slug: "website-maintenance",
     icon: Wrench,
     title: "Website Maintenance",
-    color: "bg-amber-50 text-amber-600 shadow-orange",
+    color: "bg-brand-blue-soft text-brand-navy shadow-orange",
     desc: "Keep your website fast, secure and up-to-date with monthly maintenance plans handled by our engineering team.",
     features: [
       "Security patches & updates",
@@ -101,7 +102,7 @@ const SERVICES = [
 
 const ADDITIONAL = [
   { icon: Smartphone, title: "Mobile App Development", desc: "Native-feeling apps built with React Native & PWAs.", color: "text-brand-orange" },
-  { icon: Code2, title: "Custom Software Solutions", desc: "Tailored business tools, dashboards & internal systems.", color: "text-brand-blue" },
+  { icon: Rocket, title: "Cloud Infrastructure", desc: "Scalable hosting, AWS, Digital Ocean, and CI/CD pipelines.", color: "text-brand-blue" },
   { icon: Search, title: "SEO Optimization", desc: "Technical & on-page SEO to grow organic traffic.", color: "text-emerald-600" },
   { icon: LinkIcon, title: "API Development & Integration", desc: "REST APIs and 3rd-party integrations done right.", color: "text-purple-600" },
 ];
@@ -109,6 +110,11 @@ const ADDITIONAL = [
 const Services = () => {
   return (
     <SiteLayout>
+      <Seo
+        title="Services | Loopingon"
+        description="Explore Loopingon's website, software, landing page, e-commerce, and maintenance services for growing businesses."
+        path="/services"
+      />
       <PageHero
         label="What We Do"
         title="Our Services"

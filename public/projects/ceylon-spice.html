@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ceylon Spice Co. — Premium Sri Lankan Spices</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        serif: ['Playfair Display', 'serif'],
+        sans: ['Inter', 'sans-serif'],
+        elegant: ['Cormorant Garamond', 'serif'],
+      },
+      colors: {
+        saffron: '#FF9933',
+        turmeric: '#F4C430',
+        cinnamon: '#8B4513',
+        curry: '#CC7722',
+        paprika: '#C41E3A',
+      }
+    }
+  }
+}
+</script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: #FFFDF7; color: #1a1a1a; overflow-x: hidden; }
+
+  .bg-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23CC7722' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .fade-up {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  .product-card:hover .product-img { transform: scale(1.05); }
+  .product-card .product-img { transition: transform 0.5s ease; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  .float { animation: float 4s ease-in-out infinite; }
+
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .spin-slow { animation: spin-slow 20s linear infinite; }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #CC7722 0%, #8B4513 100%);
+    transition: all 0.3s ease;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(204, 119, 34, 0.3);
+  }
+
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #FFFDF7; }
+  ::-webkit-scrollbar-thumb { background: #CC7722; border-radius: 4px; }
+</style>
+</head>
+<body class="bg-pattern">
+
+<!-- Announcement Bar -->
+<div class="bg-gradient-to-r from-saffron via-curry to-cinnamon text-white text-center py-2 text-sm">
+  <span class="flex items-center justify-center gap-2">
+    <i data-lucide="truck" class="w-4 h-4"></i>
+    Free shipping on orders over $50 — Pure Ceylon Spices Guaranteed
+  </span>
+</div>
+
+<!-- Navigation -->
+<nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-saffron/10">
+  <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-saffron to-curry flex items-center justify-center">
+        <span class="text-white font-serif text-xl">C</span>
+      </div>
+      <div>
+        <span class="font-serif text-xl text-cinnamon">Ceylon Spice</span>
+        <span class="block text-[10px] uppercase tracking-[0.3em] text-curry">Co. Est. 2019</span>
+      </div>
+    </a>
+
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#products" class="text-sm text-zinc-600 hover:text-curry transition-colors">Shop</a>
+      <a href="#story" class="text-sm text-zinc-600 hover:text-curry transition-colors">Our Story</a>
+      <a href="#recipes" class="text-sm text-zinc-600 hover:text-curry transition-colors">Recipes</a>
+      <a href="#contact" class="text-sm text-zinc-600 hover:text-curry transition-colors">Contact</a>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <button class="text-zinc-600 hover:text-curry transition-colors">
+        <i data-lucide="search" class="w-5 h-5"></i>
+      </button>
+      <button class="relative text-zinc-600 hover:text-curry transition-colors">
+        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+        <span class="absolute -top-2 -right-2 w-5 h-5 bg-curry text-white text-xs rounded-full flex items-center justify-center">0</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="relative min-h-[90vh] flex items-center overflow-hidden">
+  <div class="absolute inset-0">
+    <div class="absolute top-20 right-20 w-96 h-96 rounded-full bg-saffron/10 blur-[100px] float"></div>
+    <div class="absolute bottom-20 left-20 w-80 h-80 rounded-full bg-turmeric/10 blur-[80px] float" style="animation-delay: 2s;"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 spin-slow opacity-10">
+      <svg class="w-[600px] h-[600px]" viewBox="0 0 200 200" fill="none">
+        <path d="M100 10 L120 80 L190 80 L135 120 L155 190 L100 150 L45 190 L65 120 L10 80 L80 80 Z" stroke="#CC7722" stroke-width="1"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-12 items-center">
+    <div class="fade-up">
+      <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-curry/10 text-curry text-xs uppercase tracking-[0.2em] mb-6">
+        <span class="w-2 h-2 rounded-full bg-saffron"></span>
+        100% Authentic Ceylon Spices
+      </span>
+
+      <h1 class="text-5xl md:text-7xl font-serif leading-tight text-zinc-900">
+        The Authentic<br>
+        <span class="text-curry italic">Taste of Sri Lanka</span>
+      </h1>
+
+      <p class="mt-6 text-lg text-zinc-600 max-w-md leading-relaxed">
+        Discover the rich, aromatic flavors of hand-harvested spices from the lush highlands of Ceylon. Each spice tells a story of tradition and excellence.
+      </p>
+
+      <div class="mt-10 flex flex-wrap gap-4">
+        <a href="#products" class="btn-primary px-8 py-4 rounded-full text-white font-medium inline-flex items-center gap-2">
+          Shop Collection
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+        <a href="#story" class="px-8 py-4 rounded-full border-2 border-curry/20 text-zinc-700 font-medium hover:border-curry/40 transition-colors inline-flex items-center gap-2">
+          <i data-lucide="play-circle" class="w-4 h-4"></i>
+          Our Story
+        </a>
+      </div>
+
+      <div class="mt-16 flex items-center gap-8">
+        <div class="text-center">
+          <span class="block text-3xl font-serif text-curry">50+</span>
+          <span class="text-xs text-zinc-500 uppercase tracking-wider">Premium Spices</span>
+        </div>
+        <div class="w-px h-12 bg-zinc-200"></div>
+        <div class="text-center">
+          <span class="block text-3xl font-serif text-curry">10K+</span>
+          <span class="text-xs text-zinc-500 uppercase tracking-wider">Happy Customers</span>
+        </div>
+        <div class="w-px h-12 bg-zinc-200"></div>
+        <div class="text-center">
+          <span class="block text-3xl font-serif text-curry">★★★★★</span>
+          <span class="text-xs text-zinc-500 uppercase tracking-wider">Customer Rating</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative fade-up" style="transition-delay: 0.2s;">
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800&q=80" alt="Ceylon Spices" class="rounded-3xl shadow-2xl float">
+        <div class="absolute -bottom-6 -left-6 bg-white p-5 rounded-2xl shadow-xl">
+          <div class="flex items-center gap-3">
+            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-saffron to-turmeric flex items-center justify-center">
+              <i data-lucide="award" class="w-6 h-6 text-white"></i>
+            </div>
+            <div>
+              <span class="block font-serif text-lg text-zinc-900">Premium Quality</span>
+              <span class="text-sm text-zinc-500">Certified Authentic</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Categories -->
+<section class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-14 fade-up">
+      <span class="text-xs uppercase tracking-[0.3em] text-curry">Explore Our Collection</span>
+      <h2 class="mt-3 text-3xl md:text-4xl font-serif text-zinc-900">Shop by Category</h2>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 stagger-children">
+      <div class="fade-up group cursor-pointer">
+        <div class="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-saffron/20 to-curry/20">
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Spice Powders">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+          <div class="absolute bottom-4 left-4">
+            <h3 class="text-lg font-serif text-white">Spice Powders</h3>
+            <span class="text-sm text-white/80">12 Products</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="fade-up group cursor-pointer">
+        <div class="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-cinnamon/20 to-paprika/20">
+          <img src="https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=400&q=80" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Whole Spices">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+          <div class="absolute bottom-4 left-4">
+            <h3 class="text-lg font-serif text-white">Whole Spices</h3>
+            <span class="text-sm text-white/80">8 Products</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="fade-up group cursor-pointer">
+        <div class="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-turmeric/20 to-saffron/20">
+          <img src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=400&q=80" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Blends & Masala">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+          <div class="absolute bottom-4 left-4">
+            <h3 class="text-lg font-serif text-white">Blends & Masala</h3>
+            <span class="text-sm text-white/80">10 Products</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="fade-up group cursor-pointer">
+        <div class="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-curry/20 to-turmeric/20">
+          <img src="https://images.unsplash.com/photo-1599909533621-7e1b833e9ce4?w=400&q=80" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Gift Sets">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+          <div class="absolute bottom-4 left-4">
+            <h3 class="text-lg font-serif text-white">Gift Sets</h3>
+            <span class="text-sm text-white/80">6 Products</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products -->
+<section id="products" class="py-20 bg-gradient-to-b from-white to-orange-50/50">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-14">
+      <div class="fade-up">
+        <span class="text-xs uppercase tracking-[0.3em] text-curry">Bestsellers</span>
+        <h2 class="mt-3 text-3xl md:text-4xl font-serif text-zinc-900">Most Popular Spices</h2>
+      </div>
+      <a href="#" class="fade-up text-curry font-medium flex items-center gap-2 hover:gap-3 transition-all mt-4 md:mt-0">
+        View All Products
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </a>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 stagger-children">
+      <!-- Product 1 -->
+      <div class="product-card fade-up group">
+        <div class="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-orange-100 to-orange-50 mb-4">
+          <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&q=80" class="product-img w-full h-full object-cover" alt="Ceylon Cinnamon">
+          <span class="absolute top-4 left-4 px-3 py-1 bg-paprika text-white text-xs font-medium rounded-full">Bestseller</span>
+          <button class="absolute bottom-4 left-4 right-4 py-3 bg-white/95 backdrop-blur-sm rounded-full text-sm font-medium text-zinc-900 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+            Add to Cart
+          </button>
+        </div>
+        <div>
+          <span class="text-xs text-curry uppercase tracking-wider">Ceylon Cinnamon</span>
+          <h3 class="font-serif text-lg text-zinc-900 mt-1">True Ceylon Cinnamon Sticks</h3>
+          <div class="flex items-center gap-2 mt-2">
+            <span class="text-xl font-medium text-zinc-900">$12.99</span>
+            <span class="text-sm text-zinc-400 line-through">$16.99</span>
+          </div>
+          <div class="flex items-center gap-1 mt-2">
+            <span class="text-sm text-turmeric">★★★★★</span>
+            <span class="text-xs text-zinc-400">(128)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="product-card fade-up group">
+        <div class="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-yellow-100 to-orange-50 mb-4">
+          <img src="https://images.unsplash.com/photo-1615485500704-7f6e4a1f8c17?w=400&q=80" class="product-img w-full h-full object-cover" alt="Turmeric Powder">
+          <span class="absolute top-4 left-4 px-3 py-1 bg-saffron text-white text-xs font-medium rounded-full">Organic</span>
+          <button class="absolute bottom-4 left-4 right-4 py-3 bg-white/95 backdrop-blur-sm rounded-full text-sm font-medium text-zinc-900 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+            Add to Cart
+          </button>
+        </div>
+        <div>
+          <span class="text-xs text-curry uppercase tracking-wider">Turmeric</span>
+          <h3 class="font-serif text-lg text-zinc-900 mt-1">Organic Turmeric Powder</h3>
+          <div class="flex items-center gap-2 mt-2">
+            <span class="text-xl font-medium text-zinc-900">$9.99</span>
+          </div>
+          <div class="flex items-center gap-1 mt-2">
+            <span class="text-sm text-turmeric">★★★★★</span>
+            <span class="text-xs text-zinc-400">(96)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="product-card fade-up group">
+        <div class="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-red-100 to-orange-50 mb-4">
+          <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&q=80" class="product-img w-full h-full object-cover" alt="Red Chili Flakes">
+          <span class="absolute top-4 left-4 px-3 py-1 bg-curry text-white text-xs font-medium rounded-full">Hot</span>
+          <button class="absolute bottom-4 left-4 right-4 py-3 bg-white/95 backdrop-blur-sm rounded-full text-sm font-medium text-zinc-900 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+            Add to Cart
+          </button>
+        </div>
+        <div>
+          <span class="text-xs text-curry uppercase tracking-wider">Chili</span>
+          <h3 class="font-serif text-lg text-zinc-900 mt-1">Ceylon Red Chili Flakes</h3>
+          <div class="flex items-center gap-2 mt-2">
+            <span class="text-xl font-medium text-zinc-900">$8.99</span>
+          </div>
+          <div class="flex items-center gap-1 mt-2">
+            <span class="text-sm text-turmeric">★★★★★</span>
+            <span class="text-xs text-zinc-400">(74)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 4 -->
+      <div class="product-card fade-up group">
+        <div class="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-amber-100 to-orange-50 mb-4">
+          <img src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=400&q=80" class="product-img w-full h-full object-cover" alt="Curry Powder">
+          <span class="absolute top-4 left-4 px-3 py-1 bg-cinnamon text-white text-xs font-medium rounded-full">Traditional</span>
+          <button class="absolute bottom-4 left-4 right-4 py-3 bg-white/95 backdrop-blur-sm rounded-full text-sm font-medium text-zinc-900 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+            Add to Cart
+          </button>
+        </div>
+        <div>
+          <span class="text-xs text-curry uppercase tracking-wider">Blends</span>
+          <h3 class="font-serif text-lg text-zinc-900 mt-1">Traditional Curry Powder</h3>
+          <div class="flex items-center gap-2 mt-2">
+            <span class="text-xl font-medium text-zinc-900">$11.99</span>
+          </div>
+          <div class="flex items-center gap-1 mt-2">
+            <span class="text-sm text-turmeric">★★★★★</span>
+            <span class="text-xs text-zinc-400">(112)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Our Story Section -->
+<section id="story" class="py-20 bg-zinc-900 text-white relative overflow-hidden">
+  <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23CC7722\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+
+  <div class="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
+    <div class="fade-up">
+      <span class="text-xs uppercase tracking-[0.3em] text-saffron">Our Heritage</span>
+      <h2 class="mt-4 text-3xl md:text-5xl font-serif text-white leading-tight">
+        A Legacy of <span class="italic text-saffron">Authentic Flavor</span>
+      </h2>
+      <p class="mt-6 text-zinc-400 leading-relaxed">
+        For generations, our family has been cultivating the finest spices in the misty highlands of Sri Lanka. Each spice is hand-harvested at peak ripeness, dried in the tropical sun, and packed with love to preserve its authentic aroma and flavor.
+      </p>
+      <p class="mt-4 text-zinc-400 leading-relaxed">
+        We believe that great food starts with great ingredients. That's why we work directly with local farmers, ensuring fair trade practices and sustainable farming methods that protect the land for future generations.
+      </p>
+      <div class="mt-10 flex flex-wrap gap-6">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-full bg-saffron/20 flex items-center justify-center">
+            <i data-lucide="leaf" class="w-6 h-6 text-saffron"></i>
+          </div>
+          <div>
+            <span class="block font-medium text-white">100% Natural</span>
+            <span class="text-sm text-zinc-500">No additives ever</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-full bg-curry/20 flex items-center justify-center">
+            <i data-lucide="globe" class="w-6 h-6 text-curry"></i>
+          </div>
+          <div>
+            <span class="block font-medium text-white">Worldwide Shipping</span>
+            <span class="text-sm text-zinc-500">Delivered fresh to you</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="relative fade-up">
+      <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&q=80" class="rounded-3xl shadow-2xl" alt="Our spice plantation">
+      <div class="absolute -bottom-8 -left-8 bg-white p-6 rounded-2xl shadow-xl">
+        <div class="flex items-center gap-4">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" class="w-14 h-14 rounded-full object-cover" alt="Founder">
+          <div>
+            <span class="block font-serif text-lg text-zinc-900">Kumar Perera</span>
+            <span class="text-sm text-zinc-500">Founder & Spice Master</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-20 bg-orange-50/50">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-14 fade-up">
+      <span class="text-xs uppercase tracking-[0.3em] text-curry">Testimonials</span>
+      <h2 class="mt-3 text-3xl md:text-4xl font-serif text-zinc-900">What Our Customers Say</h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8 stagger-children">
+      <div class="fade-up bg-white p-8 rounded-2xl shadow-lg">
+        <div class="flex items-center gap-1 text-turmeric mb-4">★★★★★</div>
+        <p class="text-zinc-600 leading-relaxed italic">"The Ceylon cinnamon is absolutely incredible! The aroma when I open the jar is like nothing else I've ever experienced. This is the real deal."</p>
+        <div class="flex items-center gap-4 mt-6">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" class="w-12 h-12 rounded-full object-cover" alt="Customer">
+          <div>
+            <span class="block font-medium text-zinc-900">Sarah Mitchell</span>
+            <span class="text-sm text-zinc-500">Home Cook, New York</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="fade-up bg-white p-8 rounded-2xl shadow-lg">
+        <div class="flex items-center gap-1 text-turmeric mb-4">★★★★★</div>
+        <p class="text-zinc-600 leading-relaxed italic">"Finally found authentic Sri Lankan curry powder! It has transformed my cooking. My family can't stop asking what my secret ingredient is."</p>
+        <div class="flex items-center gap-4 mt-6">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" class="w-12 h-12 rounded-full object-cover" alt="Customer">
+          <div>
+            <span class="block font-medium text-zinc-900">Raj Patel</span>
+            <span class="text-sm text-zinc-500">Restaurant Owner, London</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="fade-up bg-white p-8 rounded-2xl shadow-lg">
+        <div class="flex items-center gap-1 text-turmeric mb-4">★★★★★</div>
+        <p class="text-zinc-600 leading-relaxed italic">"I've been using their spices for 2 years now. The quality is consistently exceptional, and the customer service is outstanding."</p>
+        <div class="flex items-center gap-4 mt-6">
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" class="w-12 h-12 rounded-full object-cover" alt="Customer">
+          <div>
+            <span class="block font-medium text-zinc-900">Emma Thompson</span>
+            <span class="text-sm text-zinc-500">Food Blogger, Sydney</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter -->
+<section class="py-20 bg-gradient-to-r from-saffron via-curry to-cinnamon">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <h2 class="text-3xl md:text-4xl font-serif text-white">Get 15% Off Your First Order</h2>
+    <p class="mt-4 text-white/80">Subscribe to our newsletter for exclusive recipes, spice tips, and special offers.</p>
+    <form class="mt-8 flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+      <input type="email" placeholder="Enter your email" class="flex-1 px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-white/60 focus:outline-none focus:border-white">
+      <button type="submit" class="px-8 py-4 bg-white text-curry rounded-full font-medium hover:bg-orange-50 transition-colors">
+        Subscribe
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-zinc-900 text-white py-16">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid md:grid-cols-4 gap-12 mb-12">
+      <div>
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-saffron to-curry flex items-center justify-center">
+            <span class="text-white font-serif text-xl">C</span>
+          </div>
+          <span class="font-serif text-xl">Ceylon Spice Co.</span>
+        </div>
+        <p class="text-zinc-400 text-sm leading-relaxed">Bringing the authentic taste of Sri Lanka to kitchens around the world since 2019.</p>
+      </div>
+      <div>
+        <h4 class="font-medium mb-4">Shop</h4>
+        <ul class="space-y-2 text-zinc-400 text-sm">
+          <li><a href="#" class="hover:text-saffron transition-colors">All Spices</a></li>
+          <li><a href="#" class="hover:text-saffron transition-colors">Gift Sets</a></li>
+          <li><a href="#" class="hover:text-saffron transition-colors">New Arrivals</a></li>
+          <li><a href="#" class="hover:text-saffron transition-colors">Bestsellers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-medium mb-4">Company</h4>
+        <ul class="space-y-2 text-zinc-400 text-sm">
+          <li><a href="#" class="hover:text-saffron transition-colors">Our Story</a></li>
+          <li><a href="#" class="hover:text-saffron transition-colors">Sustainability</a></li>
+          <li><a href="#" class="hover:text-saffron transition-colors">Careers</a></li>
+          <li><a href="#" class="hover:text-saffron transition-colors">Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-medium mb-4">Support</h4>
+        <ul class="space-y-2 text-zinc-400 text-sm">
+          <li><a href="#" class="hover:text-saffron transition-colors">Contact Us</a></li>
+          <li><a href="#" class="hover:text-saffron transition-colors">Shipping Info</a></li>
+          <li><a href="#" class="hover:text-saffron transition-colors">Returns</a></li>
+          <li><a href="#" class="hover:text-saffron transition-colors">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-zinc-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-zinc-500">© 2024 Ceylon Spice Co. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <a href="#" class="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors">
+          <i data-lucide="instagram" class="w-4 h-4"></i>
+        </a>
+        <a href="#" class="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors">
+          <i data-lucide="facebook" class="w-4 h-4"></i>
+        </a>
+        <a href="#" class="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors">
+          <i data-lucide="twitter" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Scroll animations
+const observerOptions = { threshold: 0.15, rootMargin: '0px 0px -50px 0px' };
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, observerOptions);
+document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
+
+// Stagger children
+document.querySelectorAll('.stagger-children').forEach(parent => {
+  const children = parent.children;
+  Array.from(children).forEach((child, i) => {
+    child.style.transitionDelay = `${i * 100}ms`;
+  });
+});
+
+lucide.createIcons();
+</script>
+</body>
+</html>
