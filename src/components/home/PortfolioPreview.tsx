@@ -1,18 +1,108 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-import ecommerceImg from "../../../assets/upscayl_png_upscayl-standard-4x_4x/Ceylon Spice Co..png";
-import businessImg from "../../../assets/upscayl_png_upscayl-standard-4x_4x/Lanka Legal.png";
-import portfolioImg from "../../../assets/upscayl_png_upscayl-standard-4x_4x/Studio Bloom.png";
-import landingImg from "../../../assets/upscayl_png_upscayl-standard-4x_4x/BetterFit.png";
+import { getPublicAssetUrl } from "@/lib/site";
+import { useMemo, useState } from "react";
 
 const PROJECTS = [
-  { title: "Ceylon Spice Co.", category: "E-Commerce", tag: "Shopify Custom", img: ecommerceImg },
-  { title: "Lanka Legal", category: "Business Website", tag: "Next.js", img: businessImg },
-  { title: "Studio Bloom", category: "Portfolio", tag: "React + CMS", img: portfolioImg },
-  { title: "BetterFit App", category: "Landing Page", tag: "Conversion", img: landingImg },
+  {
+    title: "Ceylon Spice Co.",
+    category: "E-Commerce",
+    tag: "Shopify Custom",
+    img: getPublicAssetUrl("/portfolio_thumbs/Ceylon Spice Co..webp"),
+  },
+  {
+    title: "Lanka Legal",
+    category: "Business Website",
+    tag: "Next.js",
+    img: getPublicAssetUrl("/portfolio_thumbs/Lanka Legal.webp"),
+  },
+  {
+    title: "Studio Bloom",
+    category: "Portfolio",
+    tag: "React + CMS",
+    img: getPublicAssetUrl("/portfolio_thumbs/Studio Bloom.webp"),
+  },
+  {
+    title: "BetterFit App",
+    category: "Landing Page",
+    tag: "Conversion",
+    img: getPublicAssetUrl("/portfolio_thumbs/BetterFit App.webp"),
+  },
 ];
+
+const slugifyProjectTitle = (value: string): string =>
+  value
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+const toPublicPath = (path: string): string => (path.startsWith("/") ? path : `/${path}`);
+
+const buildPathVariants = (path: string): string[] => {
+  const normalized = toPublicPath(path);
+  const encoded = encodeURI(normalized);
+  return [
+    getPublicAssetUrl(normalized),
+    getPublicAssetUrl(encoded),
+    normalized,
+    encoded,
+  ];
+};
+
+const buildImageCandidates = (title: string, primaryUrl: string): string[] => {
+  const slug = slugifyProjectTitle(title);
+  const candidates = [
+    primaryUrl,
+    ...buildPathVariants(`/portfolio_thumbs/${title}.webp`),
+    ...buildPathVariants(`/portfolio_thumbs/${title}.png`),
+    ...buildPathVariants(`/portfolio_thumbs/${slug}.webp`),
+    ...buildPathVariants(`/portfolio_thumbs/${slug}.png`),
+    ...buildPathVariants(`/portfolio_thumbs/${slug}..webp`),
+    ...buildPathVariants(`/portfolio_thumbs/${slug}..png`),
+  ];
+
+  return [...new Set(candidates)];
+};
+
+type PreviewImageProps = {
+  title: string;
+  primaryUrl: string;
+};
+
+const PreviewImage = ({ title, primaryUrl }: PreviewImageProps) => {
+  const [candidateIndex, setCandidateIndex] = useState(0);
+  const [isMissing, setIsMissing] = useState(false);
+  const candidates = useMemo(() => buildImageCandidates(title, primaryUrl), [title, primaryUrl]);
+  const currentSrc = candidates[candidateIndex];
+
+  if (isMissing || !currentSrc) {
+    return null;
+  }
+
+  return (
+    <img
+      src={currentSrc}
+      alt={title}
+      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+      loading="lazy"
+      decoding="async"
+      sizes="(max-width: 768px) 85vw, (max-width: 1024px) 50vw, 25vw"
+      onError={() => {
+        setCandidateIndex((prev) => {
+          if (prev < candidates.length - 1) {
+            return prev + 1;
+          }
+          setIsMissing(true);
+          return prev;
+        });
+      }}
+    />
+  );
+};
 
 const PortfolioPreview = () => {
   return (
@@ -41,7 +131,7 @@ const PortfolioPreview = () => {
             style={{ transitionDelay: `${i * 70}ms` }}
           >
             <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-              <img src={p.img} alt={p.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+              <PreviewImage title={p.title} primaryUrl={p.img} />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <span className="absolute top-4 left-4 text-[10px] font-mono uppercase tracking-widest bg-white/95 backdrop-blur-sm text-brand-navy font-bold rounded-full px-3 py-1.5 shadow-sm">
                 {p.tag}

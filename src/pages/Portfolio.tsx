@@ -4,17 +4,213 @@ import SiteLayout from "@/components/SiteLayout";
 import PageHero from "@/components/PageHero";
 import CtaBanner from "@/components/CtaBanner";
 import { Button } from "@/components/ui/button";
+import { getPublicAssetUrl } from "@/lib/site";
 
 const CATEGORIES = ["All", "E-Commerce", "Business", "Portfolio", "Directory", "Education", "Social Media", "Blog", "Landing", "News"] as const;
 type Category = (typeof CATEGORIES)[number];
 
+const toPublicPath = (path: string): string => (path.startsWith("/") ? path : `/${path}`);
+
+const buildPathVariants = (path: string): string[] => {
+  const normalized = toPublicPath(path);
+  const encoded = encodeURI(normalized);
+  return [
+    getPublicAssetUrl(normalized),
+    getPublicAssetUrl(encoded),
+    normalized,
+    encoded,
+  ];
+};
+
+const slugifyProjectTitle = (value: string): string =>
+  value
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+const buildImageCandidates = (title: string, primaryUrl: string): string[] => {
+  const slug = slugifyProjectTitle(title);
+  const candidates = [
+    primaryUrl,
+    ...buildPathVariants(`/portfolio_thumbs/${title}.webp`),
+    ...buildPathVariants(`/portfolio_thumbs/${title}.png`),
+    ...buildPathVariants(`/portfolio_thumbs/${slug}.webp`),
+    ...buildPathVariants(`/portfolio_thumbs/${slug}.png`),
+    ...buildPathVariants(`/portfolio_thumbs/${slug}..webp`),
+    ...buildPathVariants(`/portfolio_thumbs/${slug}..png`),
+  ];
+
+  return [...new Set(candidates)];
+};
+
+type PortfolioImageProps = {
+  title: string;
+  primaryUrl: string;
+  eager: boolean;
+};
+
+const PortfolioImage = ({ title, primaryUrl, eager }: PortfolioImageProps) => {
+  const [candidateIndex, setCandidateIndex] = useState(0);
+  const [isMissing, setIsMissing] = useState(false);
+  const candidates = buildImageCandidates(title, primaryUrl);
+  const currentSrc = candidates[candidateIndex];
+
+  if (isMissing || !currentSrc) {
+    return null;
+  }
+
+  return (
+    <img
+      src={currentSrc}
+      alt={`${title} preview`}
+      className="absolute top-0 left-0 z-10 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+      loading={eager ? "eager" : "lazy"}
+      fetchPriority={eager ? "high" : "auto"}
+      decoding="async"
+      onError={() => {
+        setCandidateIndex((prev) => {
+          if (prev < candidates.length - 1) {
+            return prev + 1;
+          }
+          setIsMissing(true);
+          return prev;
+        });
+      }}
+    />
+  );
+};
+
 const PROJECTS = [
+  {
+    title: "Voss & Crane Studio",
+    category: "Business",
+    tech: ["HTML", "CSS", "JS"],
+    desc: "A sleek, minimalist architecture and design studio site featuring brutalist concrete elements.",
+    url: "/projects/Voss-and-crane-studio.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/voss-and-crane-studio.webp"),
+  },
+  {
+    title: "Ember & Salt Fine Dining",
+    category: "Business",
+    tech: ["HTML", "Tailwind", "JS"],
+    desc: "A high-end fine dining restaurant website with an elegant dark mode and sophisticated aesthetic.",
+    url: "/projects/Ember & Salt Fine Dining.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/ember-and-salt-fine-dining.webp"),
+  },
+  {
+    title: "Phantom Studio",
+    category: "Portfolio",
+    tech: ["HTML", "CSS", "GSAP"],
+    desc: "An avant-garde creative agency portfolio with bold typography and edgy layouts.",
+    url: "/projects/Phantom Studio.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/phantom-studio.webp"),
+  },
+  {
+    title: "Meridian Analytics",
+    category: "Landing",
+    tech: ["React", "Tailwind", "JS"],
+    desc: "A modern data analytics dashboard highlighting clear visualizations and clean corporate design.",
+    url: "/projects/Meridian Analytics.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/meridian-analytics.webp"),
+  },
+  {
+    title: "Sōkai Wellness",
+    category: "Business",
+    tech: ["HTML", "CSS", "JS"],
+    desc: "A tranquil wellness and spa website with soft pastel colors and a calming zen layout.",
+    url: "/projects/Sōkai Wellness.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/sokai-wellness.webp"),
+  },
+  {
+    title: "TerraGuard Foundation",
+    category: "Business",
+    tech: ["HTML", "CSS", "JS"],
+    desc: "An environmental charity site featuring lush nature tones and a professional non-profit design.",
+    url: "/projects/TerraGuard Foundation.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/terraguard-foundation.webp"),
+  },
+  {
+    title: "LUNE Atelier",
+    category: "E-Commerce",
+    tech: ["HTML", "CSS", "JS"],
+    desc: "A luxury fashion brand layout with editorial-style photography and elegant typography.",
+    url: "/projects/LUNE Atelier.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/lune-atelier.webp"),
+  },
+  {
+    title: "VAEL Portfolio",
+    category: "Portfolio",
+    tech: ["HTML", "Tailwind", "JS"],
+    desc: "A minimalist personal portfolio for a creative professional using a clean grid and white space.",
+    url: "/projects/VAEL Portfolio.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/vael-portfolio.webp"),
+  },
+  {
+    title: "Nomad Routes",
+    category: "Business",
+    tech: ["HTML", "CSS", "JS"],
+    desc: "An adventure travel and tour booking layout highlighting vibrant photography and clear CTAs.",
+    url: "/projects/Nomad Routes.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/nomad-routes.webp"),
+  },
+  {
+    title: "Aurum Estate",
+    category: "Business",
+    tech: ["HTML", "CSS", "JS"],
+    desc: "A luxury real estate agency site with a dark elegant theme and gold accents.",
+    url: "/projects/Aurum Estate.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/aurum-estate.webp"),
+  },
+  {
+    title: "Axiom Protocol",
+    category: "Landing",
+    tech: ["HTML", "CSS", "JS"],
+    desc: "A futuristic web3 protocol concept with neon accents and high-tech grid backgrounds.",
+    url: "/projects/Axiom Protocol.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/axiom-protocol.webp"),
+  },
+  {
+    title: "Ceylon Spice Co.",
+    category: "E-Commerce",
+    tech: ["Shopify", "Tailwind", "JS"],
+    desc: "Premium spice brand e-commerce with rich storytelling and seamless shopping experience.",
+    url: "/projects/ceylon-spice.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/Ceylon Spice Co..webp"),
+  },
+  {
+    title: "Lanka Legal",
+    category: "Business",
+    tech: ["Next.js", "React", "Tailwind"],
+    desc: "Professional law firm website emphasizing trust, expertise, and easy client onboarding.",
+    url: "/projects/lanka-legal.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/Lanka Legal.webp"),
+  },
+  {
+    title: "Studio Bloom",
+    category: "Portfolio",
+    tech: ["React", "CMS", "Framer"],
+    desc: "Minimalist creative agency portfolio showcasing high-end visual design and case studies.",
+    url: "/projects/studio-bloom.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/Studio Bloom.webp"),
+  },
+  {
+    title: "BetterFit App",
+    category: "Landing",
+    tech: ["HTML", "Tailwind", "Lucide"],
+    desc: "High-conversion mobile app landing page designed for health and fitness enthusiasts.",
+    url: "/projects/betterfit-app.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/BetterFit App.webp"),
+  },
   {
     title: "MAISON Premium Essentials",
     category: "E-Commerce",
     tech: ["HTML", "CSS", "JS"],
     desc: "Luxury e-commerce concept with editorial sections, modern navigation and product discovery UX.",
     url: "/projects/E-Commerce.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/MAISON Premium Essentials.webp"),
   },
   {
     title: "Aiden Cole Creative Portfolio",
@@ -22,6 +218,7 @@ const PROJECTS = [
     tech: ["HTML", "Tailwind", "Lucide"],
     desc: "Immersive creative portfolio with advanced animations and strong visual storytelling.",
     url: "/projects/portfilio.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/Aiden Cole Creative Portfolio.webp"),
   },
   {
     title: "Rise Together Charity Platform",
@@ -29,6 +226,7 @@ const PROJECTS = [
     tech: ["React", "Tailwind", "CDN"],
     desc: "Charity and nonprofit experience with campaign pages, impact sections and donation flows.",
     url: "/projects/Charity.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/Rise Together Charity Platform.webp"),
   },
   {
     title: "NexusCorp Enterprise",
@@ -36,6 +234,7 @@ const PROJECTS = [
     tech: ["React", "Tailwind", "Lucide"],
     desc: "Modern corporate business landing page with interactive layouts and elegant styling.",
     url: "/projects/Business.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/NexusCorp Enterprise.webp"),
   },
   {
     title: "Local Directory Platform",
@@ -43,6 +242,7 @@ const PROJECTS = [
     tech: ["React", "Tailwind", "Lucide"],
     desc: "Comprehensive directory listing application with search, filters, and detailed view pages.",
     url: "/projects/Listning.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/Local Directory Platform.webp"),
   },
   {
     title: "EdTech Learning Management",
@@ -50,13 +250,7 @@ const PROJECTS = [
     tech: ["React", "Tailwind", "Lucide"],
     desc: "Full-featured LMS interface including dashboard, course catalog, and student metrics.",
     url: "/projects/Lms.html",
-  },
-  {
-    title: "Connect Social Media",
-    category: "Social Media",
-    tech: ["React", "Tailwind", "Lucide"],
-    desc: "Interactive social feed, profile layouts, and dynamic community engagement platform.",
-    url: "/projects/Socialmedia.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/EdTech Learning Management.webp"),
   },
   {
     title: "Modern Editorial Blog",
@@ -64,6 +258,7 @@ const PROJECTS = [
     tech: ["React", "Tailwind", "Lucide"],
     desc: "Clean, typography-focused blog template optimized for reading and content discovery.",
     url: "/projects/blog.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/Modern Editorial Blog.webp"),
   },
   {
     title: "Product Landing Page",
@@ -71,6 +266,7 @@ const PROJECTS = [
     tech: ["React", "Tailwind", "Lucide"],
     desc: "High-conversion product landing page designed to capture leads and showcase features.",
     url: "/projects/landing.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/Product Landing Page.webp"),
   },
   {
     title: "Global News Portal",
@@ -78,6 +274,7 @@ const PROJECTS = [
     tech: ["React", "Tailwind", "Lucide"],
     desc: "Dynamic news aggregator layout with breaking news tickers, structured grids, and media rich articles.",
     url: "/projects/news.html",
+    image: getPublicAssetUrl("/portfolio_thumbs/Global News Portal.webp"),
   },
 ];
 
@@ -101,14 +298,13 @@ const Portfolio = () => {
     };
     
     const observer = new ResizeObserver(observeElement);
-    
-    // We observe the document body to trigger re-renders of the grid cards when window resizes
-    observer.observe(document.body);
+    if (containerRef.current) observer.observe(containerRef.current);
     
     return () => observer.disconnect();
-  }, []);
+  }, [containerRef]);
 
   const filtered = active === "All" ? PROJECTS : PROJECTS.filter((p) => p.category === active);
+  const eagerImageCount = 9;
 
   return (
     <SiteLayout>
@@ -137,7 +333,7 @@ const Portfolio = () => {
         </div>
       </section>
 
-      {/* Featured project (Moved to top so user doesn't get yanked down) */}
+      {/* Featured project */}
       <section ref={featuredRef} className="container-x py-12 scroll-mt-24">
         <div className="reveal rounded-3xl bg-card border border-border shadow-card overflow-hidden">
           <div className="grid lg:grid-cols-2">
@@ -156,7 +352,7 @@ const Portfolio = () => {
                   style={{ 
                     width: '1280px', 
                     height: '960px', 
-                    transform: `scale(${containerRef.current ? containerRef.current.offsetWidth / 1280 : 1})` 
+                    transform: `scale(${scale})` 
                   }}
                   loading="lazy"
                   sandbox="allow-scripts allow-same-origin"
@@ -222,28 +418,20 @@ const Portfolio = () => {
               tabIndex={0}
             >
               <div 
-                className="relative aspect-[4/3] bg-brand-blue-soft overflow-hidden border-b border-border"
-                ref={(el) => {
-                  if (el) {
-                    const elScale = el.offsetWidth / 1280;
-                    const iframe = el.querySelector('iframe');
-                    if (iframe) iframe.style.transform = `scale(${elScale})`;
-                  }
-                }}
+                className="relative aspect-[4/3] overflow-hidden border-b border-border bg-gradient-to-br from-brand-blue-soft via-white to-brand-orange-soft"
               >
-                <iframe
-                  src={p.url}
-                  title={`${p.title} preview`}
-                  className="absolute top-0 left-0 origin-top-left pointer-events-none"
-                  style={{ width: '1280px', height: '960px', transform: 'scale(0.5)' }}
-                  loading="lazy"
-                  sandbox="allow-scripts allow-same-origin"
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(26,107,255,0.18),transparent_55%),linear-gradient(135deg,rgba(255,255,255,0.98),rgba(247,249,255,0.94))]" />
+                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white/80 to-transparent" />
+                <PortfolioImage
+                  title={p.title}
+                  primaryUrl={p.image}
+                  eager={i < eagerImageCount}
                 />
-                <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 text-xs font-semibold text-brand-blue">
+                <div className="absolute top-4 left-4 z-20 px-3 py-1 rounded-full bg-white/90 text-xs font-semibold text-brand-blue shadow-sm">
                   {p.category}
                 </div>
                 {/* Hover overlay */}
-                <div className="absolute inset-0 bg-brand-navy/85 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center p-6">
+                <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-brand-navy/85 p-6 text-center opacity-0 transition-opacity group-hover:opacity-100">
                   <p className="text-white/85 text-sm">{p.desc}</p>
                   <p className="mt-4 text-xs font-semibold tracking-wide uppercase text-brand-yellow">Click card to view demo</p>
                 </div>
