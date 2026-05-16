@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nomad Routes — Off-the-Beaten-Path Cultural Expeditions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Nunito:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#0b1d3a',
+                        'navy-mid': '#132d54',
+                        'navy-dark': '#081428',
+                        accent: '#00e676',
+                        'accent-dark': '#00c853',
+                        flame: '#ff7043',
+                        'flame-light': '#ff8a65',
+                        muted: '#8a9bb5',
+                        sand: '#f5f0eb',
+                    },
+                    fontFamily: {
+                        display: ['Unbounded', 'sans-serif'],
+                        body: ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --navy: #0b1d3a;
+            --navy-mid: #132d54;
+            --accent: #00e676;
+            --flame: #ff7043;
+            --muted: #8a9bb5;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--navy);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* 滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--navy);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--navy-mid);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* 导航 */
+        .nav-glass {
+            background: rgba(11, 29, 58, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* 英雄区粒子画布 */
+        #hero-particles {
+            pointer-events: none;
+        }
+
+        /* 英雄文字动画 */
+        .hero-text {
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .hero-text.fade-out {
+            opacity: 0;
+            transform: translateY(24px);
+        }
+
+        /* 搜索栏玻璃态 */
+        .search-glass {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        /* 对角线分区 */
+        .slant-down {
+            clip-path: polygon(0 0, 100% 3%, 100% 100%, 0 97%);
+            padding: 5rem 0;
+        }
+
+        .slant-up {
+            clip-path: polygon(0 3%, 100% 0, 100% 97%, 0 100%);
+            padding: 5rem 0;
+        }
+
+        /* 卡片通用 */
+        .card-hover {
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 难度徽章 */
+        .badge-easy {
+            background: #00e676;
+            color: #0b1d3a;
+        }
+
+        .badge-moderate {
+            background: #ff7043;
+            color: #fff;
+        }
+
+        .badge-challenging {
+            background: #ef5350;
+            color: #fff;
+        }
+
+        /* 目的地网格 */
+        .dest-grid {
+            columns: 3;
+            column-gap: 1.5rem;
+        }
+
+        .dest-grid .dest-card {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .dest-grid {
+                columns: 2;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .dest-grid {
+                columns: 1;
+            }
+        }
+
+        /* 选项卡 */
+        .tab-btn {
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        /* 旅行风格横向滚动 */
+        .styles-scroll {
+            cursor: grab;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .styles-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .styles-scroll.dragging {
+            cursor: grabbing;
+            scroll-behavior: auto;
+        }
+
+        /* 推荐轮播 */
+        .testimonial-track {
+            transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* 席位指示条 */
+        .spots-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .spots-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.8s ease;
+        }
+
+        /* 步骤构建器 */
+        .step-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .step-card:hover {
+            border-color: rgba(0, 230, 118, 0.3);
+        }
+
+        .step-card.selected {
+            border-color: var(--accent);
+            background: rgba(0, 230, 118, 0.08);
+        }
+
+        /* 滚动入场 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* 浮动按钮 */
+        #sticky-book {
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        #sticky-book.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* 移动端菜单 */
+        .mobile-overlay {
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .mobile-overlay.open {
+            transform: translateX(0);
+        }
+
+        /* 提示条 */
+        #toast {
+            transform: translateX(-50%) translateY(80px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            pointer-events: none;
+        }
+
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* 输入框焦点 */
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        /* 计数器动画 */
+        .counter {
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* 减少动画偏好 */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .reveal,
+            .reveal-left,
+            .reveal-right {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        /* 响应式英雄 */
+        @media (max-width: 640px) {
+            .search-row {
+                flex-direction: column;
+            }
+
+            .search-row>* {
+                width: 100% !important;
+            }
+        }
+
+        /* 脉冲动画 */
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(1);
+                opacity: 0.4;
+            }
+
+            100% {
+                transform: scale(1.6);
+                opacity: 0;
+            }
+        }
+
+        .pulse-ring::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            animation: pulse-ring 2s ease-out infinite;
+        }
+
+        /* 渐变文字 */
+        .gradient-text {
+            background: linear-gradient(135deg, #00e676, #ff7043);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+
+<body class="font-body">
+
+    <!-- 导航栏 -->
+    <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 nav-glass border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
+            <a href="#" class="font-display font-900 text-lg tracking-tight text-accent">NOMAD ROUTES</a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#destinations"
+                    class="nav-link text-sm font-semibold text-white/80 hover:text-white">Destinations</a>
+                <a href="#featured" class="nav-link text-sm font-semibold text-white/80 hover:text-white">Featured</a>
+                <a href="#trip-builder" class="nav-link text-sm font-semibold text-white/80 hover:text-white">Trip
+                    Builder</a>
+                <a href="#journal" class="nav-link text-sm font-semibold text-white/80 hover:text-white">Journal</a>
+                <a href="#departures"
+                    class="nav-link text-sm font-semibold text-white/80 hover:text-white">Departures</a>
+                <a href="#trip-builder"
+                    class="bg-accent text-navy font-display font-700 text-sm px-5 py-2 rounded-full hover:bg-accent-dark transition-colors">Book
+                    a Trip</a>
+            </div>
+            <button id="hamburger" class="md:hidden text-white text-2xl" aria-label="Open menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 移动端全屏菜单 -->
+    <div id="mobile-nav"
+        class="mobile-overlay fixed inset-0 z-[60] bg-navy flex flex-col items-center justify-center gap-8">
+        <button id="close-nav" class="absolute top-5 right-6 text-white text-3xl" aria-label="Close menu"><i
+                class="fa-solid fa-xmark"></i></button>
+        <a href="#destinations"
+            class="mobile-link font-display font-700 text-2xl text-white hover:text-accent transition-colors">Destinations</a>
+        <a href="#featured"
+            class="mobile-link font-display font-700 text-2xl text-white hover:text-accent transition-colors">Featured</a>
+        <a href="#trip-builder"
+            class="mobile-link font-display font-700 text-2xl text-white hover:text-accent transition-colors">Trip
+            Builder</a>
+        <a href="#journal"
+            class="mobile-link font-display font-700 text-2xl text-white hover:text-accent transition-colors">Journal</a>
+        <a href="#departures"
+            class="mobile-link font-display font-700 text-2xl text-white hover:text-accent transition-colors">Departures</a>
+        <a href="#trip-builder"
+            class="mt-4 bg-accent text-navy font-display font-700 text-lg px-8 py-3 rounded-full">Book a Trip</a>
+    </div>
+
+    <!-- 浮动预订按钮 -->
+    <button id="sticky-book"
+        class="fixed bottom-6 right-6 z-40 bg-accent text-navy font-display font-700 text-sm px-6 py-3 rounded-full shadow-lg shadow-accent/30 hover:bg-accent-dark transition-colors flex items-center gap-2">
+        <i class="fa-solid fa-compass"></i> Book a Trip
+    </button>
+
+    <!-- 提示条 -->
+    <div id="toast"
+        class="fixed bottom-8 left-1/2 z-[70] bg-accent text-navy font-body font-600 px-6 py-3 rounded-full shadow-lg text-sm">
+    </div>
+
+    <!-- ========== 1. HERO ========== -->
+    <section id="hero" class="relative h-screen min-h-[700px] overflow-hidden flex items-center justify-center">
+        <div id="hero-bg-1" class="absolute inset-0 transition-opacity duration-[1200ms] ease-in-out"></div>
+        <div id="hero-bg-2" class="absolute inset-0 transition-opacity duration-[1200ms] ease-in-out opacity-0"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-navy/40 via-transparent to-navy/80 z-[5]"></div>
+        <canvas id="hero-particles" class="absolute inset-0 z-[6]"></canvas>
+
+        <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+            <p class="hero-text font-body font-300 text-sm tracking-[0.3em] uppercase text-accent mb-4" id="hero-label">
+                Featured Destination</p>
+            <h1 class="hero-text font-display font-900 text-5xl sm:text-7xl lg:text-8xl leading-[0.95] mb-6"
+                id="hero-title">Patagonia</h1>
+            <p class="hero-text font-body font-300 text-lg sm:text-xl text-white/70 max-w-xl mx-auto mb-10"
+                id="hero-tagline">Where mountains meet the sky</p>
+
+            <!-- 搜索栏 -->
+            <div class="search-glass rounded-2xl p-3 sm:p-4 max-w-2xl mx-auto">
+                <div class="search-row flex gap-3 items-center">
+                    <div class="flex-1 min-w-0 relative">
+                        <label
+                            class="text-[10px] uppercase tracking-widest text-accent font-600 block mb-1 text-left px-2">Where
+                            to?</label>
+                        <input id="search-dest" type="text" placeholder="Search destinations..."
+                            class="w-full bg-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/30 border-0"
+                            autocomplete="off">
+                        <div id="search-dropdown"
+                            class="hidden absolute top-full left-0 right-0 mt-2 bg-navy-mid rounded-xl shadow-2xl border border-white/10 max-h-60 overflow-y-auto z-50">
+                        </div>
+                    </div>
+                    <div class="w-36 hidden sm:block">
+                        <label
+                            class="text-[10px] uppercase tracking-widest text-accent font-600 block mb-1 px-2">When?</label>
+                        <input type="text" placeholder="Any date"
+                            class="w-full bg-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/30 border-0">
+                    </div>
+                    <div class="w-28 hidden sm:block">
+                        <label
+                            class="text-[10px] uppercase tracking-widest text-accent font-600 block mb-1 px-2">Travelers</label>
+                        <select
+                            class="w-full bg-white/10 rounded-lg px-3 py-2 text-sm text-white border-0 appearance-none">
+                            <option value="1" class="text-navy">1</option>
+                            <option value="2" selected class="text-navy">2</option>
+                            <option value="3" class="text-navy">3</option>
+                            <option value="4" class="text-navy">4</option>
+                            <option value="5+" class="text-navy">5+</option>
+                        </select>
+                    </div>
+                    <button id="search-btn"
+                        class="bg-accent text-navy font-display font-700 text-sm px-6 py-3 rounded-xl hover:bg-accent-dark transition-colors shrink-0">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 英雄导航点 -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex gap-3" id="hero-dots"></div>
+
+        <!-- 向下滚动指示 -->
+        <div
+            class="absolute bottom-8 right-8 z-10 hidden sm:flex flex-col items-center gap-2 text-white/40 text-xs tracking-widest">
+            <span class="rotate-90 mb-4">SCROLL</span>
+            <div class="w-px h-12 bg-gradient-to-b from-white/40 to-transparent"></div>
+        </div>
+    </section>
+
+    <!-- ========== 统计条 ========== -->
+    <section class="relative z-10 bg-navy-mid py-10 border-y border-white/5">
+        <div class="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div class="reveal">
+                <div class="font-display font-900 text-4xl sm:text-5xl text-accent counter" data-target="47">0</div>
+                <div class="text-muted text-sm mt-1 font-300">Countries Explored</div>
+            </div>
+            <div class="reveal" style="transition-delay:0.1s">
+                <div class="font-display font-900 text-4xl sm:text-5xl text-white counter" data-target="2300">0</div>
+                <div class="text-muted text-sm mt-1 font-300">Travelers & Counting</div>
+            </div>
+            <div class="reveal" style="transition-delay:0.2s">
+                <div class="font-display font-900 text-4xl sm:text-5xl text-flame counter" data-target="98">0</div>
+                <div class="text-muted text-sm mt-1 font-300">Satisfaction Rate %</div>
+            </div>
+            <div class="reveal" style="transition-delay:0.3s">
+                <div class="font-display font-900 text-4xl sm:text-5xl text-white counter" data-target="12">0</div>
+                <div class="text-muted text-sm mt-1 font-300">Max Group Size</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== 2. DESTINATION EXPLORER ========== -->
+    <section id="destinations" class="bg-navy-mid slant-down">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-12 reveal">
+                <p class="font-body text-accent text-sm tracking-[0.25em] uppercase font-600 mb-3">Explore the World</p>
+                <h2 class="font-display font-900 text-4xl sm:text-5xl">Destination Explorer</h2>
+            </div>
+            <!-- 区域选项卡 -->
+            <div class="flex justify-center gap-2 sm:gap-4 mb-10 flex-wrap reveal" id="region-tabs" role="tablist">
+            </div>
+            <!-- 目的地网格 -->
+            <div class="dest-grid" id="dest-grid"></div>
+        </div>
+    </section>
+
+    <!-- ========== 3. FEATURED TRIPS ========== -->
+    <section id="featured" class="bg-navy slant-up">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-14 reveal">
+                <p class="font-body text-flame text-sm tracking-[0.25em] uppercase font-600 mb-3">Hand-Picked for You
+                </p>
+                <h2 class="font-display font-900 text-4xl sm:text-5xl">Featured Expeditions</h2>
+            </div>
+            <div class="grid lg:grid-cols-3 gap-6" id="featured-grid"></div>
+        </div>
+    </section>
+
+    <!-- ========== 4. TRIP BUILDER ========== -->
+    <section id="trip-builder" class="bg-navy-mid slant-down">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-center mb-10 reveal">
+                <p class="font-body text-accent text-sm tracking-[0.25em] uppercase font-600 mb-3">Design Your Journey
+                </p>
+                <h2 class="font-display font-900 text-4xl sm:text-5xl">Trip Builder</h2>
+            </div>
+
+            <!-- 进度条 -->
+            <div class="flex items-center justify-center gap-2 mb-10 reveal" id="builder-progress"></div>
+
+            <!-- 实时价格 -->
+            <div class="text-center mb-10 reveal">
+                <p class="text-muted text-sm mb-1">Estimated Price</p>
+                <div class="font-display font-900 text-5xl text-accent" id="builder-price">--</div>
+                <p class="text-muted text-xs mt-1">per person, from</p>
+            </div>
+
+            <!-- 步骤容器 -->
+            <div id="builder-steps"></div>
+        </div>
+    </section>
+
+    <!-- ========== 5. WHY NOMAD ROUTES ========== -->
+    <section id="why" class="bg-navy slant-up">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-14 reveal">
+                <p class="font-body text-flame text-sm tracking-[0.25em] uppercase font-600 mb-3">The Nomad Difference
+                </p>
+                <h2 class="font-display font-900 text-4xl sm:text-5xl">Why Nomad Routes</h2>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6" id="why-grid"></div>
+        </div>
+    </section>
+
+    <!-- ========== 6. TRIP STYLES ========== -->
+    <section id="trip-styles" class="bg-navy-mid py-20 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 mb-10 reveal">
+            <p class="font-body text-accent text-sm tracking-[0.25em] uppercase font-600 mb-3">Find Your Vibe</p>
+            <h2 class="font-display font-900 text-4xl sm:text-5xl">Trip Styles</h2>
+        </div>
+        <div class="styles-scroll flex gap-6 overflow-x-auto px-6 pb-4" id="styles-scroll"
+            style="padding-left: max(1.5rem, calc((100vw - 80rem)/2 + 1.5rem));"></div>
+    </section>
+
+    <!-- ========== 7. TRAVEL JOURNAL ========== -->
+    <section id="journal" class="bg-navy slant-up">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-14 reveal">
+                <p class="font-body text-flame text-sm tracking-[0.25em] uppercase font-600 mb-3">Stories from the Field
+                </p>
+                <h2 class="font-display font-900 text-4xl sm:text-5xl">Travel Journal</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8" id="journal-grid"></div>
+        </div>
+    </section>
+
+    <!-- ========== 8. TESTIMONIALS ========== -->
+    <section id="testimonials" class="bg-navy-mid py-24 overflow-hidden">
+        <div class="max-w-6xl mx-auto px-6 mb-14 reveal">
+            <p class="font-body text-accent text-sm tracking-[0.25em] uppercase font-600 mb-3">What Travelers Say</p>
+            <h2 class="font-display font-900 text-4xl sm:text-5xl">Testimonials</h2>
+        </div>
+        <div class="relative max-w-4xl mx-auto px-6">
+            <div class="overflow-hidden">
+                <div class="testimonial-track flex" id="testimonial-track"></div>
+            </div>
+            <div class="flex justify-center gap-3 mt-10" id="testimonial-dots"></div>
+        </div>
+    </section>
+
+    <!-- ========== 9. UPCOMING DEPARTURES ========== -->
+    <section id="departures" class="bg-navy slant-up">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-14 reveal">
+                <p class="font-body text-flame text-sm tracking-[0.25em] uppercase font-600 mb-3">Pack Your Bags</p>
+                <h2 class="font-display font-900 text-4xl sm:text-5xl">Upcoming Departures</h2>
+            </div>
+            <div class="space-y-4" id="departures-list"></div>
+        </div>
+    </section>
+
+    <!-- ========== 10. NEWSLETTER ========== -->
+    <section id="newsletter" class="bg-navy-mid slant-down relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <svg viewBox="0 0 800 400" class="w-full h-full" fill="none">
+                <circle cx="200" cy="200" r="150" stroke="#00e676" stroke-width="0.5" stroke-dasharray="8 8" />
+                <circle cx="600" cy="150" r="100" stroke="#ff7043" stroke-width="0.5" stroke-dasharray="6 6" />
+                <circle cx="400" cy="300" r="80" stroke="#00e676" stroke-width="0.5" stroke-dasharray="4 4" />
+                <line x1="200" y1="200" x2="600" y2="150" stroke="#00e676" stroke-width="0.3" stroke-dasharray="4 8" />
+                <line x1="600" y1="150" x2="400" y2="300" stroke="#ff7043" stroke-width="0.3" stroke-dasharray="4 8" />
+                <line x1="400" y1="300" x2="200" y2="200" stroke="#00e676" stroke-width="0.3" stroke-dasharray="4 8" />
+                <path d="M200 200 Q400 50 600 150" stroke="#00e676" stroke-width="0.3" fill="none"
+                    stroke-dasharray="4 6" />
+            </svg>
+        </div>
+        <div class="max-w-2xl mx-auto px-6 text-center relative z-10 reveal">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 mb-6">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2"
+                    stroke-linecap="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                </svg>
+            </div>
+            <h2 class="font-display font-900 text-3xl sm:text-4xl mb-4">Get First Access to New Routes</h2>
+            <p class="text-muted font-300 mb-8 max-w-md mx-auto">Join 12,000+ adventurers who get early access to new
+                expeditions, exclusive discounts, and field reports.</p>
+            <form id="newsletter-form" class="flex gap-3 max-w-lg mx-auto">
+                <input type="email" id="newsletter-email" placeholder="Your email address" required
+                    class="flex-1 bg-white/8 border border-white/10 rounded-xl px-5 py-3 text-sm text-white placeholder:text-white/30">
+                <button type="submit"
+                    class="bg-accent text-navy font-display font-700 text-sm px-6 py-3 rounded-xl hover:bg-accent-dark transition-colors shrink-0">Subscribe</button>
+            </form>
+            <p id="newsletter-error" class="text-flame text-xs mt-2 hidden"></p>
+        </div>
+    </section>
+
+    <!-- ========== 11. FOOTER ========== -->
+    <footer class="bg-navy-dark pt-16 pb-8 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-14">
+                <!-- 品牌 -->
+                <div>
+                    <div class="font-display font-900 text-xl text-accent mb-4">NOMAD ROUTES</div>
+                    <p class="text-muted text-sm font-300 leading-relaxed mb-6">Off-the-beaten-path cultural expeditions
+                        for curious travelers who seek authentic connection over convenience.</p>
+                    <div class="flex gap-4">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-muted hover:text-accent hover:bg-accent/10 transition-colors"
+                            aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-muted hover:text-accent hover:bg-accent/10 transition-colors"
+                            aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-muted hover:text-accent hover:bg-accent/10 transition-colors"
+                            aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-muted hover:text-accent hover:bg-accent/10 transition-colors"
+                            aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                    </div>
+                </div>
+                <!-- 目的地快捷链接 -->
+                <div>
+                    <h4 class="font-display font-700 text-sm tracking-wider mb-4">Destinations</h4>
+                    <ul class="space-y-2 text-sm text-muted font-300">
+                        <li><a href="#destinations" class="hover:text-accent transition-colors">Patagonia</a></li>
+                        <li><a href="#destinations" class="hover:text-accent transition-colors">Bhutan</a></li>
+                        <li><a href="#destinations" class="hover:text-accent transition-colors">Namibia</a></li>
+                        <li><a href="#destinations" class="hover:text-accent transition-colors">Iceland</a></li>
+                        <li><a href="#destinations" class="hover:text-accent transition-colors">Georgia</a></li>
+                        <li><a href="#destinations" class="hover:text-accent transition-colors">Papua New Guinea</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- 公司 -->
+                <div>
+                    <h4 class="font-display font-700 text-sm tracking-wider mb-4">Company</h4>
+                    <ul class="space-y-2 text-sm text-muted font-300">
+                        <li><a href="#" class="hover:text-accent transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-accent transition-colors">Our Guides</a></li>
+                        <li><a href="#" class="hover:text-accent transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-accent transition-colors">Press</a></li>
+                        <li><a href="#" class="hover:text-accent transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <!-- 可持续承诺 -->
+                <div>
+                    <h4 class="font-display font-700 text-sm tracking-wider mb-4">Travel Responsibly</h4>
+                    <div class="bg-accent/5 border border-accent/20 rounded-xl p-4 mb-4">
+                        <p class="text-sm text-white/70 font-300 leading-relaxed">Every Nomad Routes trip includes a
+                            carbon offset. We partner with local communities to ensure tourism revenue directly benefits
+                            the places we visit.</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-accent text-xs font-600">
+                        <i class="fa-solid fa-leaf"></i>
+                        <span>Certified B Corporation</span>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-white/5 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-muted text-xs font-300">2025 Nomad Routes. All rights reserved.</p>
+                <div class="flex gap-6 text-xs text-muted font-300">
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                    <a href="#" class="hover:text-white transition-colors">Cookie Settings</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ==================== 数据定义 ====================
+
+        // 英雄轮播目的地
+        const heroDestinations = [
+            { name: 'Patagonia', tagline: 'Where mountains meet the sky', gradient: 'linear-gradient(135deg, #0b1d3a 0%, #1a3a5c 18%, #4fc3f7 35%, #b3e5fc 50%, #e0f7fa 60%, #0288d1 80%, #01579b 100%)' },
+            { name: 'Bhutan', tagline: 'The last Himalayan kingdom', gradient: 'linear-gradient(160deg, #1b0a2e 0%, #4a148c 22%, #ff6f00 42%, #ffab40 52%, #2e7d32 72%, #1b5e20 100%)' },
+            { name: 'Namibia', tagline: 'Ancient deserts, wild coastlines', gradient: 'linear-gradient(145deg, #ff6f00 0%, #e65100 18%, #bf360c 38%, #3e2723 58%, #ff8a65 78%, #ffd54f 100%)' },
+            { name: 'Papua New Guinea', tagline: 'Untouched cultures, primordial forests', gradient: 'linear-gradient(130deg, #004d40 0%, #00695c 20%, #1b5e20 40%, #33691e 58%, #ff6f00 78%, #00e676 100%)' },
+            { name: 'Iceland', tagline: 'Fire, ice, and midnight sun', gradient: 'linear-gradient(150deg, #0b1d3a 0%, #1a237e 18%, #00e676 36%, #00c853 46%, #e0f7fa 60%, #b0bec5 78%, #263238 100%)' }
+        ];
+
+        // 区域渐变配色
+        const regionGradients = {
+            Africa: [
+                'linear-gradient(135deg, #ff6f00, #e65100, #bf360c)',
+                'linear-gradient(160deg, #1b5e20, #2e7d32, #ff6f00)',
+                'linear-gradient(140deg, #4e342e, #6d4c41, #ff8f00)',
+                'linear-gradient(145deg, #0d47a1, #1565c0, #ffb74d)',
+                'linear-gradient(130deg, #bf360c, #e65100, #ffd54f)',
+                'linear-gradient(155deg, #004d40, #00695c, #4caf50)'
+            ],
+            Asia: [
+                'linear-gradient(135deg, #1b0a2e, #4a148c, #ff6f00)',
+                'linear-gradient(150deg, #004d40, #00695c, #1b5e20)',
+                'linear-gradient(140deg, #004d40, #33691e, #ff8f00)',
+                'linear-gradient(160deg, #1a237e, #283593, #4fc3f7)',
+                'linear-gradient(130deg, #00695c, #2e7d32, #ffab40)',
+                'linear-gradient(145deg, #311b92, #4527a0, #ff7043)'
+            ],
+            Americas: [
+                'linear-gradient(135deg, #0b1d3a, #1a3a5c, #4fc3f7)',
+                'linear-gradient(150deg, #1b5e20, #2e7d32, #ff6f00)',
+                'linear-gradient(140deg, #004d40, #00695c, #ffd54f)',
+                'linear-gradient(160deg, #bf360c, #e65100, #ff8a65)',
+                'linear-gradient(130deg, #0d47a1, #1565c0, #e0f7fa)',
+                'linear-gradient(145deg, #1a237e, #283593, #00e676)'
+            ],
+            Europe: [
+                'linear-gradient(135deg, #0b1d3a, #1a237e, #00e676)',
+                'linear-gradient(150deg, #263238, #37474f, #4fc3f7)',
+                'linear-gradient(140deg, #1a237e, #283593, #b0bec5)',
+                'linear-gradient(160deg, #004d40, #00695c, #e0f7fa)',
+                'linear-gradient(130deg, #0d47a1, #1976d2, #ffd54f)',
+                'linear-gradient(145deg, #1b0a2e, #311b92, #4fc3f7)'
+            ],
+            Oceania: [
+                'linear-gradient(135deg, #006064, #00838f, #00e676)',
+                'linear-gradient(150deg, #01579b, #0277bd, #4fc3f7)',
+                'linear-gradient(140deg, #004d40, #00695c, #ff6f00)',
+                'linear-gradient(160deg, #00838f, #0097a7, #e0f7fa)',
+                'linear-gradient(130deg, #00695c, #00897b, #ffab40)',
+                'linear-gradient(145deg, #01579b, #0288d1, #00e676)'
+            ]
+        };
+
+        // 目的地数据
+        const destinations = {
+            Africa: [
+                { country: 'Namibia', trip: 'Desert & Coast Expedition', days: 12, difficulty: 'Challenging', price: 2890, tall: true },
+                { country: 'Madagascar', trip: 'Wildlife & Rainforest Trek', days: 10, difficulty: 'Moderate', price: 2450, tall: false },
+                { country: 'Ethiopia', trip: 'Ancient Trails & Tribal Lands', days: 14, difficulty: 'Moderate', price: 2190, tall: false },
+                { country: 'Tanzania', trip: 'Off-Grid Safari Circuit', days: 9, difficulty: 'Easy', price: 3200, tall: true },
+                { country: 'Morocco', trip: 'Atlas Mountains & Sahara', days: 8, difficulty: 'Moderate', price: 1690, tall: false },
+                { country: 'Rwanda', trip: 'Gorilla Highlands & Lakes', days: 7, difficulty: 'Moderate', price: 3450, tall: false }
+            ],
+            Asia: [
+                { country: 'Bhutan', trip: 'Himalayan Kingdom Circuit', days: 11, difficulty: 'Challenging', price: 3890, tall: true },
+                { country: 'Myanmar', trip: 'Hidden Temples & Rivers', days: 12, difficulty: 'Moderate', price: 2290, tall: false },
+                { country: 'Papua New Guinea', trip: 'Tribal Lands Expedition', days: 14, difficulty: 'Challenging', price: 4200, tall: false },
+                { country: 'Kyrgyzstan', trip: 'Nomadic Steppe Journey', days: 10, difficulty: 'Moderate', price: 1990, tall: false },
+                { country: 'Laos', trip: 'Mekong & Mountain Tribes', days: 9, difficulty: 'Easy', price: 1790, tall: true },
+                { country: 'India', trip: 'Ladakh High Pass Traverse', days: 13, difficulty: 'Challenging', price: 2750, tall: false }
+            ],
+            Americas: [
+                { country: 'Chile', trip: 'Patagonia Grand Circuit', days: 14, difficulty: 'Challenging', price: 3490, tall: true },
+                { country: 'Peru', trip: 'Sacred Valley & Ausangate', days: 12, difficulty: 'Challenging', price: 2590, tall: false },
+                { country: 'Colombia', trip: 'Lost City Trek', days: 6, difficulty: 'Moderate', price: 1490, tall: false },
+                { country: 'Guatemala', trip: 'Maya Highlands & Jungle', days: 8, difficulty: 'Moderate', price: 1390, tall: true },
+                { country: 'Bolivia', trip: 'Salt Flats & Altiplano', days: 9, difficulty: 'Easy', price: 1890, tall: false },
+                { country: 'Ecuador', trip: 'Amazon & Andes Crossing', days: 11, difficulty: 'Moderate', price: 2190, tall: false }
+            ],
+            Europe: [
+                { country: 'Iceland', trip: 'Highlands & Volcanic Trails', days: 9, difficulty: 'Challenging', price: 3190, tall: true },
+                { country: 'Georgia', trip: 'Caucasus Mountain Traverse', days: 12, difficulty: 'Challenging', price: 2490, tall: false },
+                { country: 'Norway', trip: 'Lofoten Arctic Coast', days: 8, difficulty: 'Moderate', price: 3690, tall: false },
+                { country: 'Albania', trip: 'Accursed Mountains Trek', days: 7, difficulty: 'Moderate', price: 1290, tall: false },
+                { country: 'Portugal', trip: 'Rota Vicentina Coastal Walk', days: 7, difficulty: 'Easy', price: 1590, tall: true },
+                { country: 'Faroe Islands', trip: 'Edge of the World', days: 6, difficulty: 'Moderate', price: 2890, tall: false }
+            ],
+            Oceania: [
+                { country: 'New Zealand', trip: 'South Island Wilderness', days: 14, difficulty: 'Challenging', price: 3990, tall: true },
+                { country: 'Vanuatu', trip: 'Volcanic Islands & Culture', days: 8, difficulty: 'Moderate', price: 2590, tall: false },
+                { country: 'Solomon Islands', trip: 'Reef & Rainforest', days: 10, difficulty: 'Moderate', price: 2890, tall: false },
+                { country: 'Fiji', trip: 'Interior Highlands Trek', days: 7, difficulty: 'Easy', price: 2190, tall: false },
+                { country: 'Tasmania', trip: 'Overland Track & Coast', days: 11, difficulty: 'Challenging', price: 2790, tall: true },
+                { country: 'New Caledonia', trip: 'Rugged East Coast', days: 8, difficulty: 'Moderate', price: 2490, tall: false }
+            ]
+        };
+
+        // 推荐行程
+        const featuredTrips = [
+            {
+                name: 'Patagonia Grand Circuit',
+                days: 14, groupSize: 10,
+                gradient: 'linear-gradient(135deg, #0b1d3a 0%, #1a3a5c 20%, #4fc3f7 40%, #e0f7fa 55%, #0288d1 75%, #01579b 100%)',
+                highlights: ['Torres del Paine complete circuit', 'Grey Glacier ice trek', 'Tierra del Fuego wilderness camp', 'Gaucho campfire evenings']
+            },
+            {
+                name: 'Bhutan Spiritual Trail',
+                days: 11, groupSize: 8,
+                gradient: 'linear-gradient(160deg, #1b0a2e 0%, #4a148c 25%, #ff6f00 45%, #ffab40 55%, #2e7d32 75%, #1b5e20 100%)',
+                highlights: ['Tiger\'s Nest monastery trek', 'Punakha Dzong exploration', 'Phobjikha Valley crane watching', 'Traditional farmhouse homestays']
+            },
+            {
+                name: 'Namibia Desert & Coast',
+                days: 12, groupSize: 12,
+                gradient: 'linear-gradient(145deg, #ff6f00 0%, #e65100 20%, #bf360c 40%, #3e2723 60%, #ff8a65 80%, #ffd54f 100%)',
+                highlights: ['Sossusvlei dawn at Deadvlei', 'Skeleton Coast shipwrecks', 'Himba community visit', 'Desert-adapted wildlife tracking']
+            }
+        ];
+
+        // 为什么选择我们
+        const whyFeatures = [
+            { title: 'Expert Local Guides', desc: 'Born and raised in the regions they lead, our guides unlock doors no guidebook can.', icon: `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="32" cy="20" r="10"/><path d="M12 58c0-11 9-20 20-20s20 9 20 20"/><path d="M32 38v8"/><path d="M24 46h16"/></svg>` },
+            { title: 'Small Groups (Max 12)', desc: 'Intimate groups mean deeper connections, more flexibility, and less impact on communities.', icon: `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="22" cy="22" r="8"/><circle cx="42" cy="22" r="8"/><circle cx="32" cy="36" r="8"/><path d="M10 52c0-7 5-12 12-12"/><path d="M54 52c0-7-5-12-12-12"/><path d="M20 52c0-7 5-12 12-12s12 5 12 12"/></svg>` },
+            { title: 'Carbon Offset Every Trip', desc: 'We calculate and offset 120% of each trip\'s emissions through verified conservation projects.', icon: `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M32 56V28"/><path d="M32 28c-8-4-16-2-18 4s4 14 18 24"/><path d="M32 28c8-4 16-2 18 4s-4 14-18 24"/><path d="M32 28c-3-12 0-22 8-24"/><path d="M32 28c3-12 0-22-8-24"/></svg>` },
+            { title: '24/7 Field Support', desc: 'Our operations team monitors every expedition in real-time, ready to assist at a moment\'s notice.', icon: `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="32" cy="32" r="20"/><path d="M32 22v10l7 7"/><path d="M8 32H4"/><path d="M60 32h-4"/><path d="M32 4v4"/><path d="M32 56v4"/></svg>` }
+        ];
+
+        // 旅行风格
+        const tripStyles = [
+            { name: 'Adventure', desc: 'Push your limits through rugged terrain, high passes, and remote trails that test your mettle.', gradient: 'linear-gradient(135deg, #bf360c, #e65100, #ff6f00)', icon: 'fa-mountain' },
+            { name: 'Culture', desc: 'Deep immersion into living traditions, ancient ceremonies, and communities that welcome you as family.', gradient: 'linear-gradient(135deg, #4a148c, #6a1b9a, #8e24aa)', icon: 'fa-masks-theater' },
+            { name: 'Wildlife', desc: 'Close encounters with the planet\'s most extraordinary creatures in their natural habitats.', gradient: 'linear-gradient(135deg, #004d40, #00695c, #00897b)', icon: 'fa-paw' },
+            { name: 'Expedition', desc: 'True exploration into unmapped territory, where every day brings genuine discovery.', gradient: 'linear-gradient(135deg, #0b1d3a, #1a237e, #283593)', icon: 'fa-compass' },
+            { name: 'Wellness', desc: 'Mindful journeys combining movement, meditation, and nature for complete restoration.', gradient: 'linear-gradient(135deg, #1b5e20, #2e7d32, #43a047)', icon: 'fa-spa' }
+        ];
+
+        // 博客文章
+        const journalPosts = [
+            { title: 'The Lost Trails of Ladakh: A Photographer\'s Diary', category: 'Adventure', date: 'Dec 15, 2024', readTime: '8 min read', excerpt: 'Following ancient trade routes through the Himalayan kingdom, where every turn reveals a frame more stunning than the last and the altitude makes you earn every view.', gradient: 'linear-gradient(135deg, #1a237e, #283593, #4fc3f7)', color: '#4fc3f7' },
+            { title: 'Why Small-Group Travel is the Future of Exploration', category: 'Insights', date: 'Nov 28, 2024', readTime: '5 min read', excerpt: 'The shift from mass tourism to intimate expeditions isn\'t just a trend — it\'s a fundamental change in how we connect with the world and each other.', gradient: 'linear-gradient(135deg, #004d40, #00695c, #00e676)', color: '#00e676' },
+            { title: 'Inside Papua New Guinea\'s Sing-Sing Festivals', category: 'Culture', date: 'Nov 10, 2024', readTime: '7 min read', excerpt: 'Hundreds of tribes gather in a riot of feathers, paint, and rhythm. These festivals are not performances — they are living declarations of identity.', gradient: 'linear-gradient(135deg, #bf360c, #e65100, #ff6f00)', color: '#ff6f00' }
+        ];
+
+        // 推荐评价
+        const testimonials = [
+            { name: 'Sarah Mitchell', dest: 'Patagonia, Chile', stars: 5, quote: 'The Patagonia circuit was life-changing. Our guide knew every hidden trail and the group felt like family by day three. Waking up to the Torres at sunrise is something no photo can capture.', colors: ['#00e676', '#0288d1'] },
+            { name: 'James Kowalski', dest: 'Bhutan', stars: 5, quote: 'Bhutan exceeded every expectation. The monasteries perched on cliffs, the hikes through rhododendron forests, the warmth of the people — absolutely transformative.', colors: ['#ff6f00', '#4a148c'] },
+            { name: 'Elena Rossi', dest: 'Namibia', stars: 5, quote: 'Namibia\'s desert landscapes are otherworldly. Waking up to sunrise over the Sossusvlei dunes, standing atop Deadvlei with those ancient trees — a memory I\'ll carry forever.', colors: ['#e65100', '#bf360c'] },
+            { name: 'Marcus Tanaka', dest: 'Papua New Guinea', stars: 4, quote: 'Papua New Guinea pushed me out of my comfort zone in the best way. Raw, authentic, and completely unlike anywhere else I\'ve been. Not for the faint-hearted but deeply rewarding.', colors: ['#00695c', '#ff6f00'] },
+            { name: 'Aiko Hayashi', dest: 'Iceland', stars: 5, quote: 'Iceland\'s highlands felt like another planet. The volcanic landscapes, the midnight sun, the silence of the glaciers — surreal doesn\'t begin to cover it.', colors: ['#1a237e', '#00e676'] }
+        ];
+
+        // 即将出发的行程
+        const departures = [
+            { dest: 'Patagonia Grand Circuit', date: 'Jan 15, 2025', spots: 4, maxSpots: 12, price: 3490 },
+            { dest: 'Bhutan Spiritual Trail', date: 'Feb 3, 2025', spots: 8, maxSpots: 12, price: 3890 },
+            { dest: 'Namibia Desert & Coast', date: 'Feb 20, 2025', spots: 2, maxSpots: 12, price: 2890 },
+            { dest: 'Iceland Highlands Trek', date: 'Mar 8, 2025', spots: 10, maxSpots: 12, price: 3190 },
+            { dest: 'Georgia Caucasus Traverse', date: 'Mar 22, 2025', spots: 6, maxSpots: 12, price: 2490 },
+            { dest: 'Madagascar Wildlife Trek', date: 'Apr 5, 2025', spots: 3, maxSpots: 12, price: 2450 }
+        ];
+
+        // 旅行构建器价格配置
+        const builderConfig = {
+            regions: [
+                { name: 'Africa', gradient: 'linear-gradient(135deg, #ff6f00, #e65100, #bf360c)', icon: 'fa-solid fa-sun' },
+                { name: 'Asia', gradient: 'linear-gradient(135deg, #004d40, #1b5e20, #ff6f00)', icon: 'fa-solid fa-torii-gate' },
+                { name: 'Americas', gradient: 'linear-gradient(135deg, #0b1d3a, #4fc3f7, #00e676)', icon: 'fa-solid fa-mountain-sun' },
+                { name: 'Europe', gradient: 'linear-gradient(135deg, #0b1d3a, #1a237e, #00e676)', icon: 'fa-solid fa-landmark' },
+                { name: 'Oceania', gradient: 'linear-gradient(135deg, #006064, #00838f, #00e676)', icon: 'fa-solid fa-water' }
+            ],
+            styles: [
+                { name: 'Adventure', modifier: 1.0, icon: 'fa-solid fa-mountain' },
+                { name: 'Culture', modifier: 0.9, icon: 'fa-solid fa-masks-theater' },
+                { name: 'Wildlife', modifier: 1.1, icon: 'fa-solid fa-paw' },
+                { name: 'Expedition', modifier: 1.2, icon: 'fa-solid fa-compass' }
+            ],
+            durations: [
+                { days: 7, modifier: 0.7 },
+                { days: 10, modifier: 1.0 },
+                { days: 14, modifier: 1.3 },
+                { days: 21, modifier: 1.8 }
+            ],
+            groups: [
+                { name: 'Solo', modifier: 1.4, icon: 'fa-solid fa-person' },
+                { name: 'Couple', modifier: 1.0, icon: 'fa-solid fa-people-arrows' },
+                { name: 'Small Group', modifier: 0.85, icon: 'fa-solid fa-people-group' },
+                { name: 'Private', modifier: 1.6, icon: 'fa-solid fa-lock' }
+            ],
+            basePrices: { Africa: 2000, Asia: 2500, Americas: 2200, Europe: 2800, Oceania: 3000 }
+        };
+
+
+        // ==================== 英雄轮播 ====================
+        let currentHeroIdx = 0;
+        let activeBgLayer = 1;
+        const heroBg1 = document.getElementById('hero-bg-1');
+        const heroBg2 = document.getElementById('hero-bg-2');
+        const heroTitle = document.getElementById('hero-title');
+        const heroTagline = document.getElementById('hero-tagline');
+        const heroLabel = document.getElementById('hero-label');
+        const heroDotsContainer = document.getElementById('hero-dots');
+
+        // 初始化英雄背景和导航点
+        heroBg1.style.background = heroDestinations[0].gradient;
+        heroDestinations.forEach((_, i) => {
+            const dot = document.createElement('button');
+            dot.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === 0 ? 'bg-accent w-8' : 'bg-white/30'}`;
+            dot.setAttribute('aria-label', `Go to destination ${i + 1}`);
+            dot.addEventListener('click', () => goToHero(i));
+            heroDotsContainer.appendChild(dot);
+        });
+
+        function goToHero(idx) {
+            if (idx === currentHeroIdx) return;
+            // 淡出文字
+            [heroTitle, heroTagline, heroLabel].forEach(el => el.classList.add('fade-out'));
+            // 交叉淡入背景
+            const nextDest = heroDestinations[idx];
+            if (activeBgLayer === 1) {
+                heroBg2.style.background = nextDest.gradient;
+                heroBg2.style.opacity = '1';
+                heroBg1.style.opacity = '0';
+                activeBgLayer = 2;
+            } else {
+                heroBg1.style.background = nextDest.gradient;
+                heroBg1.style.opacity = '1';
+                heroBg2.style.opacity = '0';
+                activeBgLayer = 1;
+            }
+            // 更新导航点
+            heroDotsContainer.querySelectorAll('button').forEach((dot, i) => {
+                dot.className = `h-2.5 rounded-full transition-all duration-300 ${i === idx ? 'bg-accent w-8' : 'bg-white/30 w-2.5'}`;
+            });
+            // 延迟更新文字
+            setTimeout(() => {
+                heroTitle.textContent = nextDest.name;
+                heroTagline.textContent = nextDest.tagline;
+                [heroTitle, heroTagline, heroLabel].forEach(el => el.classList.remove('fade-out'));
+            }, 400);
+            currentHeroIdx = idx;
+        }
+
+        setInterval(() => {
+            goToHero((currentHeroIdx + 1) % heroDestinations.length);
+        }, 4000);
+
+
+        // ==================== 英雄粒子 ====================
+        const particleCanvas = document.getElementById('hero-particles');
+        const pCtx = particleCanvas.getContext('2d');
+        let particles = [];
+
+        function resizeParticles() {
+            particleCanvas.width = window.innerWidth;
+            particleCanvas.height = window.innerHeight;
+        }
+        resizeParticles();
+        window.addEventListener('resize', resizeParticles);
+
+        // 创建粒子
+        for (let i = 0; i < 60; i++) {
+            particles.push({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                r: Math.random() * 1.5 + 0.5,
+                dx: (Math.random() - 0.5) * 0.3,
+                dy: (Math.random() - 0.5) * 0.3,
+                alpha: Math.random() * 0.5 + 0.2,
+                pulse: Math.random() * Math.PI * 2
+            });
+        }
+
+        function animateParticles() {
+            pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+            particles.forEach(p => {
+                p.x += p.dx;
+                p.y += p.dy;
+                p.pulse += 0.02;
+                const alpha = p.alpha * (0.5 + 0.5 * Math.sin(p.pulse));
+                if (p.x < 0) p.x = particleCanvas.width;
+                if (p.x > particleCanvas.width) p.x = 0;
+                if (p.y < 0) p.y = particleCanvas.height;
+                if (p.y > particleCanvas.height) p.y = 0;
+                pCtx.beginPath();
+                pCtx.arc(p.x, p.y, Math.max(0.1, p.r), 0, Math.PI * 2);
+                pCtx.fillStyle = `rgba(255,255,255,${alpha})`;
+                pCtx.fill();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+
+        // ==================== 目的地探索器 ====================
+        let activeRegion = 'Africa';
+        const regionTabs = document.getElementById('region-tabs');
+        const destGrid = document.getElementById('dest-grid');
+        const regions = Object.keys(destinations);
+
+        // 渲染选项卡
+        regions.forEach((region, i) => {
+            const btn = document.createElement('button');
+            btn.className = `tab-btn font-display font-700 text-sm sm:text-base px-4 sm:px-6 py-2 text-white/50 hover:text-white ${i === 0 ? 'active' : ''}`;
+            btn.textContent = region;
+            btn.setAttribute('role', 'tab');
+            btn.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+            btn.addEventListener('click', () => {
+                activeRegion = region;
+                regionTabs.querySelectorAll('.tab-btn').forEach(t => {
+                    t.classList.remove('active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
+                renderDestinations();
+            });
+            regionTabs.appendChild(btn);
+        });
+
+        function renderDestinations() {
+            const cards = destinations[activeRegion];
+            destGrid.innerHTML = '';
+            cards.forEach((d, i) => {
+                const badgeClass = d.difficulty === 'Easy' ? 'badge-easy' : d.difficulty === 'Moderate' ? 'badge-moderate' : 'badge-challenging';
+                const card = document.createElement('div');
+                card.className = 'dest-card card-hover rounded-2xl overflow-hidden relative group';
+                card.style.animationDelay = `${i * 0.08}s`;
+                const height = d.tall ? '340px' : '260px';
+                card.innerHTML = `
+            <div class="relative h-[${height}] min-h-[220px]" style="height:${height}; background: ${regionGradients[activeRegion][i]};">
+                <div class="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-transparent"></div>
+                <div class="absolute top-4 right-4"><span class="${badgeClass} font-display font-700 text-[10px] px-3 py-1 rounded-full">${d.difficulty}</span></div>
+                <div class="absolute bottom-0 left-0 right-0 p-5">
+                    <p class="text-accent text-xs font-600 tracking-wider uppercase mb-1">${d.country}</p>
+                    <h3 class="font-display font-700 text-lg leading-tight mb-3">${d.trip}</h3>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3 text-xs text-white/60">
+                            <span><i class="fa-regular fa-calendar mr-1"></i>${d.days} days</span>
+                        </div>
+                        <span class="font-display font-700 text-accent">From $${d.price.toLocaleString()}</span>
+                    </div>
+                </div>
+                <div class="absolute inset-0 bg-accent/0 group-hover:bg-accent/5 transition-colors duration-300"></div>
+            </div>
+        `;
+                destGrid.appendChild(card);
+            });
+        }
+        renderDestinations();
+
+
+        // ==================== 推荐行程 ====================
+        const featuredGrid = document.getElementById('featured-grid');
+        featuredTrips.forEach((trip, i) => {
+            const card = document.createElement('div');
+            card.className = `reveal-${i === 0 ? 'left' : i === 2 ? 'right' : ''} reveal rounded-2xl overflow-hidden relative group card-hover`;
+            card.innerHTML = `
+        <div class="relative h-80 sm:h-96" style="background: ${trip.gradient};">
+            <div class="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6">
+                <div class="flex items-center gap-4 text-xs text-white/50 mb-3">
+                    <span><i class="fa-regular fa-calendar mr-1"></i>${trip.days} days</span>
+                    <span><i class="fa-solid fa-users mr-1"></i>Max ${trip.groupSize}</span>
+                </div>
+                <h3 class="font-display font-900 text-2xl mb-4">${trip.name}</h3>
+                <ul class="space-y-1.5 mb-5">
+                    ${trip.highlights.map(h => `<li class="text-sm text-white/70 font-300 flex items-start gap-2"><i class="fa-solid fa-check text-accent text-xs mt-1 shrink-0"></i>${h}</li>`).join('')}
+                </ul>
+                <button class="bg-accent text-navy font-display font-700 text-sm px-6 py-2.5 rounded-full hover:bg-accent-dark transition-colors">Explore Trip</button>
+            </div>
+        </div>
+    `;
+            featuredGrid.appendChild(card);
+        });
+
+
+        // ==================== 旅行构建器 ====================
+        let builderStep = 0;
+        let builderChoices = { region: null, style: null, duration: null, group: null };
+        const builderSteps = document.getElementById('builder-steps');
+        const builderProgress = document.getElementById('builder-progress');
+        const builderPrice = document.getElementById('builder-price');
+
+        const stepLabels = ['Region', 'Style', 'Duration', 'Group', 'Summary'];
+
+        function renderBuilderProgress() {
+            builderProgress.innerHTML = '';
+            stepLabels.forEach((label, i) => {
+                const dot = document.createElement('div');
+                dot.className = 'flex items-center gap-2';
+                const circle = document.createElement('div');
+                circle.className = `w-8 h-8 rounded-full flex items-center justify-center font-display font-700 text-xs transition-all duration-300 ${i < builderStep ? 'bg-accent text-navy' : i === builderStep ? 'bg-accent/20 text-accent border-2 border-accent' : 'bg-white/5 text-muted'}`;
+                circle.textContent = i < builderStep ? '✓' : i + 1;
+                const text = document.createElement('span');
+                text.className = `text-xs font-600 hidden sm:inline ${i <= builderStep ? 'text-white' : 'text-muted'}`;
+                text.textContent = label;
+                dot.appendChild(circle);
+                dot.appendChild(text);
+                builderProgress.appendChild(dot);
+                if (i < stepLabels.length - 1) {
+                    const line = document.createElement('div');
+                    line.className = `w-8 sm:w-12 h-0.5 mx-1 rounded ${i < builderStep ? 'bg-accent' : 'bg-white/10'}`;
+                    builderProgress.appendChild(line);
+                }
+            });
+        }
+
+        function calcPrice() {
+            const { region, style, duration, group } = builderChoices;
+            if (!region || !style || !duration || !group) return null;
+            const base = builderConfig.basePrices[region];
+            const styleMod = builderConfig.styles.find(s => s.name === style).modifier;
+            const durMod = builderConfig.durations.find(d => d.days === duration).modifier;
+            const groupMod = builderConfig.groups.find(g => g.name === group).modifier;
+            return Math.round(base * styleMod * durMod * groupMod);
+        }
+
+        function updateBuilderPrice() {
+            const price = calcPrice();
+            builderPrice.textContent = price ? `$${price.toLocaleString()}` : '--';
+        }
+
+        function renderBuilderStep() {
+            renderBuilderProgress();
+            updateBuilderPrice();
+
+            if (builderStep === 4) {
+                // 总结 + 联系表单
+                const price = calcPrice();
+                builderSteps.innerHTML = `
+            <div class="bg-navy/50 rounded-2xl border border-white/10 p-8 max-w-lg mx-auto">
+                <h3 class="font-display font-700 text-xl mb-6 text-center">Your Trip Summary</h3>
+                <div class="space-y-3 mb-8">
+                    <div class="flex justify-between text-sm"><span class="text-muted">Region</span><span class="font-600">${builderChoices.region}</span></div>
+                    <div class="flex justify-between text-sm"><span class="text-muted">Style</span><span class="font-600">${builderChoices.style}</span></div>
+                    <div class="flex justify-between text-sm"><span class="text-muted">Duration</span><span class="font-600">${builderChoices.duration} days</span></div>
+                    <div class="flex justify-between text-sm"><span class="text-muted">Group Type</span><span class="font-600">${builderChoices.group}</span></div>
+                    <div class="border-t border-white/10 pt-3 flex justify-between"><span class="text-muted">Estimated Price</span><span class="font-display font-700 text-accent text-lg">$${price.toLocaleString()}</span></div>
+                </div>
+                <form id="builder-form" class="space-y-4">
+                    <div>
+                        <label class="text-xs text-muted block mb-1">Full Name</label>
+                        <input type="text" id="bf-name" required class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white" placeholder="Your name">
+                        <p class="text-flame text-xs mt-1 hidden" id="bf-name-err"></p>
+                    </div>
+                    <div>
+                        <label class="text-xs text-muted block mb-1">Email</label>
+                        <input type="email" id="bf-email" required class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white" placeholder="you@email.com">
+                        <p class="text-flame text-xs mt-1 hidden" id="bf-email-err"></p>
+                    </div>
+                    <div>
+                        <label class="text-xs text-muted block mb-1">Message (optional)</label>
+                        <textarea id="bf-msg" rows="3" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white resize-none" placeholder="Any special requests..."></textarea>
+                    </div>
+                    <div class="flex gap-3">
+                        <button type="button" onclick="builderStep=3;renderBuilderStep()" class="flex-1 border border-white/20 text-white font-display font-700 text-sm py-3 rounded-xl hover:bg-white/5 transition-colors">Back</button>
+                        <button type="submit" class="flex-[2] bg-accent text-navy font-display font-700 text-sm py-3 rounded-xl hover:bg-accent-dark transition-colors">Submit Request</button>
+                    </div>
+                </form>
+            </div>
+        `;
+                document.getElementById('builder-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    let valid = true;
+                    const name = document.getElementById('bf-name');
+                    const email = document.getElementById('bf-email');
+                    const nameErr = document.getElementById('bf-name-err');
+                    const emailErr = document.getElementById('bf-email-err');
+                    nameErr.classList.add('hidden');
+                    emailErr.classList.add('hidden');
+
+                    if (!name.value.trim()) {
+                        nameErr.textContent = 'Please enter your name';
+                        nameErr.classList.remove('hidden');
+                        valid = false;
+                    }
+                    if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                        emailErr.textContent = 'Please enter a valid email';
+                        emailErr.classList.remove('hidden');
+                        valid = false;
+                    }
+                    if (valid) {
+                        showToast('Trip request submitted! We\'ll be in touch within 24 hours.');
+                        builderStep = 0;
+                        builderChoices = { region: null, style: null, duration: null, group: null };
+                        renderBuilderStep();
+                    }
+                });
+                return;
+            }
+
+            let content = '';
+            if (builderStep === 0) {
+                content = `<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            ${builderConfig.regions.map(r => `
+                <div class="step-card rounded-2xl p-5 text-center bg-white/5 ${builderChoices.region === r.name ? 'selected' : ''}" onclick="selectBuilderChoice('region','${r.name}')">
+                    <div class="w-14 h-14 rounded-xl mx-auto mb-3 flex items-center justify-center text-2xl" style="background: ${r.gradient};"><i class="${r.icon} text-white"></i></div>
+                    <p class="font-display font-700 text-sm">${r.name}</p>
+                </div>
+            `).join('')}
+        </div>`;
+            } else if (builderStep === 1) {
+                content = `<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            ${builderConfig.styles.map(s => `
+                <div class="step-card rounded-2xl p-6 text-center bg-white/5 ${builderChoices.style === s.name ? 'selected' : ''}" onclick="selectBuilderChoice('style','${s.name}')">
+                    <i class="${s.icon} text-3xl text-accent mb-3"></i>
+                    <p class="font-display font-700 text-sm">${s.name}</p>
+                </div>
+            `).join('')}
+        </div>`;
+            } else if (builderStep === 2) {
+                content = `<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            ${builderConfig.durations.map(d => `
+                <div class="step-card rounded-2xl p-8 text-center bg-white/5 ${builderChoices.duration === d.days ? 'selected' : ''}" onclick="selectBuilderChoice('duration',${d.days})">
+                    <p class="font-display font-900 text-4xl mb-2 ${builderChoices.duration === d.days ? 'text-accent' : 'text-white'}">${d.days}</p>
+                    <p class="text-muted text-sm">days</p>
+                </div>
+            `).join('')}
+        </div>`;
+            } else if (builderStep === 3) {
+                content = `<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            ${builderConfig.groups.map(g => `
+                <div class="step-card rounded-2xl p-6 text-center bg-white/5 ${builderChoices.group === g.name ? 'selected' : ''}" onclick="selectBuilderChoice('group','${g.name}')">
+                    <i class="${g.icon} text-2xl text-accent mb-3"></i>
+                    <p class="font-display font-700 text-sm">${g.name}</p>
+                </div>
+            `).join('')}
+        </div>`;
+            }
+
+            builderSteps.innerHTML = `
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="font-display font-700 text-lg">Step ${builderStep + 1}: Choose your ${stepLabels[builderStep].toLowerCase()}</h3>
+            ${builderStep > 0 ? `<button onclick="builderStep--;renderBuilderStep()" class="text-muted text-sm hover:text-white transition-colors"><i class="fa-solid fa-arrow-left mr-1"></i>Back</button>` : ''}
+        </div>
+        ${content}
+    `;
+        }
+
+        function selectBuilderChoice(key, value) {
+            builderChoices[key] = value;
+            if (builderStep < 4) {
+                builderStep++;
+                renderBuilderStep();
+            }
+        }
+        renderBuilderStep();
+
+
+        // ==================== 为什么选择我们 ====================
+        const whyGrid = document.getElementById('why-grid');
+        whyFeatures.forEach((f, i) => {
+            const card = document.createElement('div');
+            card.className = 'reveal bg-white/5 border border-white/5 rounded-2xl p-6 text-center card-hover';
+            card.style.transitionDelay = `${i * 0.1}s`;
+            card.innerHTML = `
+        <div class="w-16 h-16 mx-auto mb-4 text-accent">${f.icon}</div>
+        <h3 class="font-display font-700 text-base mb-2">${f.title}</h3>
+        <p class="text-muted text-sm font-300 leading-relaxed">${f.desc}</p>
+    `;
+            whyGrid.appendChild(card);
+        });
+
+
+        // ==================== 旅行风格横向滚动 ====================
+        const stylesScroll = document.getElementById('styles-scroll');
+        tripStyles.forEach(s => {
+            const card = document.createElement('div');
+            card.className = 'shrink-0 w-72 sm:w-80 h-96 rounded-2xl relative overflow-hidden group cursor-pointer';
+            card.innerHTML = `
+        <div class="absolute inset-0" style="background: ${s.gradient};"></div>
+        <div class="absolute inset-0 bg-navy/30 group-hover:bg-navy/10 transition-colors duration-300"></div>
+        <div class="relative h-full flex flex-col justify-end p-6">
+            <i class="${s.icon} text-4xl text-white/40 mb-4 group-hover:text-white/70 transition-colors"></i>
+            <h3 class="font-display font-900 text-3xl mb-2">${s.name}</h3>
+            <p class="text-white/70 text-sm font-300 leading-relaxed">${s.desc}</p>
+        </div>
+    `;
+            stylesScroll.appendChild(card);
+        });
+
+        // 拖拽滚动
+        let isDragging = false, dragStartX = 0, dragScrollLeft = 0;
+        stylesScroll.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            stylesScroll.classList.add('dragging');
+            dragStartX = e.pageX - stylesScroll.offsetLeft;
+            dragScrollLeft = stylesScroll.scrollLeft;
+        });
+        stylesScroll.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const x = e.pageX - stylesScroll.offsetLeft;
+            stylesScroll.scrollLeft = dragScrollLeft - (x - dragStartX) * 1.5;
+        });
+        stylesScroll.addEventListener('mouseup', () => { isDragging = false; stylesScroll.classList.remove('dragging'); });
+        stylesScroll.addEventListener('mouseleave', () => { isDragging = false; stylesScroll.classList.remove('dragging'); });
+        // 触摸支持
+        stylesScroll.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            dragStartX = e.touches[0].pageX - stylesScroll.offsetLeft;
+            dragScrollLeft = stylesScroll.scrollLeft;
+        }, { passive: true });
+        stylesScroll.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const x = e.touches[0].pageX - stylesScroll.offsetLeft;
+            stylesScroll.scrollLeft = dragScrollLeft - (x - dragStartX) * 1.5;
+        }, { passive: true });
+        stylesScroll.addEventListener('touchend', () => { isDragging = false; });
+
+
+        // ==================== 旅行日志 ====================
+        const journalGrid = document.getElementById('journal-grid');
+        journalPosts.forEach((post, i) => {
+            const card = document.createElement('article');
+            card.className = 'reveal card-hover rounded-2xl overflow-hidden bg-white/5 border border-white/5';
+            card.style.transitionDelay = `${i * 0.12}s`;
+            card.innerHTML = `
+        <div class="h-48 relative" style="background: ${post.gradient};">
+            <div class="absolute inset-0 bg-gradient-to-t from-navy/60 to-transparent"></div>
+            <span class="absolute top-4 left-4 text-[10px] font-display font-700 uppercase tracking-wider px-3 py-1 rounded-full" style="background: ${post.color}; color: #0b1d3a;">${post.category}</span>
+        </div>
+        <div class="p-5">
+            <h3 class="font-display font-700 text-base leading-tight mb-2">${post.title}</h3>
+            <p class="text-muted text-sm font-300 leading-relaxed mb-4 line-clamp-2">${post.excerpt}</p>
+            <div class="flex items-center justify-between text-xs text-muted">
+                <span>${post.date}</span>
+                <span><i class="fa-regular fa-clock mr-1"></i>${post.readTime}</span>
+            </div>
+        </div>
+    `;
+            journalGrid.appendChild(card);
+        });
+
+
+        // ==================== 推荐评价轮播 ====================
+        const testimonialTrack = document.getElementById('testimonial-track');
+        const testimonialDots = document.getElementById('testimonial-dots');
+        let currentTestimonial = 0;
+
+        testimonials.forEach((t, i) => {
+            const slide = document.createElement('div');
+            slide.className = 'w-full shrink-0 px-4';
+            const stars = Array.from({ length: 5 }, (_, si) =>
+                `<i class="fa-solid fa-star ${si < t.stars ? 'text-flame' : 'text-white/20'} text-sm"></i>`
+            ).join('');
+            slide.innerHTML = `
+        <div class="text-center max-w-2xl mx-auto">
+            <div class="w-20 h-20 rounded-full mx-auto mb-6 relative pulse-ring" style="background: linear-gradient(135deg, ${t.colors[0]}, ${t.colors[1]});"></div>
+            <div class="flex justify-center gap-1 mb-6">${stars}</div>
+            <blockquote class="text-lg sm:text-xl font-300 leading-relaxed text-white/80 mb-6">"${t.quote}"</blockquote>
+            <p class="font-display font-700 text-sm">${t.name}</p>
+            <p class="text-muted text-xs">Traveled to ${t.dest}</p>
+        </div>
+    `;
+            testimonialTrack.appendChild(slide);
+
+            const dot = document.createElement('button');
+            dot.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === 0 ? 'bg-accent w-8' : 'bg-white/20'}`;
+            dot.setAttribute('aria-label', `Testimonial ${i + 1}`);
+            dot.addEventListener('click', () => goToTestimonial(i));
+            testimonialDots.appendChild(dot);
+        });
+
+        function goToTestimonial(idx) {
+            currentTestimonial = idx;
+            testimonialTrack.style.transform = `translateX(-${idx * 100}%)`;
+            testimonialDots.querySelectorAll('button').forEach((d, i) => {
+                d.className = `h-2.5 rounded-full transition-all duration-300 ${i === idx ? 'bg-accent w-8' : 'bg-white/20 w-2.5'}`;
+            });
+        }
+
+        // 自动轮播
+        setInterval(() => {
+            goToTestimonial((currentTestimonial + 1) % testimonials.length);
+        }, 5000);
+
+
+        // ==================== 即将出发的行程 ====================
+        const departuresList = document.getElementById('departures-list');
+        departures.forEach(d => {
+            const pct = (d.spots / d.maxSpots) * 100;
+            const barColor = d.spots <= 3 ? '#ef5350' : d.spots <= 6 ? '#ff7043' : '#00e676';
+            const statusText = d.spots <= 3 ? 'Almost full!' : d.spots <= 6 ? 'Filling fast' : 'Available';
+            const row = document.createElement('div');
+            row.className = 'reveal bg-white/5 border border-white/5 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4';
+            row.innerHTML = `
+        <div class="flex-1 min-w-0">
+            <h4 class="font-display font-700 text-sm sm:text-base truncate">${d.dest}</h4>
+            <p class="text-muted text-xs mt-0.5"><i class="fa-regular fa-calendar mr-1"></i>${d.date}</p>
+        </div>
+        <div class="w-full sm:w-40">
+            <div class="flex justify-between text-xs mb-1">
+                <span class="text-muted">${d.spots} spots left</span>
+                <span style="color: ${barColor}" class="font-600">${statusText}</span>
+            </div>
+            <div class="spots-bar">
+                <div class="spots-fill" style="width: ${pct}%; background: ${barColor};"></div>
+            </div>
+        </div>
+        <div class="text-right sm:w-28">
+            <p class="font-display font-700 text-accent">$${d.price.toLocaleString()}</p>
+            <button class="mt-1 text-xs font-600 text-flame hover:text-flame-light transition-colors" onclick="showToast('Booking initiated for ${d.dest}!')">Book Now</button>
+        </div>
+    `;
+            departuresList.appendChild(row);
+        });
+
+
+        // ==================== 搜索功能 ====================
+        const searchInput = document.getElementById('search-dest');
+        const searchDropdown = document.getElementById('search-dropdown');
+        const searchBtn = document.getElementById('search-btn');
+
+        // 构建搜索数据
+        const allDests = [];
+        Object.entries(destinations).forEach(([region, cards]) => {
+            cards.forEach(c => allDests.push({ ...c, region }));
+        });
+
+        searchInput.addEventListener('focus', () => {
+            if (searchInput.value.length >= 1) searchDropdown.classList.remove('hidden');
+        });
+        searchInput.addEventListener('input', () => {
+            const q = searchInput.value.toLowerCase().trim();
+            if (q.length < 1) { searchDropdown.classList.add('hidden'); return; }
+            const matches = allDests.filter(d =>
+                d.country.toLowerCase().includes(q) || d.trip.toLowerCase().includes(q) || d.region.toLowerCase().includes(q)
+            );
+            if (matches.length === 0) {
+                searchDropdown.innerHTML = '<div class="p-4 text-sm text-muted">No destinations found</div>';
+            } else {
+                searchDropdown.innerHTML = matches.slice(0, 6).map(m => `
+            <button class="w-full text-left px-4 py-3 hover:bg-white/5 transition-colors flex justify-between items-center" onclick="selectSearchDest('${m.region}')">
+                <div>
+                    <span class="text-sm font-600">${m.country}</span>
+                    <span class="text-muted text-xs ml-2">${m.trip}</span>
+                </div>
+                <span class="text-xs text-accent">${m.region}</span>
+            </button>
+        `).join('');
+            }
+            searchDropdown.classList.remove('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+                searchDropdown.classList.add('hidden');
+            }
+        });
+
+        function selectSearchDest(region) {
+            searchDropdown.classList.add('hidden');
+            searchInput.value = '';
+            // 切换到对应区域选项卡
+            activeRegion = region;
+            regionTabs.querySelectorAll('.tab-btn').forEach(t => {
+                const isMatch = t.textContent === region;
+                t.classList.toggle('active', isMatch);
+                t.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+            });
+            renderDestinations();
+            document.getElementById('destinations').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        searchBtn.addEventListener('click', () => {
+            const q = searchInput.value.toLowerCase().trim();
+            const match = allDests.find(d => d.country.toLowerCase().includes(q) || d.trip.toLowerCase().includes(q));
+            if (match) selectSearchDest(match.region);
+            else document.getElementById('destinations').scrollIntoView({ behavior: 'smooth' });
+        });
+
+
+        // ==================== 新闻简报 ====================
+        document.getElementById('newsletter-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('newsletter-email');
+            const err = document.getElementById('newsletter-error');
+            err.classList.add('hidden');
+            if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                err.textContent = 'Please enter a valid email address.';
+                err.classList.remove('hidden');
+                return;
+            }
+            showToast('Welcome aboard! Check your inbox for a confirmation.');
+            email.value = '';
+        });
+
+
+        // ==================== 移动端导航 ====================
+        const mobileNav = document.getElementById('mobile-nav');
+        document.getElementById('hamburger').addEventListener('click', () => mobileNav.classList.add('open'));
+        document.getElementById('close-nav').addEventListener('click', () => mobileNav.classList.remove('open'));
+        mobileNav.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => mobileNav.classList.remove('open'));
+        });
+
+
+        // ==================== 浮动预订按钮 ====================
+        const stickyBook = document.getElementById('sticky-book');
+        const heroSection = document.getElementById('hero');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > heroSection.offsetHeight - 100) {
+                stickyBook.classList.add('show');
+            } else {
+                stickyBook.classList.remove('show');
+            }
+        }, { passive: true });
+
+        stickyBook.addEventListener('click', () => {
+            document.getElementById('trip-builder').scrollIntoView({ behavior: 'smooth' });
+        });
+
+
+        // ==================== 提示条 ====================
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
+
+        // ==================== 滚动入场动画 ====================
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        // 观察所有带 reveal 类的元素
+        function observeReveals() {
+            document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+                revealObserver.observe(el);
+            });
+        }
+        observeReveals();
+        // 在动态内容渲染后再次观察
+        const mutObserver = new MutationObserver(observeReveals);
+        mutObserver.observe(document.body, { childList: true, subtree: true });
+
+
+        // ==================== 计数器动画 ====================
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.dataset.counted) {
+                    entry.target.dataset.counted = 'true';
+                    const target = parseInt(entry.target.dataset.target);
+                    const duration = 2000;
+                    const start = performance.now();
+                    function tick(now) {
+                        const elapsed = now - start;
+                        const progress = Math.min(elapsed / duration, 1);
+                        // 缓出效果
+                        const eased = 1 - Math.pow(1 - progress, 3);
+                        const current = Math.round(eased * target);
+                        entry.target.textContent = current >= 1000 ? current.toLocaleString() + '+' : current + (target === 98 ? '%' : '+');
+                        if (progress < 1) requestAnimationFrame(tick);
+                    }
+                    requestAnimationFrame(tick);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+
+
+        // ==================== 导航滚动效果 ====================
+        const mainNav = document.getElementById('main-nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                mainNav.style.borderBottomColor = 'rgba(255,255,255,0.08)';
+                mainNav.style.background = 'rgba(11,29,58,0.95)';
+            } else {
+                mainNav.style.borderBottomColor = 'rgba(255,255,255,0.03)';
+                mainNav.style.background = 'rgba(11,29,58,0.85)';
+            }
+        }, { passive: true });
+
+    </script>
+</body>
+
+</html>

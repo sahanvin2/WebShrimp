@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHANTOM — Boutique Multidisciplinary Studio</title>
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;1,8..60,300&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg: #080808;
+            --text: #f5f5f5;
+            --accent: #d4ff00;
+            --gray: #1a1a1a;
+            --transition: cubic-bezier(0.76, 0, 0.24, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+            /* Hide default cursor for custom one */
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Source Serif 4', serif;
+            font-weight: 300;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3,
+        .display {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* --- Custom Cursor --- */
+        #cursor {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s var(--transition), height 0.3s var(--transition), background-color 0.3s;
+        }
+
+        #cursor.hovered {
+            width: 60px;
+            height: 60px;
+            mix-blend-mode: difference;
+            background-color: var(--accent);
+        }
+
+        /* --- Preloader --- */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 1s var(--transition);
+        }
+
+        #preloader .logo-reveal {
+            font-size: 4rem;
+            letter-spacing: -2px;
+            display: flex;
+            overflow: hidden;
+        }
+
+        #preloader span {
+            display: block;
+            transform: translateY(100%);
+            animation: slideUp 0.6s var(--transition) forwards;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Nav --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 30px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            opacity: 0.7;
+            transition: opacity 0.3s, color 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+
+        /* --- Hero --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 5%;
+        }
+
+        .hero h1 {
+            font-size: 18vw;
+            margin-bottom: 20px;
+            letter-spacing: -0.04em;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 300;
+            opacity: 0.6;
+        }
+
+        .hero .btn-reel {
+            margin-top: 40px;
+            padding: 15px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.4s var(--transition);
+        }
+
+        .hero .btn-reel:hover {
+            background-color: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg);
+        }
+
+        /* --- Featured Work --- */
+        .work-section {
+            padding: 100px 0;
+        }
+
+        .case-study {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 80vh;
+            margin-bottom: 150px;
+            position: relative;
+        }
+
+        .case-study:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .cs-image {
+            width: 60%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* CSS Gradient Art Fallbacks */
+        .gradient-art {
+            width: 100%;
+            height: 100%;
+            transition: transform 1s var(--transition), filter 0.5s;
+        }
+
+        .cs-image:hover .gradient-art {
+            transform: scale(1.05);
+            filter: grayscale(100%) brightness(0.6) sepia(1) hue-rotate(30deg) saturate(1000%);
+            /* Chartreuse tint simulate */
+        }
+
+        .cs-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(212, 255, 0, 0.8);
+            color: var(--bg);
+            opacity: 0;
+            transition: opacity 0.4s;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .cs-image:hover .cs-overlay {
+            opacity: 1;
+        }
+
+        .cs-content {
+            width: 40%;
+            padding: 0 8%;
+        }
+
+        .cs-content h3 {
+            font-size: 5rem;
+            margin-bottom: 10px;
+        }
+
+        .cs-details {
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cs-details span {
+            display: block;
+            margin-bottom: 5px;
+            opacity: 0.6;
+        }
+
+        /* --- Services --- */
+        .services {
+            padding: 150px 5%;
+            background: #0a0a0a;
+        }
+
+        .section-label {
+            font-family: 'Oswald', sans-serif;
+            color: var(--accent);
+            letter-spacing: 3px;
+            margin-bottom: 40px;
+            display: block;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .service-card {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 40px;
+            padding-bottom: 80px;
+        }
+
+        .service-num {
+            color: var(--accent);
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .service-card h4 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .service-card p {
+            max-width: 400px;
+            opacity: 0.6;
+        }
+
+        /* --- The Studio --- */
+        .studio {
+            padding: 150px 5%;
+            display: flex;
+            gap: 10%;
+        }
+
+        .studio-text {
+            flex: 1;
+        }
+
+        .studio-text p {
+            font-size: 2.5rem;
+            line-height: 1.3;
+            font-style: italic;
+        }
+
+        .team-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .team-member {
+            position: relative;
+            aspect-ratio: 4/5;
+            overflow: hidden;
+            background: #111;
+        }
+
+        .team-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            transform: translateY(0);
+            transition: transform 0.4s;
+        }
+
+        .team-member:hover .team-info {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        /* --- Marquee --- */
+        .marquee-container {
+            padding: 100px 0;
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        .marquee {
+            display: flex;
+            white-space: nowrap;
+            animation: marquee 30s linear infinite;
+        }
+
+        .marquee.reverse {
+            animation: marquee 40s linear infinite reverse;
+        }
+
+        .marquee span {
+            font-family: 'Oswald', sans-serif;
+            font-size: 8rem;
+            font-weight: 700;
+            padding: 0 40px;
+            opacity: 0.05;
+            transition: opacity 0.5s;
+        }
+
+        .marquee span:hover {
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* --- Awards --- */
+        .awards {
+            padding: 150px 5%;
+        }
+
+        .accordion-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .accordion-header {
+            padding: 30px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.5rem;
+            font-family: 'Oswald', sans-serif;
+            transition: color 0.3s;
+        }
+
+        .accordion-header:hover {
+            color: var(--accent);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s var(--transition);
+            opacity: 0.6;
+            padding-bottom: 0;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 200px;
+            padding-bottom: 30px;
+        }
+
+        /* --- Contact --- */
+        .contact {
+            padding: 150px 5%;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .contact h2 {
+            font-size: 6vw;
+            margin-bottom: 60px;
+        }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+        }
+
+        .email-box {
+            font-size: 2.5rem;
+            font-family: 'Oswald', sans-serif;
+            color: var(--accent);
+            margin-bottom: 40px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: -30px;
+            left: 0;
+            font-size: 0.8rem;
+            color: white;
+            background: #333;
+            padding: 5px 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            white-space: nowrap;
+            font-family: sans-serif;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        input,
+        textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 15px 0;
+            font-family: 'Source Serif 4', serif;
+            font-size: 1.1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-bottom-color: var(--accent);
+        }
+
+        .submit-btn {
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            padding: 20px;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-top: 20px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            padding: 50px 5%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            opacity: 0.4;
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        /* --- Modals --- */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.6s var(--transition);
+            overflow-y: auto;
+            padding: 100px 5%;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-close {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            font-size: 2rem;
+            z-index: 2100;
+        }
+
+        .modal-hero {
+            height: 60vh;
+            margin-bottom: 60px;
+        }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .modal h2 {
+            font-size: 5rem;
+            margin-bottom: 40px;
+        }
+
+        .modal-body {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 100px;
+        }
+
+        .modal-text p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 25vw;
+            }
+
+            .case-study {
+                height: auto;
+                flex-direction: column !important;
+                margin-bottom: 80px;
+            }
+
+            .cs-image,
+            .cs-content {
+                width: 100%;
+            }
+
+            .cs-content {
+                padding: 40px 0;
+            }
+
+            .cs-content h3 {
+                font-size: 3rem;
+            }
+
+            .services-grid,
+            .studio,
+            .contact-container,
+            .modal-body,
+            .modal-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .studio-text p {
+                font-size: 1.5rem;
+            }
+
+            .marquee span {
+                font-size: 4rem;
+            }
+
+            .contact h2 {
+                font-size: 12vw;
+            }
+        }
+
+        /* Staggered text animation classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s, transform 0.8s var(--transition);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="cursor"></div>
+
+    <div id="preloader">
+        <div class="logo-reveal">
+            <span>P</span><span>H</span><span>A</span><span>N</span><span>T</span><span>O</span><span>M</span>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">PHANTOM</div>
+        <div class="nav-links">
+            <a href="#work" class="hover-target">WORK</a>
+            <a href="#studio" class="hover-target">STUDIO</a>
+            <a href="#contact" class="hover-target">CONTACT</a>
+        </div>
+        <div class="mobile-menu-btn hover-target" id="mobileMenuTrigger">
+            <i data-lucide="menu"></i>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1 class="reveal">PHANTOM</h1>
+            <p class="reveal">Brand. Motion. Digital.</p>
+            <button class="btn-reel hover-target reveal" id="openReel">Play Showreel</button>
+        </section>
+
+        <!-- Work Section -->
+        <section id="work" class="work-section">
+            <div class="case-study reveal">
+                <div class="cs-image hover-target" onclick="openModal(0)">
+                    <div class="gradient-art"
+                        style="background: conic-gradient(from 180deg at 50% 50%, #111, #333, #000, #444, #111);"></div>
+                    <div class="cs-overlay">VIEW CASE STUDY</div>
+                </div>
+                <div class="cs-content">
+                    <div class="cs-details">
+                        <span>Project 01 / 2024</span>
+                        <span>Brand Identity & Digital</span>
+                    </div>
+                    <h3>OBSIDIAN ECHO</h3>
+                    <p>Redefining luxury audio through minimalist visual storytelling.</p>
+                </div>
+            </div>
+
+            <div class="case-study reveal">
+                <div class="cs-image hover-target" onclick="openModal(1)">
+                    <div class="gradient-art"
+                        style="background: radial-gradient(circle at 50% 50%, #222, #000, #442200, #000);"></div>
+                    <div class="cs-overlay">VIEW CASE STUDY</div>
+                </div>
+                <div class="cs-content">
+                    <div class="cs-details">
+                        <span>Project 02 / 2024</span>
+                        <span>Motion Design</span>
+                    </div>
+                    <h3>NEON PULSE</h3>
+                    <p>Dynamic brand graphics for the world's leading e-sports platform.</p>
+                </div>
+            </div>
+
+            <div class="case-study reveal">
+                <div class="cs-image hover-target" onclick="openModal(2)">
+                    <div class="gradient-art" style="background: linear-gradient(45deg, #050505, #1a1a2a, #050505);">
+                    </div>
+                    <div class="cs-overlay">VIEW CASE STUDY</div>
+                </div>
+                <div class="cs-content">
+                    <div class="cs-details">
+                        <span>Project 03 / 2023</span>
+                        <span>Art Direction</span>
+                    </div>
+                    <h3>AETHER BRAND</h3>
+                    <p>A holistic identity system for sustainable high-fashion.</p>
+                </div>
+            </div>
+
+            <div class="case-study reveal">
+                <div class="cs-image hover-target" onclick="openModal(3)">
+                    <div class="gradient-art"
+                        style="background: conic-gradient(from 90deg at 40% 40%, #222, #080808, #333, #000);"></div>
+                    <div class="cs-overlay">VIEW CASE STUDY</div>
+                </div>
+                <div class="cs-content">
+                    <div class="cs-details">
+                        <span>Project 04 / 2023</span>
+                        <span>Web Design</span>
+                    </div>
+                    <h3>KINETIC THEORY</h3>
+                    <p>Architecting the future of immersive portfolio experiences.</p>
+                </div>
+            </div>
+
+            <div class="case-study reveal">
+                <div class="cs-image hover-target" onclick="openModal(4)">
+                    <div class="gradient-art" style="background: radial-gradient(circle at 20% 80%, #111, #000, #222);">
+                    </div>
+                    <div class="cs-overlay">VIEW CASE STUDY</div>
+                </div>
+                <div class="cs-content">
+                    <div class="cs-details">
+                        <span>Project 05 / 2023</span>
+                        <span>Campaign</span>
+                    </div>
+                    <h3>PRISM DIGITAL</h3>
+                    <p>Global launch campaign for the next generation of VR hardware.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services -->
+        <section class="services">
+            <span class="section-label reveal">CAPABILITIES</span>
+            <div class="services-grid">
+                <div class="service-card reveal">
+                    <span class="service-num">01</span>
+                    <h4>Brand Identity</h4>
+                    <p>Crafting unique visual languages that resonate with depth and longevity.</p>
+                </div>
+                <div class="service-card reveal">
+                    <span class="service-num">02</span>
+                    <h4>Motion Graphics</h4>
+                    <p>Bringing brands to life through cinematic movement and rhythmic flow.</p>
+                </div>
+                <div class="service-card reveal">
+                    <span class="service-num">03</span>
+                    <h4>Web Design</h4>
+                    <p>Developing high-performance digital experiences with an editorial edge.</p>
+                </div>
+                <div class="service-card reveal">
+                    <span class="service-num">04</span>
+                    <h4>Art Direction</h4>
+                    <p>Curating aesthetics that align vision with sophisticated execution.</p>
+                </div>
+                <div class="service-card reveal">
+                    <span class="service-num">05</span>
+                    <h4>Packaging</h4>
+                    <p>Tactile brand experiences designed for the modern collector.</p>
+                </div>
+                <div class="service-card reveal">
+                    <span class="service-num">06</span>
+                    <h4>Campaign</h4>
+                    <p>Strategic storytelling that cuts through the noise of the digital age.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Studio Section -->
+        <section id="studio" class="studio">
+            <div class="studio-text reveal">
+                <span class="section-label">THE STUDIO</span>
+                <p>We are a boutique collective of designers, thinkers, and makers dedicated to the pursuit of aesthetic
+                    excellence. We believe that true luxury lies in the unseen details—the phantom echoes of a brand
+                    that linger long after the first impression.</p>
+            </div>
+            <div class="team-grid reveal">
+                <div class="team-member hover-target">
+                    <div class="gradient-art" style="background: linear-gradient(#111, #333)"></div>
+                    <div class="team-info">
+                        <strong>ERIK VANCE</strong>
+                        <p>Creative Director</p>
+                    </div>
+                </div>
+                <div class="team-member hover-target">
+                    <div class="gradient-art" style="background: linear-gradient(#222, #000)"></div>
+                    <div class="team-info">
+                        <strong>SARAH CHEN</strong>
+                        <p>Design Lead</p>
+                    </div>
+                </div>
+                <div class="team-member hover-target">
+                    <div class="gradient-art" style="background: linear-gradient(#000, #222)"></div>
+                    <div class="team-info">
+                        <strong>MARCUS REED</strong>
+                        <p>Motion Strategy</p>
+                    </div>
+                </div>
+                <div class="team-member hover-target">
+                    <div class="gradient-art" style="background: linear-gradient(#333, #111)"></div>
+                    <div class="team-info">
+                        <strong>LENA SOL</strong>
+                        <p>Digital Producer</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Marquee -->
+        <div class="marquee-container">
+            <div class="marquee">
+                <span>APPLE — NIKE — GOOGLE — SONY — TESLA — PRADA — HERMES — ROLEX — </span>
+                <span>APPLE — NIKE — GOOGLE — SONY — TESLA — PRADA — HERMES — ROLEX — </span>
+            </div>
+            <div class="marquee reverse">
+                <span>BMW — NETFLIX — ADOBE — SPOTIFY — LEICA — CARTIER — PORSCHE — </span>
+                <span>BMW — NETFLIX — ADOBE — SPOTIFY — LEICA — CARTIER — PORSCHE — </span>
+            </div>
+        </div>
+
+        <!-- Awards -->
+        <section class="awards">
+            <span class="section-label reveal">AWARDS</span>
+            <div class="awards-list reveal">
+                <div class="accordion-item hover-target">
+                    <div class="accordion-header">
+                        <span>Awwwards — Site of the Year</span>
+                        <span>2024</span>
+                    </div>
+                    <div class="accordion-content">
+                        Awarded for the Obsidian Echo digital experience, recognizing excellence in design, usability,
+                        and creativity.
+                    </div>
+                </div>
+                <div class="accordion-item hover-target">
+                    <div class="accordion-header">
+                        <span>D&AD — Graphite Pencil</span>
+                        <span>2023</span>
+                    </div>
+                    <div class="accordion-content">
+                        Honored for our rebranding of the Aether high-fashion house, focusing on typography and material
+                        tactility.
+                    </div>
+                </div>
+                <div class="accordion-item hover-target">
+                    <div class="accordion-header">
+                        <span>Cannes Lions — Gold Lion</span>
+                        <span>2022</span>
+                    </div>
+                    <div class="accordion-content">
+                        Digital Craft: Recognising the technical artistry of the Prism Digital global launch campaign.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact -->
+        <section id="contact" class="contact">
+            <h2 class="reveal">Let's create something<br>extraordinary.</h2>
+            <div class="contact-container reveal">
+                <div class="contact-info">
+                    <div class="email-box hover-target" id="emailCopy">
+                        hello@phantom.studio
+                        <span class="tooltip" id="copyTooltip">Click to copy</span>
+                    </div>
+                    <p style="opacity: 0.5;">Based in London / Working Worldwide</p>
+                </div>
+                <form onsubmit="event.preventDefault(); alert('Message sent to the void.');">
+                    <input type="text" placeholder="Your Name" required class="hover-target">
+                    <input type="email" placeholder="Your Email" required class="hover-target">
+                    <textarea placeholder="Your Message" rows="4" required class="hover-target"></textarea>
+                    <button type="submit" class="submit-btn hover-target">Send Inquiry</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Phantom Studio. Crafting the extraordinary.</p>
+        <div class="footer-links">
+            <a href="#" class="hover-target">INSTAGRAM</a> /
+            <a href="#" class="hover-target">BEHANCE</a> /
+            <a href="#" class="hover-target">LINKEDIN</a>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div id="projectModal" class="modal">
+        <div class="modal-close hover-target" id="closeModal">
+            <i data-lucide="x"></i>
+        </div>
+        <div id="modalContent">
+            <!-- Dynamic Content -->
+        </div>
+    </div>
+
+    <div id="reelModal" class="modal"
+        style="background: rgba(0,0,0,0.95); display: flex; align-items: center; justify-content: center;">
+        <div class="modal-close hover-target" id="closeReel">
+            <i data-lucide="x"></i>
+        </div>
+        <div
+            style="width: 80%; aspect-ratio: 16/9; background: #222; display: flex; align-items: center; justify-content: center;">
+            <p class="display" style="font-size: 2rem;">[ SHOWREEL.MP4 ]</p>
+        </div>
+    </div>
+
+    <script>
+        // Data for Modals
+        const projects = [
+            {
+                title: "OBSIDIAN ECHO",
+                client: "Obsidian Audio",
+                year: "2024",
+                services: "Brand Identity, E-Commerce",
+                challenge: "How do you make sound visible? Obsidian Echo required a visual language that felt as deep and resonant as their hardware.",
+                approach: "We used generative wave-forms and high-contrast photography to create an ecosystem of 'visual sound'.",
+                outcome: "A 300% increase in pre-orders and a flagship identity that redefined the boutique audio market."
+            },
+            {
+                title: "NEON PULSE",
+                client: "Pulse Esports",
+                year: "2024",
+                services: "Motion, UI/UX",
+                challenge: "The esports market is saturated with high-intensity noise. Pulse needed a sophisticated way to stand out.",
+                approach: "Fluid motion systems inspired by kinetic energy and futuristic architecture.",
+                outcome: "Became the most recognized brand in the EMEA region within 6 months of launch."
+            },
+            {
+                title: "AETHER BRAND",
+                client: "Aether Fashion",
+                year: "2023",
+                services: "Art Direction, Strategy",
+                challenge: "Sustainability often feels unpolished. Aether needed to prove that ethical fashion can be elite.",
+                approach: "An editorial-first strategy focused on the raw materials and the people behind the craft.",
+                outcome: "Secured placement in Vogue and Harper's Bazaar within the first season."
+            },
+            {
+                title: "KINETIC THEORY",
+                client: "Kinetic Arch",
+                year: "2023",
+                services: "Web Design, Development",
+                challenge: "A world-class architecture firm with a website that felt static and dated.",
+                approach: "A custom 3D web experience that allows users to walk through projects before they are built.",
+                outcome: "Shortlisted for Site of the Year and resulted in three major international commissions."
+            },
+            {
+                title: "PRISM DIGITAL",
+                client: "Prism Tech",
+                year: "2023",
+                services: "Launch Campaign",
+                challenge: "Launching a VR headset in a market dominated by tech giants.",
+                approach: "Focusing on the 'Prism'—the lens through which we see new worlds—as the central visual metaphor.",
+                outcome: "Sold out initial stock within 48 hours of the global keynote."
+            }
+        ];
+
+        // Init Lucide Icons
+        lucide.createIcons();
+
+        // 1. Preloader Logic
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('preloader').style.transform = 'translateY(-100%)';
+            }, 1800);
+        });
+
+        // 2. Custom Cursor Logic
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        document.querySelectorAll('.hover-target').forEach(item => {
+            item.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            item.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+
+        // 3. Staggered Animation on Scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // 4. Modal Logic
+        const projectModal = document.getElementById('projectModal');
+        const modalContent = document.getElementById('modalContent');
+        const closeModal = document.getElementById('closeModal');
+
+        function openModal(index) {
+            const p = projects[index];
+            modalContent.innerHTML = `
+                <div class="modal-hero gradient-art" style="background: #111;"></div>
+                <h2>${p.title}</h2>
+                <div class="modal-body">
+                    <div class="cs-details">
+                        <span>Client: ${p.client}</span>
+                        <span>Year: ${p.year}</span>
+                        <span>Services: ${p.services}</span>
+                    </div>
+                    <div class="modal-text">
+                        <p><strong>The Challenge:</strong> ${p.challenge}</p>
+                        <p><strong>Our Approach:</strong> ${p.approach}</p>
+                        <p><strong>The Outcome:</strong> ${p.outcome}</p>
+                    </div>
+                </div>
+                <div class="modal-grid">
+                    <div class="gradient-art" style="height: 400px; background: #222;"></div>
+                    <div class="gradient-art" style="height: 400px; background: #1a1a1a;"></div>
+                </div>
+            `;
+            projectModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        closeModal.onclick = () => {
+            projectModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        };
+
+        // 5. Reel Modal
+        const reelModal = document.getElementById('reelModal');
+        document.getElementById('openReel').onclick = () => reelModal.classList.add('active');
+        document.getElementById('closeReel').onclick = () => reelModal.classList.remove('active');
+
+        // ESC to close modals
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                projectModal.classList.remove('active');
+                reelModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // 6. Accordion Logic
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.onclick = () => {
+                const item = header.parentElement;
+                item.classList.toggle('active');
+            };
+        });
+
+        // 7. Clipboard Logic
+        const emailBox = document.getElementById('emailCopy');
+        const tooltip = document.getElementById('copyTooltip');
+
+        emailBox.onclick = () => {
+            const email = "hello@phantom.studio";
+            const el = document.createElement('textarea');
+            el.value = email;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            tooltip.innerText = "Copied!";
+            tooltip.style.opacity = "1";
+            setTimeout(() => {
+                tooltip.style.opacity = "0";
+                setTimeout(() => tooltip.innerText = "Click to copy", 300);
+            }, 2000);
+        };
+
+        emailBox.onmouseenter = () => tooltip.style.opacity = "1";
+        emailBox.onmouseleave = () => tooltip.style.opacity = "0";
+
+        // Magnetic Effect Helper (Optional Enhancement)
+        document.querySelectorAll('.btn-reel, .logo').forEach(el => {
+            el.addEventListener('mousemove', (e) => {
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                el.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+            });
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = `translate(0, 0)`;
+            });
+        });
+    </script>
+</body>
+
+</html>

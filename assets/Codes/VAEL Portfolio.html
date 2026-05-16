@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAEL | Electronic Music & Visual Art</title>
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Courier+Prime:ital,wght@0,400;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --black: #000000;
+            --violet: #b347ff;
+            --lime: #c8ff00;
+            --white: #ffffff;
+            --gray: #1a1a1a;
+            --dark-gray: #0a0a0a;
+            --glitch-speed: 0.2s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: crosshair;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'Courier Prime', monospace;
+            font-style: italic;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3,
+        .nav-link,
+        .btn-bebas,
+        .section-label {
+            font-family: 'Bebas Neue', sans-serif;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-style: normal;
+        }
+
+        /* Texture Overlays */
+        .texture-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.08;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 3px, 3px 100%;
+        }
+
+        .grain {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+            opacity: 0.12;
+            z-index: 9998;
+            pointer-events: none;
+            animation: grain 8s steps(10) infinite;
+        }
+
+        @keyframes grain {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            10% {
+                transform: translate(-5%, -10%);
+            }
+
+            30% {
+                transform: translate(-10%, 5%);
+            }
+
+            50% {
+                transform: translate(-15%, -5%);
+            }
+
+            70% {
+                transform: translate(10%, 10%);
+            }
+
+            90% {
+                transform: translate(5%, -5%);
+            }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            color: var(--lime);
+            text-decoration: none;
+            text-shadow: 2px 0 var(--violet);
+            letter-spacing: -2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--white);
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--violet);
+        }
+
+        .nav-link:hover::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--lime);
+        }
+
+        .cart-trigger {
+            background: var(--dark-gray);
+            border: 1px solid var(--violet);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .cart-trigger:hover {
+            background: var(--violet);
+            color: var(--black);
+        }
+
+        .cart-count {
+            color: var(--lime);
+            font-weight: bold;
+        }
+
+        /* Hero */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem 2rem;
+            position: relative;
+            background: radial-gradient(circle at center, #0a0015 0%, #000 70%);
+        }
+
+        .glitch-title {
+            font-size: clamp(6rem, 18vw, 14rem);
+            line-height: 0.8;
+            position: relative;
+            color: var(--white);
+            margin-bottom: 2rem;
+        }
+
+        .glitch-title::before,
+        .glitch-title::after {
+            content: "VAEL";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-title::before {
+            color: var(--violet);
+            left: 3px;
+            text-shadow: -2px 0 var(--violet);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 4s infinite linear alternate-reverse;
+        }
+
+        .glitch-title::after {
+            color: var(--lime);
+            left: -3px;
+            text-shadow: -2px 0 var(--lime);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 4s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% {
+                clip: rect(10px, 9999px, 50px, 0);
+            }
+
+            20% {
+                clip: rect(80px, 9999px, 90px, 0);
+            }
+
+            40% {
+                clip: rect(20px, 9999px, 60px, 0);
+            }
+
+            100% {
+                clip: rect(10px, 9999px, 50px, 0);
+            }
+        }
+
+        @keyframes glitch-anim2 {
+            0% {
+                clip: rect(30px, 9999px, 40px, 0);
+            }
+
+            50% {
+                clip: rect(50px, 9999px, 70px, 0);
+            }
+
+            100% {
+                clip: rect(30px, 9999px, 40px, 0);
+            }
+        }
+
+        /* Sections */
+        section {
+            min-height: 100vh;
+            padding: 10rem 2rem 5rem;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+            border-left: 5px solid var(--lime);
+            padding-left: 2rem;
+        }
+
+        .section-title {
+            font-size: 6rem;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-label {
+            color: var(--violet);
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+        }
+
+        /* Discography */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+
+        .release-card {
+            background: var(--dark-gray);
+            border: 1px solid var(--gray);
+            padding: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .release-card:hover {
+            border-color: var(--lime);
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(179, 71, 255, 0.2);
+        }
+
+        .artwork-container {
+            aspect-ratio: 1/1;
+            width: 100%;
+            margin-bottom: 1.5rem;
+            background: #111;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .artwork-overlay {
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 0, 0, 0.5) 2px);
+            pointer-events: none;
+        }
+
+        .release-type {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--violet);
+            color: var(--black);
+            padding: 2px 8px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Tour Table */
+        .tour-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 1rem;
+        }
+
+        .tour-row {
+            background: var(--dark-gray);
+            border: 1px solid var(--gray);
+            transition: 0.3s;
+        }
+
+        .tour-row:hover {
+            border-color: var(--violet);
+            background: #111;
+        }
+
+        .tour-row td {
+            padding: 2rem 1.5rem;
+        }
+
+        .tour-date {
+            color: var(--lime);
+            font-size: 1.8rem;
+            font-family: 'Bebas Neue';
+        }
+
+        .tour-venue {
+            color: var(--white);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .tour-status {
+            border: 1px solid var(--gray);
+            padding: 4px 12px;
+            font-size: 0.8rem;
+        }
+
+        .available {
+            color: var(--lime);
+            border-color: var(--lime);
+        }
+
+        .soldout {
+            color: #ff4747;
+            border-color: #ff4747;
+            opacity: 0.6;
+        }
+
+        /* Store */
+        .merch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .merch-item {
+            border: 1px solid var(--gray);
+            padding: 2rem;
+            background: var(--dark-gray);
+        }
+
+        .merch-img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: linear-gradient(135deg, #050505, #151515);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 5rem;
+            border: 1px solid #222;
+        }
+
+        /* Cart Drawer */
+        #cart-drawer {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--black);
+            border-left: 1px solid var(--violet);
+            z-index: 2000;
+            transition: 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+            padding: 5rem 2rem 2rem;
+        }
+
+        #cart-drawer.open {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .cart-items {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        /* Utility */
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border: 1px solid var(--white);
+            background: transparent;
+            color: var(--white);
+            text-decoration: none;
+            transition: 0.3s;
+            font-family: 'Bebas Neue';
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .btn-lime {
+            background: var(--lime);
+            color: var(--black);
+            border-color: var(--lime);
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 20px var(--violet);
+            transform: scale(1.02);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: 1s all ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
+            display: none;
+            padding: 4rem 2rem;
+            overflow-y: auto;
+        }
+
+        /* Hamburger */
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--lime);
+            font-size: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 100%;
+                height: 100vh;
+                background: var(--black);
+                flex-direction: column;
+                justify-content: center;
+                transition: 0.4s;
+            }
+
+            .nav-links.open {
+                right: 0;
+            }
+
+            .section-title {
+                font-size: 3.5rem;
+            }
+
+            #cart-drawer {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="texture-overlay"></div>
+    <div class="grain"></div>
+
+    <nav>
+        <a href="#" class="logo">VAEL</a>
+        <div class="nav-links">
+            <a href="#discography" class="nav-link">Discography</a>
+            <a href="#videos" class="nav-link">Videos</a>
+            <a href="#tour" class="nav-link">Tour</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#merch" class="nav-link">Store</a>
+            <a href="#contact" class="nav-link">Contact</a>
+        </div>
+        <button class="cart-trigger" onclick="toggleCart()">
+            CART <span class="cart-count">0</span>
+        </button>
+        <button class="hamburger" onclick="toggleMenu()">☰</button>
+    </nav>
+
+    <div id="cart-drawer">
+        <div class="cart-header">
+            <h2 class="section-label">Your Basket</h2>
+            <button class="btn" onclick="toggleCart()">CLOSE</button>
+        </div>
+        <div class="cart-items" id="cart-items-list">
+            <p style="opacity: 0.5">Your artifact collection is empty.</p>
+        </div>
+        <div style="margin-top: 2rem; border-top: 1px solid var(--lime); padding-top: 1rem;">
+            <p>Total: <span id="cart-total" class="tour-date">€0.00</span></p>
+            <button class="btn btn-lime" style="width: 100%; margin-top: 1rem;">CHECKOUT</button>
+        </div>
+    </div>
+
+    <section id="hero">
+        <h1 class="glitch-title">VAEL</h1>
+        <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; justify-content: center;">
+            <div style="width: 180px; height: 180px; position: relative;">
+                <svg viewBox="0 0 100 100" style="animation: spin 6s linear infinite;">
+                    <circle cx="50" cy="50" r="48" fill="#080808" stroke="#222" stroke-width="0.5" />
+                    <circle cx="50" cy="50" r="30" fill="none" stroke="#1a1a1a" stroke-width="5" />
+                    <circle cx="50" cy="50" r="10" fill="var(--violet)" />
+                </svg>
+                <style>
+                    @keyframes spin {
+                        from {
+                            transform: rotate(0deg)
+                        }
+
+                        to {
+                            transform: rotate(360deg)
+                        }
+                    }
+                </style>
+            </div>
+            <div style="text-align: left;">
+                <p class="section-label" style="margin-bottom: 0.5rem">Latest System Update</p>
+                <h2 style="font-family: 'Bebas Neue'; font-size: 4rem;">SYNAPTIC DRIFT</h2>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <a href="#discography" class="btn btn-lime">STREAM</a>
+                    <a href="#merch" class="btn">BUY VINYL</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DISCOGRAPHY PAGE -->
+    <section id="discography" class="reveal">
+        <div class="section-header">
+            <h2 class="section-title">Discography</h2>
+            <span class="section-label">Audio Artifacts 2021-2025</span>
+        </div>
+        <div class="grid" id="discog-grid">
+            <!-- Populated by JS -->
+        </div>
+    </section>
+
+    <!-- VIDEOS PAGE -->
+    <section id="videos" class="reveal">
+        <div class="section-header">
+            <h2 class="section-title">Videos</h2>
+            <span class="section-label">Visual Transmissions</span>
+        </div>
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));">
+            <div class="release-card" style="cursor:pointer" onclick="alert('Playing stream...')">
+                <div class="artwork-container"
+                    style="background: linear-gradient(135deg, #000, var(--violet)); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 5rem;">▶</span>
+                </div>
+                <h3 class="btn-bebas">SYNAPTIC DRIFT [OFFICIAL VIDEO]</h3>
+                <p>04:22 // 4K</p>
+            </div>
+            <div class="release-card" style="cursor:pointer" onclick="alert('Playing stream...')">
+                <div class="artwork-container"
+                    style="background: linear-gradient(135deg, var(--lime), #000); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 5rem; color: #000;">▶</span>
+                </div>
+                <h3 class="btn-bebas">LIVE FROM THE VOID [SESS_01]</h3>
+                <p>28:15 // 4K</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TOUR PAGE -->
+    <section id="tour" class="reveal">
+        <div class="section-header">
+            <h2 class="section-title">Tour</h2>
+            <span class="section-label">Physical Encounters</span>
+        </div>
+        <table class="tour-table">
+            <tr class="tour-row">
+                <td class="tour-date">SEP 12</td>
+                <td class="tour-venue">BERGHAIN / KANTINE</td>
+                <td>BERLIN, DE</td>
+                <td><span class="tour-status available">AVAILABLE</span></td>
+                <td><a href="#" class="btn btn-lime">TICKETS</a></td>
+            </tr>
+            <tr class="tour-row">
+                <td class="tour-date">SEP 15</td>
+                <td class="tour-venue">FABRIC</td>
+                <td>LONDON, UK</td>
+                <td><span class="tour-status soldout">SOLD OUT</span></td>
+                <td><span class="btn" style="opacity: 0.3">UNAVAILABLE</span></td>
+            </tr>
+            <tr class="tour-row">
+                <td class="tour-date">OCT 02</td>
+                <td class="tour-venue">REX CLUB</td>
+                <td>PARIS, FR</td>
+                <td><span class="tour-status available">AVAILABLE</span></td>
+                <td><a href="#" class="btn btn-lime">TICKETS</a></td>
+            </tr>
+            <tr class="tour-row">
+                <td class="tour-date">OCT 15</td>
+                <td class="tour-venue">LIQUID ROOM</td>
+                <td>TOKYO, JP</td>
+                <td><span class="tour-status available">AVAILABLE</span></td>
+                <td><a href="#" class="btn btn-lime">TICKETS</a></td>
+            </tr>
+        </table>
+    </section>
+
+    <!-- ABOUT PAGE -->
+    <section id="about" class="reveal">
+        <div class="section-header">
+            <h2 class="section-title">About</h2>
+            <span class="section-label">The Entity</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 4rem;">
+            <div
+                style="aspect-ratio: 4/5; background: linear-gradient(to bottom, #111, var(--violet)); border: 1px solid var(--lime); position: relative;">
+                <div
+                    style="position: absolute; bottom: 20px; left: 20px; font-family: 'Bebas Neue'; font-size: 5rem; line-height: 0.8; opacity: 0.3;">
+                    VAEL<br>SCAN
+                </div>
+            </div>
+            <div>
+                <p style="font-size: 1.8rem; margin-bottom: 2rem;">VAEL IS AN INDEPENDENT PRODUCER AND VISUAL ARTIST
+                    EXPLORING THE FRICTION BETWEEN HUMAN EMOTION AND MACHINE PRECISION.</p>
+                <p style="opacity: 0.7; margin-bottom: 2rem;">Merging raw analog synthesis with generative digital
+                    artifacts, the project operates in the shadows of the club scene, balancing aggressive sound design
+                    with haunting, minimalist melodies.</p>
+                <h3 class="section-label" style="color: var(--lime); margin-bottom: 1rem;">Core Setup</h3>
+                <ul style="list-style: none;">
+                    <li>— PROPHET-6 ANALOG SYNTH</li>
+                    <li>— EURORACK GENERATIVE SYSTEM</li>
+                    <li>— CUSTOM MAX/MSP PATCHES</li>
+                    <li>— VHS CIRCUIT BENT VISUALS</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- STORE PAGE -->
+    <section id="merch" class="reveal">
+        <div class="section-header">
+            <h2 class="section-title">Store</h2>
+            <span class="section-label">Physical Media & Apparel</span>
+        </div>
+        <div class="merch-grid">
+            <div class="merch-item">
+                <div class="merch-img">👕</div>
+                <h3 class="btn-bebas">"SYNAPTIC" TEE</h3>
+                <p class="tour-date" style="font-size: 1.5rem">€45.00</p>
+                <button class="btn btn-lime" style="width: 100%; margin-top: 1rem;"
+                    onclick="addToCart('Synaptic Tee', 45)">ADD TO CART</button>
+            </div>
+            <div class="merch-item">
+                <div class="merch-img">💿</div>
+                <h3 class="btn-bebas">DRIFT 12" VINYL</h3>
+                <p class="tour-date" style="font-size: 1.5rem">€35.00</p>
+                <button class="btn btn-lime" style="width: 100%; margin-top: 1rem;"
+                    onclick="addToCart('Drift Vinyl', 35)">ADD TO CART</button>
+            </div>
+            <div class="merch-item">
+                <div class="merch-img">📦</div>
+                <h3 class="btn-bebas">LIMITED ART BOX</h3>
+                <p class="tour-date" style="font-size: 1.5rem">€120.00</p>
+                <button class="btn btn-lime" style="width: 100%; margin-top: 1rem;"
+                    onclick="addToCart('Art Box', 120)">ADD TO CART</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT PAGE -->
+    <section id="contact" class="reveal">
+        <div class="section-header">
+            <h2 class="section-title">Contact</h2>
+            <span class="section-label">Encrypted Comms</span>
+        </div>
+        <div style="max-width: 700px;">
+            <form onsubmit="event.preventDefault(); alert('Transmission Sent.')">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <input type="text" placeholder="IDENTITY" required
+                        style="width: 100%; padding: 1rem; background: var(--dark-gray); border: 1px solid var(--gray); color: white;">
+                    <input type="email" placeholder="EMAIL" required
+                        style="width: 100%; padding: 1rem; background: var(--dark-gray); border: 1px solid var(--gray); color: white;">
+                </div>
+                <textarea placeholder="MESSAGE" rows="6" required
+                    style="width: 100%; padding: 1rem; background: var(--dark-gray); border: 1px solid var(--gray); color: white; margin: 1rem 0;"></textarea>
+                <button class="btn btn-lime" type="submit">SEND TRANSMISSION</button>
+            </form>
+            <div style="margin-top: 4rem;">
+                <p class="section-label">BOOKING: booking@vael.sys</p>
+                <p class="section-label">PRESS: press@vael.sys</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p style="opacity: 0.4">© VAEL 2025 // BUILT IN THE VOID</p>
+    </footer>
+
+    <!-- Release Modal -->
+    <div id="release-modal" class="modal">
+        <div style="max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;">
+            <div id="modal-art" style="aspect-ratio: 1/1; border: 1px solid var(--lime);"></div>
+            <div>
+                <h2 id="modal-title" style="font-family: 'Bebas Neue'; font-size: 5rem;">TITLE</h2>
+                <p id="modal-meta" class="section-label"></p>
+                <ol id="modal-tracks" style="margin: 2rem 0; list-style: decimal-leading-zero; padding-left: 1rem;">
+                </ol>
+                <button class="btn"
+                    onclick="document.getElementById('release-modal').style.display='none'">CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const discogData = [
+            { title: "SYNAPTIC DRIFT", year: "2025", type: "ALBUM", tracks: ["Entrance", "Neuro-Link", "Digital Rain", "Synaptic Drift", "Ghost Logic"] },
+            { title: "ECHO CHAMBER", year: "2024", type: "EP", tracks: ["Static", "Pulse Width", "Resonance"] },
+            { title: "KINETIC", year: "2023", type: "SINGLE", tracks: ["Kinetic", "Kinetic (Dub)"] },
+            { title: "VOID WALKING", year: "2022", type: "ALBUM", tracks: ["The Void", "Stasis", "Low Light", "Gravity"] }
+        ];
+
+        // Populate Discography
+        const discogGrid = document.getElementById('discog-grid');
+        discogData.forEach((item, i) => {
+            const card = document.createElement('div');
+            card.className = 'release-card';
+            card.innerHTML = `
+                <span class="release-type">${item.type}</span>
+                <div class="artwork-container" style="background: linear-gradient(${i * 45}deg, #000, var(--violet), #000)">
+                    <div class="artwork-overlay"></div>
+                </div>
+                <h3 class="btn-bebas">${item.title}</h3>
+                <p style="opacity: 0.6">${item.year}</p>
+            `;
+            card.onclick = () => {
+                const modal = document.getElementById('release-modal');
+                document.getElementById('modal-title').innerText = item.title;
+                document.getElementById('modal-meta').innerText = `${item.year} // ${item.type}`;
+                document.getElementById('modal-art').style.background = `linear-gradient(${i * 45}deg, #000, var(--violet), #000)`;
+                const tracks = document.getElementById('modal-tracks');
+                tracks.innerHTML = item.tracks.map(t => `<li style="padding: 0.5rem 0; border-bottom: 1px solid #111;">${t}</li>`).join('');
+                modal.style.display = 'block';
+            };
+            discogGrid.appendChild(card);
+        });
+
+        // Cart System
+        let cart = [];
+        const cartDrawer = document.getElementById('cart-drawer');
+        const cartCount = document.querySelector('.cart-count');
+        const cartList = document.getElementById('cart-items-list');
+        const cartTotal = document.getElementById('cart-total');
+
+        function toggleCart() {
+            cartDrawer.classList.toggle('open');
+        }
+
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            updateCart();
+            if (!cartDrawer.classList.contains('open')) toggleCart();
+        }
+
+        function updateCart() {
+            cartCount.innerText = cart.length;
+            if (cart.length === 0) {
+                cartList.innerHTML = '<p style="opacity: 0.5">Your artifact collection is empty.</p>';
+                cartTotal.innerText = '€0.00';
+            } else {
+                cartList.innerHTML = cart.map((item, i) => `
+                    <div class="cart-item">
+                        <span>${item.name}</span>
+                        <span>€${item.price.toFixed(2)}</span>
+                    </div>
+                `).join('');
+                const total = cart.reduce((sum, item) => sum + item.price, 0);
+                cartTotal.innerText = `€${total.toFixed(2)}`;
+            }
+        }
+
+        // Mobile Menu
+        function toggleMenu() {
+            document.querySelector('.nav-links').classList.toggle('open');
+        }
+
+        // Reveal Logic
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Active Nav Link Logic
+        window.addEventListener('scroll', () => {
+            let current = "";
+            document.querySelectorAll('section').forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

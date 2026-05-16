@@ -1,0 +1,1801 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUNE Atelier | Parisian Womenswear</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;1,6..96,400&family=Lato:wght@300;400&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --color-bg: #f2ede6;
+            --color-text: #1a110a;
+            --color-accent: #d4a5a0;
+            --color-border: rgba(26, 17, 10, 0.1);
+            --color-bg-light: #fbf9f7;
+
+            --font-serif: 'Bodoni Moda', serif;
+            --font-sans: 'Lato', sans-serif;
+
+            --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+            --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+            --transition-slow: 0.8s var(--ease-out);
+            --transition-med: 0.4s var(--ease-out);
+            --transition-fast: 0.2s ease-in-out;
+
+            --nav-height: 80px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-sans);
+            font-weight: 300;
+            line-height: 1.5;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* --- TYPOGRAPHY UTILITIES --- */
+        .font-serif {
+            font-family: var(--font-serif);
+        }
+
+        .font-sans {
+            font-family: var(--font-sans);
+        }
+
+        .italic {
+            font-style: italic;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        .headline {
+            font-family: var(--font-serif);
+            font-weight: 400;
+            line-height: 1.1;
+        }
+
+        .text-xxl {
+            font-size: clamp(3rem, 8vw, 8rem);
+            letter-spacing: -0.02em;
+        }
+
+        .text-xl {
+            font-size: clamp(2rem, 5vw, 4rem);
+            letter-spacing: -0.01em;
+        }
+
+        .text-lg {
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+        }
+
+        .text-md {
+            font-size: 1.2rem;
+        }
+
+        .text-base {
+            font-size: 1rem;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+        }
+
+        .text-xs {
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .tracking-wide {
+            letter-spacing: 0.05em;
+        }
+
+        .tracking-widest {
+            letter-spacing: 0.15em;
+        }
+
+        .uppercase {
+            text-transform: uppercase;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        a:hover {
+            color: var(--color-accent);
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: inherit;
+            font: inherit;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        /* --- ART PHOTOGRAPHY GRADIENTS --- */
+        /* Simulating garment textures and lighting */
+        .art-silk {
+            background: linear-gradient(135deg, #e6dcd3 0%, #d4a5a0 50%, #9c7a77 100%);
+        }
+
+        .art-wool {
+            background: radial-gradient(circle at 30% 20%, #dcd3cb 0%, #b8a89a 40%, #8b7d73 100%);
+        }
+
+        .art-leather {
+            background: linear-gradient(to bottom, #2c211c 0%, #1a110a 100%);
+        }
+
+        .art-linen {
+            background: linear-gradient(45deg, #fbf9f7 0%, #e8e1d9 100%);
+        }
+
+        .art-velvet {
+            background: radial-gradient(circle at 70% 80%, #5c3a38 0%, #2a1b1a 60%, #150d0c 100%);
+        }
+
+        .art-cotton {
+            background: linear-gradient(to right, #cfc6bd 0%, #e2dcd4 50%, #cfc6bd 100%);
+        }
+
+        .art-hover-1 {
+            background: linear-gradient(135deg, #cfc0b5 0%, #b59895 100%);
+        }
+
+        .art-hover-2 {
+            background: radial-gradient(circle at 50% 50%, #a39486 0%, #706358 100%);
+        }
+
+        .art-hover-3 {
+            background: linear-gradient(to top, #3d2f28 0%, #1a110a 100%);
+        }
+
+        /* --- COMPONENTS --- */
+        .btn-primary {
+            display: inline-block;
+            background-color: var(--color-text);
+            color: var(--color-bg);
+            padding: 1rem 2rem;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            border: 1px solid var(--color-text);
+            transition: all var(--transition-med);
+        }
+
+        .btn-primary:hover {
+            background-color: transparent;
+            color: var(--color-text);
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            background-color: transparent;
+            color: var(--color-text);
+            padding: 1rem 2rem;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            border: 1px solid var(--color-text);
+            transition: all var(--transition-med);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--color-text);
+            color: var(--color-bg);
+        }
+
+        .btn-text {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            border-bottom: 1px solid var(--color-text);
+            padding-bottom: 2px;
+        }
+
+        /* --- 1. LOADING SCREEN --- */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--color-bg);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease-in-out, visibility 0.8s;
+        }
+
+        #loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loader-text span {
+            opacity: 0;
+            display: inline-block;
+            transform: translateY(10px);
+            animation: textReveal 0.6s var(--ease-out) forwards;
+        }
+
+        @keyframes textReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- 2. NAVIGATION --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            z-index: 100;
+            transition: transform 0.4s ease, background-color 0.4s ease;
+            /* Subtly blur background */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background-color: rgba(242, 237, 230, 0.8);
+        }
+
+        .navbar.nav-hidden {
+            transform: translateY(-100%);
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-links {
+            display: none;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+            }
+        }
+
+        .nav-links a {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .cart-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cart-count {
+            width: 18px;
+            height: 18px;
+            background-color: var(--color-accent);
+            color: var(--color-bg);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.6rem;
+        }
+
+        /* --- 3. HERO / CAMPAIGN --- */
+        .hero {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background-color: var(--color-bg);
+            padding-top: var(--nav-height);
+        }
+
+        .hero-art {
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            bottom: 10%;
+            left: 30%;
+            background: linear-gradient(120deg, #d4a5a0 0%, #b8a89a 50%, #1a110a 100%);
+            opacity: 0.7;
+            /* Abstract shape */
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            filter: blur(40px);
+            z-index: 1;
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .hero-art {
+                left: 10%;
+                right: 10%;
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            width: 100%;
+            padding: 0 5%;
+        }
+
+        .hero-season {
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .hero-title {
+            margin-bottom: 3rem;
+            line-height: 0.9;
+        }
+
+        .hero-title span {
+            display: block;
+        }
+
+        .hero-title .italic {
+            margin-left: 10%;
+            color: var(--color-accent);
+        }
+
+        /* --- 4. COLLECTION GRID --- */
+        .collection {
+            padding: 10vh 0;
+            background-color: var(--color-bg-light);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2px;
+            /* Thin borders between items */
+            background-color: var(--color-border);
+            border: 2px solid var(--color-border);
+        }
+
+        @media (min-width: 1024px) {
+            .grid-container {
+                grid-template-columns: repeat(4, 1fr);
+                grid-auto-rows: 400px;
+            }
+
+            /* Asymmetric layout */
+            .product-card:nth-child(1) {
+                grid-column: span 2;
+                grid-row: span 2;
+            }
+
+            .product-card:nth-child(4) {
+                grid-column: span 1;
+                grid-row: span 2;
+            }
+
+            .product-card:nth-child(6) {
+                grid-column: span 2;
+                grid-row: span 1;
+            }
+        }
+
+        .product-card {
+            background-color: var(--color-bg);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            height: 100%;
+            min-height: 350px;
+        }
+
+        .product-image-container {
+            flex-grow: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .img-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: opacity var(--transition-med);
+        }
+
+        .img-primary {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        .img-secondary {
+            opacity: 0;
+            z-index: 2;
+        }
+
+        .product-card:hover .img-primary {
+            opacity: 0;
+        }
+
+        .product-card:hover .img-secondary {
+            opacity: 1;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            position: relative;
+            z-index: 3;
+            background: linear-gradient(to top, rgba(242, 237, 230, 1) 0%, rgba(242, 237, 230, 0) 100%);
+            margin-top: -60px;
+            /* Overlap slightly */
+        }
+
+        .product-name {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .product-price {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .quick-add-btn {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background-color: var(--color-text);
+            color: var(--color-bg);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all var(--transition-med);
+            z-index: 4;
+        }
+
+        .product-card:hover .quick-add-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .quick-add-btn:hover {
+            background-color: var(--color-accent);
+        }
+
+        /* --- 5. MINI CART SIDEBAR --- */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(26, 17, 10, 0.4);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-med);
+            backdrop-filter: blur(3px);
+        }
+
+        .cart-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            max-width: 450px;
+            height: 100%;
+            background-color: var(--color-bg);
+            z-index: 1001;
+            transform: translateX(100%);
+            transition: transform var(--transition-med);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-sidebar.active {
+            transform: translateX(0);
+        }
+
+        .cart-header {
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .cart-items {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .cart-item-img {
+            width: 80px;
+            height: 100px;
+            background-color: #ddd;
+            flex-shrink: 0;
+        }
+
+        .cart-item-details {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .cart-item-top {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid var(--color-border);
+            padding: 0.25rem 0.5rem;
+            width: fit-content;
+        }
+
+        .remove-item {
+            font-size: 0.7rem;
+            text-decoration: underline;
+            color: #666;
+        }
+
+        .cart-footer {
+            padding: 2rem;
+            border-top: 1px solid var(--color-border);
+            background-color: var(--color-bg-light);
+        }
+
+        .cart-subtotal {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .cart-footer .btn-primary {
+            width: 100%;
+            text-align: center;
+        }
+
+        .empty-cart-msg {
+            text-align: center;
+            color: #666;
+            margin-top: 2rem;
+        }
+
+        /* --- 6. FEATURED EDITORIAL --- */
+        .editorial {
+            padding: 10vh 0;
+            overflow: hidden;
+            background-color: var(--color-text);
+            color: var(--color-bg);
+        }
+
+        .editorial-header {
+            padding: 0 5%;
+            margin-bottom: 3rem;
+        }
+
+        .scroll-container {
+            display: flex;
+            gap: 2rem;
+            padding: 0 5%;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            cursor: grab;
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scroll-container:active {
+            cursor: grabbing;
+        }
+
+        .lookbook-item {
+            flex: 0 0 70vw;
+            scroll-snap-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .lookbook-item {
+                flex: 0 0 45vw;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .lookbook-item {
+                flex: 0 0 35vw;
+            }
+        }
+
+        .look-img {
+            width: 100%;
+            height: 60vh;
+            background-color: #333;
+        }
+
+        .look-caption {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: 1.2rem;
+            color: var(--color-accent);
+        }
+
+        /* --- 7. PRODUCT DETAIL MODAL --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(242, 237, 230, 0.95);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-med);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--color-bg);
+            width: 100%;
+            max-width: 1000px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        @media (min-width: 768px) {
+            .modal-content {
+                flex-direction: row;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 10;
+        }
+
+        .modal-image {
+            flex: 1;
+            min-height: 40vh;
+            background-color: #ddd;
+        }
+
+        .modal-details {
+            flex: 1;
+            padding: 3rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-title {
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-price {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #666;
+        }
+
+        .modal-desc {
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .size-selector {
+            margin-bottom: 2rem;
+        }
+
+        .size-selector p {
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .sizes {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .size-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--color-border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            transition: all var(--transition-fast);
+        }
+
+        .size-btn:hover {
+            border-color: var(--color-text);
+        }
+
+        .size-btn.selected {
+            background-color: var(--color-text);
+            color: var(--color-bg);
+            border-color: var(--color-text);
+        }
+
+        .modal-add-btn {
+            margin-bottom: 2rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        .accordion {
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .acc-header {
+            padding: 1rem 0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+        }
+
+        .acc-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .acc-content.open {
+            max-height: 100px;
+            padding-bottom: 1rem;
+        }
+
+        /* --- 8. BRAND STORY --- */
+        .brand-story {
+            padding: 15vh 5%;
+        }
+
+        .story-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .story-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 6rem;
+            }
+        }
+
+        .story-quote {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            color: var(--color-accent);
+            line-height: 1.2;
+        }
+
+        .story-text p {
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- 9. MATERIALS & CRAFT --- */
+        .craft {
+            padding: 10vh 5%;
+            background-color: var(--color-bg-light);
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .craft-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .craft-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .craft-card {
+            text-align: center;
+        }
+
+        .craft-icon {
+            margin: 0 auto 1.5rem;
+            color: var(--color-accent);
+        }
+
+        .craft-title {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .craft-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* --- 10. STOCKISTS --- */
+        .stockists {
+            padding: 15vh 5%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .filter-btns {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .filter-btn {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #666;
+            padding-bottom: 5px;
+        }
+
+        .filter-btn.active {
+            color: var(--color-text);
+            border-bottom: 1px solid var(--color-text);
+        }
+
+        .stockist-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .stockist-list {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .stockist-item {
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 1.5rem;
+            display: none;
+            /* Handled by JS */
+        }
+
+        .stockist-item.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .s-city {
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .s-name {
+            font-weight: 400;
+            margin-bottom: 0.25rem;
+        }
+
+        .s-address {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* --- 11. NEWSLETTER --- */
+        .newsletter {
+            padding: 15vh 5%;
+            text-align: center;
+            background-color: var(--color-bg);
+        }
+
+        .news-form {
+            max-width: 500px;
+            margin: 3rem auto 0;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .news-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--color-text);
+            padding: 1rem 2rem 1rem 0;
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            color: var(--color-text);
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .news-input:focus {
+            border-color: var(--color-accent);
+        }
+
+        .news-input::placeholder {
+            color: #999;
+        }
+
+        .news-submit {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .opt-in {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            text-align: left;
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .opt-in input {
+            margin-top: 3px;
+        }
+
+        .form-msg {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--color-accent);
+            display: none;
+        }
+
+        /* --- 12. FOOTER --- */
+        .footer {
+            background-color: var(--color-text);
+            color: var(--color-bg);
+            padding: 5rem 5% 2rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            margin-bottom: 5rem;
+        }
+
+        @media (min-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 2fr 1fr 1fr 1fr;
+            }
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .footer-col h4 {
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+            color: #999;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .footer-col a:hover {
+            color: var(--color-accent);
+        }
+
+        .footer-bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            border-top: 1px solid rgba(242, 237, 230, 0.2);
+            padding-top: 2rem;
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        @media (min-width: 768px) {
+            .footer-bottom {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .lang-select select {
+            background: transparent;
+            color: var(--color-bg);
+            border: none;
+            font-family: inherit;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* --- UTILITY ANIMATIONS --- */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s var(--ease-out), transform 1s var(--ease-out);
+        }
+
+        .reveal-up.is-revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 1. LOADING SCREEN -->
+    <div id="loader">
+        <div class="loader-text text-xl font-serif uppercase tracking-widest">
+            <span style="animation-delay: 0.1s">L</span>
+            <span style="animation-delay: 0.2s">U</span>
+            <span style="animation-delay: 0.3s">N</span>
+            <span style="animation-delay: 0.4s">E</span>
+        </div>
+    </div>
+
+    <!-- 2. NAVIGATION -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="nav-logo font-serif uppercase">Lune</a>
+        <div class="nav-links">
+            <a href="#collection">Collection</a>
+            <a href="#editorial">Editorial</a>
+            <a href="#maison">La Maison</a>
+        </div>
+        <div class="nav-actions">
+            <button class="cart-toggle" id="cartOpenBtn">
+                <span class="text-xs">Cart</span>
+                <div class="cart-count" id="cartCountMarker">0</div>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 3. HERO / CAMPAIGN -->
+    <header class="hero" id="hero">
+        <div class="hero-art" id="heroArt"></div>
+        <div class="hero-content">
+            <span class="hero-season text-xs reveal-up">Automne / Hiver</span>
+            <h1 class="hero-title text-xxl reveal-up" style="transition-delay: 0.1s;">
+                <span>The Weight</span>
+                <span class="italic">of Nothing</span>
+            </h1>
+            <a href="#collection" class="btn-primary reveal-up" style="transition-delay: 0.2s;">Discover Collection</a>
+        </div>
+    </header>
+
+    <!-- 4. COLLECTION GRID -->
+    <section class="collection" id="collection">
+        <div class="container">
+            <div class="section-header reveal-up">
+                <h2 class="text-xl italic">Nouveautés</h2>
+            </div>
+
+            <div class="grid-container" id="productGrid">
+                <!-- Products injected by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. MINI CART SIDEBAR -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3 class="font-serif italic text-lg">Your Bag</h3>
+            <button id="cartCloseBtn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="cart-items" id="cartItemsContainer">
+            <!-- Cart items injected by JS -->
+            <div class="empty-cart-msg">Your bag is currently empty.</div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-subtotal">
+                <span class="font-serif">Subtotal</span>
+                <span id="cartSubtotal">$0</span>
+            </div>
+            <button class="btn-primary">Checkout</button>
+        </div>
+    </div>
+
+    <!-- 6. FEATURED EDITORIAL -->
+    <section class="editorial" id="editorial">
+        <div class="editorial-header reveal-up">
+            <span class="text-xs">Campaign</span>
+            <h2 class="text-xl font-serif italic">Paris, la nuit</h2>
+        </div>
+        <div class="scroll-container" id="editorialScroll">
+            <!-- Simulated images using gradients -->
+            <div class="lookbook-item reveal-up">
+                <div class="look-img art-silk"></div>
+                <div class="look-caption">Look 01.</div>
+            </div>
+            <div class="lookbook-item reveal-up" style="transition-delay: 0.1s">
+                <div class="look-img art-leather"></div>
+                <div class="look-caption">Look 02.</div>
+            </div>
+            <div class="lookbook-item reveal-up" style="transition-delay: 0.2s">
+                <div class="look-img art-wool"></div>
+                <div class="look-caption">Look 03.</div>
+            </div>
+            <div class="lookbook-item reveal-up">
+                <div class="look-img art-linen"></div>
+                <div class="look-caption">Look 04.</div>
+            </div>
+            <div class="lookbook-item reveal-up">
+                <div class="look-img art-velvet"></div>
+                <div class="look-caption">Look 05.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. PRODUCT DETAIL MODAL -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalCloseBtn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <div class="modal-image" id="modalImg"></div>
+            <div class="modal-details">
+                <h2 class="modal-title font-serif text-lg" id="modalName">Product Name</h2>
+                <div class="modal-price" id="modalPrice">$000</div>
+                <p class="modal-desc" id="modalDesc">Product description goes here.</p>
+
+                <div class="size-selector">
+                    <p>Select Size</p>
+                    <div class="sizes" id="modalSizes">
+                        <button class="size-btn">XS</button>
+                        <button class="size-btn selected">S</button>
+                        <button class="size-btn">M</button>
+                        <button class="size-btn">L</button>
+                    </div>
+                </div>
+
+                <button class="btn-primary modal-add-btn" id="modalAddBtn">Add to Bag</button>
+
+                <div class="accordion">
+                    <div class="acc-header" onclick="toggleAccordion(this)">
+                        <span>Details & Fit</span>
+                        <span>+</span>
+                    </div>
+                    <div class="acc-content">
+                        Designed for a relaxed fit. True to size. Model is 175cm and wears size S. Dry clean only.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. BRAND STORY -->
+    <section class="brand-story" id="maison">
+        <div class="story-grid">
+            <div class="story-quote font-serif italic reveal-up">
+                "Creating space for quiet confidence through reduction."
+            </div>
+            <div class="story-text text-base reveal-up" style="transition-delay: 0.2s">
+                <p>LUNE Atelier was born in Paris from a desire to strip away the superfluous, leaving only what is
+                    essential. We believe that true luxury whispers, rather than shouts.</p>
+                <p>Our silhouettes are studies in proportion and restraint, crafted from exceptional materials designed
+                    to age beautifully alongside the wearer.</p>
+                <p>Every piece is conceived as a long-term companion, transcending seasonal trends to become a
+                    foundational element of the modern wardrobe.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. MATERIALS & CRAFT -->
+    <section class="craft">
+        <div class="craft-grid">
+            <div class="craft-card reveal-up">
+                <svg class="craft-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+                <h4 class="craft-title font-serif">Natural Fibers</h4>
+                <p class="craft-desc">Sourcing exclusively organic silks, mulesing-free wools, and raw linens.</p>
+            </div>
+            <div class="craft-card reveal-up" style="transition-delay: 0.1s">
+                <svg class="craft-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1">
+                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                    <polyline points="14 2 14 8 20 8" />
+                </svg>
+                <h4 class="craft-title font-serif">Artisan Made</h4>
+                <p class="craft-desc">Produced in small batches by family-owned ateliers across Europe.</p>
+            </div>
+            <div class="craft-card reveal-up" style="transition-delay: 0.2s">
+                <svg class="craft-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1">
+                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                </svg>
+                <h4 class="craft-title font-serif">Considered Impact</h4>
+                <p class="craft-desc">Maintaining a transparent, carbon-neutral supply chain.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. STOCKISTS -->
+    <section class="stockists">
+        <div class="section-header reveal-up">
+            <h2 class="text-xl font-serif italic">Boutiques</h2>
+        </div>
+
+        <div class="filter-btns reveal-up">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="eu">Europe</button>
+            <button class="filter-btn" data-filter="am">Americas</button>
+            <button class="filter-btn" data-filter="as">Asia</button>
+        </div>
+
+        <div class="stockist-list" id="stockistList">
+            <div class="stockist-item show" data-region="eu">
+                <div class="s-city">Paris</div>
+                <div class="s-name">Le Bon Marché</div>
+                <div class="s-address">24 Rue de Sèvres, 75007 Paris</div>
+            </div>
+            <div class="stockist-item show" data-region="eu">
+                <div class="s-city">London</div>
+                <div class="s-name">Selfridges</div>
+                <div class="s-address">400 Oxford St, London W1A 1AB</div>
+            </div>
+            <div class="stockist-item show" data-region="am">
+                <div class="s-city">New York</div>
+                <div class="s-name">Bergdorf Goodman</div>
+                <div class="s-address">754 5th Ave, New York, NY 10019</div>
+            </div>
+            <div class="stockist-item show" data-region="am">
+                <div class="s-city">Los Angeles</div>
+                <div class="s-name">Just One Eye</div>
+                <div class="s-address">915 N Sycamore Ave, Los Angeles, CA 90038</div>
+            </div>
+            <div class="stockist-item show" data-region="as">
+                <div class="s-city">Tokyo</div>
+                <div class="s-name">Dover Street Market</div>
+                <div class="s-address">6 Chome-9-5 Ginza, Chuo City, Tokyo 104-0061</div>
+            </div>
+            <div class="stockist-item show" data-region="as">
+                <div class="s-city">Seoul</div>
+                <div class="s-name">Boon The Shop</div>
+                <div class="s-address">21 Apgujeong-ro 60-gil, Gangnam-gu, Seoul</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. NEWSLETTER -->
+    <section class="newsletter border-top">
+        <h2 class="text-xl font-serif italic reveal-up">Stay in the Light</h2>
+        <p class="text-sm reveal-up">Join the inner circle for early access and editorial musings.</p>
+
+        <form class="news-form reveal-up" id="newsForm">
+            <div class="input-group">
+                <input type="email" class="news-input" placeholder="Your email address" required id="emailInput">
+                <button type="submit" class="news-submit btn-text">Subscribe</button>
+            </div>
+            <label class="opt-in">
+                <input type="checkbox" required>
+                I agree to the privacy policy and to receive marketing communications.
+            </label>
+            <div class="form-msg" id="formMsg">Welcome to the inner circle.</div>
+        </form>
+    </section>
+
+    <!-- 12. FOOTER -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <a href="#" class="footer-logo font-serif uppercase">Lune</a>
+                <p class="text-sm" style="color: #999; max-width: 250px;">Contemporary Parisian womenswear defining
+                    modern elegance through reduction.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Shop</h4>
+                <ul>
+                    <li><a href="#">New Arrivals</a></li>
+                    <li><a href="#">Ready to Wear</a></li>
+                    <li><a href="#">Accessories</a></li>
+                    <li><a href="#">Archive</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Info</h4>
+                <ul>
+                    <li><a href="#">La Maison</a></li>
+                    <li><a href="#">Stockists</a></li>
+                    <li><a href="#">Shipping & Returns</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Follow</h4>
+                <ul>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Pinterest</a></li>
+                    <li><a href="#">Spotify</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>&copy; 2026 LUNE Atelier. All rights reserved.</div>
+            <div class="lang-select">
+                <select>
+                    <option value="en">English (INTL)</option>
+                    <option value="fr">Français (FR)</option>
+                    <option value="ja">日本語 (JP)</option>
+                </select>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- --- JAVASCRIPT --- -->
+    <script>
+        // --- 1. MOCK PRODUCT DATA ---
+        const products = [
+            { id: 1, name: "The Bias Silk Slip", price: 420, baseClass: "art-silk", hoverClass: "art-hover-1", desc: "Crafted from heavy-weight sandwashed silk. Cut on the bias for a liquid drape." },
+            { id: 2, name: "Oversized Merino Blazer", price: 850, baseClass: "art-wool", hoverClass: "art-hover-2", desc: "Structured yet relaxed. Mulesing-free merino wool with strong shoulder pads." },
+            { id: 3, name: "Structured Leather Tote", price: 1100, baseClass: "art-leather", hoverClass: "art-hover-3", desc: "Vegetable-tanned calf leather. Unlined interior with a removable zip pouch." },
+            { id: 4, name: "Raw Linen Trousers", price: 380, baseClass: "art-linen", hoverClass: "art-hover-1", desc: "High-waisted, wide-leg trousers in undyed Belgian linen." },
+            { id: 5, name: "Velvet Evening Coat", price: 1200, baseClass: "art-velvet", hoverClass: "art-hover-2", desc: "Deep espresso cotton-velvet. Floor length with a dramatic sweep." },
+            { id: 6, name: "Poplin Boyfriend Shirt", price: 290, baseClass: "art-cotton", hoverClass: "art-hover-3", desc: "Crisp organic cotton poplin. Dropped shoulders and elongated cuffs." },
+            { id: 7, name: "Ribbed Cashmere Turtleneck", price: 650, baseClass: "art-wool", hoverClass: "art-hover-1", desc: "Ultra-soft recycled cashmere blend. Slim fit for layering." },
+            { id: 8, name: "Pleated Silk Skirt", price: 540, baseClass: "art-silk", hoverClass: "art-hover-2", desc: "Knife-pleated midi skirt that moves like water." }
+        ];
+
+        // --- 2. INITIALIZATION & LOADER ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Remove loader
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 2000);
+
+            renderProducts();
+            initScrollObserver();
+        });
+
+        // --- 3. NAVIGATION SCROLL LOGIC ---
+        let lastScrollTop = 0;
+        const navbar = document.getElementById('navbar');
+
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Toggle Nav visibility
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                navbar.classList.add('nav-hidden');
+            } else {
+                navbar.classList.remove('nav-hidden');
+            }
+            lastScrollTop = scrollTop;
+
+            // Parallax Hero
+            const heroArt = document.getElementById('heroArt');
+            if (scrollTop < window.innerHeight) {
+                heroArt.style.transform = `translateY(${scrollTop * 0.3}px) scale(1.1)`;
+            }
+        });
+
+        // --- 4. RENDER PRODUCTS ---
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'product-card reveal-up';
+                card.onclick = (e) => {
+                    // Prevent modal if clicking Quick Add
+                    if (!e.target.closest('.quick-add-btn')) openModal(p);
+                };
+
+                card.innerHTML = `
+                    <div class="product-image-container">
+                        <div class="img-layer img-primary ${p.baseClass}"></div>
+                        <div class="img-layer img-secondary ${p.hoverClass}"></div>
+                        <button class="quick-add-btn" onclick="addToCart(${p.id}, event)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg>
+                        </button>
+                    </div>
+                    <div class="product-info">
+                        <div>
+                            <h3 class="product-name font-serif italic">${p.name}</h3>
+                            <div class="product-price">$${p.price}</div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- 5. CART LOGIC ---
+        let cart = [];
+        const cartOverlay = document.getElementById('cartOverlay');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const cartCountMarker = document.getElementById('cartCountMarker');
+        const cartItemsContainer = document.getElementById('cartItemsContainer');
+        const cartSubtotalEl = document.getElementById('cartSubtotal');
+
+        document.getElementById('cartOpenBtn').addEventListener('click', toggleCart);
+        document.getElementById('cartCloseBtn').addEventListener('click', toggleCart);
+        cartOverlay.addEventListener('click', toggleCart);
+
+        function toggleCart() {
+            cartOverlay.classList.toggle('active');
+            cartSidebar.classList.toggle('active');
+            // lock body scroll
+            document.body.style.overflow = cartSidebar.classList.contains('active') ? 'hidden' : '';
+        }
+
+        function addToCart(productId, event) {
+            if (event) event.stopPropagation(); // prevent modal
+
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.qty += 1;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+
+            updateCartUI();
+            if (!cartSidebar.classList.contains('active')) toggleCart();
+        }
+
+        function updateQuantity(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+                updateCartUI();
+            }
+        }
+
+        function updateCartUI() {
+            // Update counts
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            cartCountMarker.textContent = totalItems;
+
+            // Render Items
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<div class="empty-cart-msg">Your bag is currently empty.</div>';
+                cartSubtotalEl.textContent = '$0';
+                return;
+            }
+
+            let html = '';
+            let subtotal = 0;
+
+            cart.forEach(item => {
+                subtotal += item.price * item.qty;
+                html += `
+                    <div class="cart-item">
+                        <div class="cart-item-img ${item.baseClass}"></div>
+                        <div class="cart-item-details">
+                            <div class="cart-item-top">
+                                <div>
+                                    <div class="font-serif italic" style="font-size: 0.9rem">${item.name}</div>
+                                    <div style="font-size: 0.8rem; color: #666; margin-top: 5px;">Size: S</div>
+                                </div>
+                                <div style="font-size: 0.9rem">$${item.price}</div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                                <div class="qty-controls">
+                                    <button onclick="updateQuantity(${item.id}, -1)">-</button>
+                                    <span style="font-size: 0.8rem">${item.qty}</span>
+                                    <button onclick="updateQuantity(${item.id}, 1)">+</button>
+                                </div>
+                                <button class="remove-item" onclick="updateQuantity(${item.id}, -${item.qty})">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cartItemsContainer.innerHTML = html;
+            cartSubtotalEl.textContent = `$${subtotal}`;
+        }
+
+        // --- 6. MODAL LOGIC ---
+        const modal = document.getElementById('productModal');
+        let currentModalProduct = null;
+
+        document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        function openModal(product) {
+            currentModalProduct = product;
+            document.getElementById('modalImg').className = `modal-image ${product.baseClass}`;
+            document.getElementById('modalName').textContent = product.name;
+            document.getElementById('modalPrice').textContent = `$${product.price}`;
+            document.getElementById('modalDesc').textContent = product.desc;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Size Selection
+        const sizeBtns = document.querySelectorAll('.size-btn');
+        sizeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                sizeBtns.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+            });
+        });
+
+        // Add to cart from modal
+        document.getElementById('modalAddBtn').addEventListener('click', () => {
+            if (currentModalProduct) {
+                addToCart(currentModalProduct.id);
+                closeModal();
+            }
+        });
+
+        // Accordion
+        function toggleAccordion(el) {
+            const content = el.nextElementSibling;
+            const span = el.querySelectorAll('span')[1];
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                span.textContent = '+';
+            } else {
+                content.classList.add('open');
+                span.textContent = '-';
+            }
+        }
+
+        // --- 7. EDITORIAL HORIZONTAL SCROLL (Drag to scroll) ---
+        const slider = document.getElementById('editorialScroll');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.style.scrollSnapType = 'none'; // disable snap while dragging
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+        slider.addEventListener('mouseleave', () => {
+            isDown = false;
+            slider.style.scrollSnapType = 'x mandatory';
+        });
+        slider.addEventListener('mouseup', () => {
+            isDown = false;
+            slider.style.scrollSnapType = 'x mandatory';
+        });
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2; // scroll speed
+            slider.scrollLeft = scrollLeft - walk;
+        });
+
+        // --- 8. STOCKISTS FILTER ---
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const stockistItems = document.querySelectorAll('.stockist-item');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Active state
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.getAttribute('data-filter');
+
+                stockistItems.forEach(item => {
+                    item.classList.remove('show');
+                    // Small timeout to allow CSS animation to restart
+                    setTimeout(() => {
+                        if (filter === 'all' || item.getAttribute('data-region') === filter) {
+                            item.classList.add('show');
+                        }
+                    }, 10);
+                });
+            });
+        });
+
+        // --- 9. NEWSLETTER VALIDATION ---
+        document.getElementById('newsForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('emailInput').value;
+            const msg = document.getElementById('formMsg');
+
+            if (email) {
+                msg.style.display = 'block';
+                document.getElementById('emailInput').value = '';
+                setTimeout(() => { msg.style.display = 'none'; }, 3000);
+            }
+        });
+
+        // --- 10. INTERSECTION OBSERVER (Scroll Animations) ---
+        function initScrollObserver() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-revealed');
+                        observer.unobserve(entry.target); // Only animate once
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal-up').forEach(el => {
+                observer.observe(el);
+            });
+        }
+    </script>
+</body>
+
+</html>

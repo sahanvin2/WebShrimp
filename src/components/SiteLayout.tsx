@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import CookieConsent from "./CookieConsent";
+import Chatbot from "./Chatbot";
 import useReveal from "@/hooks/useReveal";
 
 interface SiteLayoutProps {
@@ -17,6 +18,7 @@ const SiteLayout = ({ children }: SiteLayoutProps) => {
       <main className="flex-1 pt-16 lg:pt-20">{children}</main>
       <Footer />
       <CookieConsent />
+      <Chatbot />
     </div>
   );
 };
